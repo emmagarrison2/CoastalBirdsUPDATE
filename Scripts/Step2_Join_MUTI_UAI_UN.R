@@ -2,6 +2,8 @@
 #(MUTI, UAI, and UN) --> after we successfully join and get all scientific names to line up, 
 #then we can run this file through our "retracing_coastal_species_sorting.r" script! 
 
+#testing 
+#testing 
 
 library(ape)
 library(geiger)
@@ -23,7 +25,7 @@ here::here()
 #install.packages("gitcreds")
 library(gitcreds)
 
-UAI <- readRDS (here("Join_Traits", "UAI_eBirdJetzBirdLife_final.rds"))
+UAI <- readRDS (here("Outputs", "UAI_eBirdJetzBirdLife_final.rds"))
 View(UAI)
 colnames(UAI)
 nrow(UAI)
@@ -249,8 +251,8 @@ View(nomatch_Jetz_UN)
 ##
 ##THIS IS THE ISSUE (nomatch_Jetz_UN) CHECK BACK IN HERE ^
 
-
-
+nrow(UAI)
+#4347 - also this is a commit test in GitHub 
 
 
 #see if there are eBird matches within the anti-join DF 

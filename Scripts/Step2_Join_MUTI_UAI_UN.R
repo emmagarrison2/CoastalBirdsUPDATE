@@ -187,87 +187,120 @@ UAI_and_MUTI_all %>% filter(!is.na(aveUAI) & !is.na(MUTIscore)) %>% nrow()
 
 UN <- read.csv (here("Data", "HuAndCardosoData.csv"), header = T)
 View(UN)
-UN <- UN %>% select(Species, Urban)
+UN <- UN %>% select(Species, Urban) %>% rename(Species_UN = Species)
 colnames(UN)
 nrow(UN) # 528 rows -- we want to keep as many of these as possible! 
 
 #create corresponding column names with UAI df 
-UN$Species_eBird <- UN$Species
-UN$Species_BirdLife <- UN$Species
-UN$Species_Jetz <- UN$Species
+UN$Species_eBird <- UN$Species_UN
+UN$Species_BirdLife <- UN$Species_UN
+UN$Species_Jetz <- UN$Species_UN
 colnames(UN)
 
 ###### Try with eBird ##################################
+# it is best to try and match with eBird as all the species names are unique
 eBird_UN_MUTI_UAI <- UN %>% select(-Species_BirdLife, -Species_Jetz) %>%
-  inner_join(UAI_and_MUTI_all, UN, by="Species_eBird") 
+  left_join(UAI_and_MUTI_all, ., by="Species_eBird") 
 nrow(eBird_UN_MUTI_UAI)
-#337 species --> not the best.... 
 
-nrow(UN)- nrow(eBird_UN_MUTI_UAI) 
-#191 species off! not looking like eBird
+# how many species matched?
+eBird_UN_MUTI_UAI_match <- eBird_UN_MUTI_UAI %>% filter(!is.na(Species_UN)) 
+nrow(eBird_UN_MUTI_UAI_match) # 337
+# are they all unique? This should match the number output by the row of code above
+length(unique(eBird_UN_MUTI_UAI_match$Species_UN))
 
+# how many species did not match?
+nrow(UN)- nrow(eBird_UN_MUTI_UAI_match) 
+#191 species off
 
-###### Try with BirdLife ##################################
-BirdLife_UN_MUTI_UAI <- UN %>% select(-Species_eBird, -Species_Jetz) %>%
-  inner_join(UAI_and_MUTI_all, ., by="Species_BirdLife") 
-nrow(BirdLife_UN_MUTI_UAI)
-#357 species --> not the best.... 
-
-nrow(UN)- nrow(BirdLife_UN_MUTI_UAI) 
-#171 species off! not looking like BirdLife
-
-###### Try with Jetz ##################################
-
-Jetz_UN_MUTI_UAI <- UN %>% select(-Species_eBird, -Species_BirdLife) %>%
-  inner_join(UAI_and_MUTI_all, ., by="Species_Jetz") 
-nrow(Jetz_UN_MUTI_UAI)
-View(Jetz_UN_MUTI_UAI)
-#479 species  
-
-nrow(UN)- nrow(Jetz_UN_MUTI_UAI) 
-#49 species off! it's prob jetz! 
-
-
-################################################################
-#Since Jetz has the most species match... let's join those 479 species to the df with UAI and MUTI 
-
-#join 
-
-UN_UAI_MUTI <- UN %>% select(-Species_eBird, -Species_BirdLife) %>%
-  left_join(UAI_and_MUTI_all, .) 
-nrow(UN_UAI_MUTI)
-View(UN_UAI_MUTI)
-
-####check how many species got added via this join... it should be 479
-
-UN_UAI_MUTI$Urban <- ifelse(UN_UAI_MUTI$Urban == "U", 1, 0)
-View(UN_UAI_MUTI)
-#0 = N, 1 = U
-
-UN_Check <- UN_UAI_MUTI %>% filter(!is.na(Urban))
-nrow(UN_Check)
-#479 species... thank goodness! this is correct  
-
-#anti-join to find 49 species with UN who did not match with UAI using Jetz names
+# get the unmatched UN species in a data frame
+colnames(eBird_UN_MUTI_UAI_match)
 colnames(UN)
+UN_nomatch <- eBird_UN_MUTI_UAI_match %>%
+  select(Species_UN, Urban) %>%
+  anti_join(UN, .)
+nrow(UN_nomatch) # 191
+
+###### Try matching the 191 remaining species with Jetz ##############
+
+Jetz_UN_MUTI_UAI <- UN_nomatch %>% select(-Species_eBird, -Species_BirdLife) %>%
+  inner_join(UAI_and_MUTI_all, ., by="Species_Jetz")
+View(Jetz_UN_MUTI_UAI)
+
+# how many UAI/MUTI species matched with UN using Jetz ?
+nrow(Jetz_UN_MUTI_UAI)
+# are they all unique?
+length(unique(Jetz_UN_MUTI_UAI$Species_UN))
+# 116-111 = 5
+# not all are unique. This is because some UAI/MUTI species have the same scientific name using Jetz
+# so certain species from UN are matching with more than one UAI/MUTI species
+
+# look at the duplicated species
+Jetz_dups <- Jetz_UN_MUTI_UAI %>% count(Species_UN) %>%
+  filter(n>1) %>%
+  left_join(., Jetz_UN_MUTI_UAI)
+
+View(Jetz_dups)
+# Rallus longirostris in UN is differentiated as Ridgway's Rail (Rallus obsoletus) and Clapper Rail (Rallus crepitans) in both MUTI and UAI
+# this is the primary duplication that seems problematic from a coastal bird perspective
+# if we look at the UN paper can we determine if the authors were studying one of these two species, or possibly both clumped under one name?
+
+
+# which UN species still do not have a match with UAI?
+UN_stillnomatch <- Jetz_UN_MUTI_UAI %>% distinct(Species_UN) %>%
+  anti_join(UN_nomatch, .)
+nrow(UN_stillnomatch) # 80 species
+# we could try to match using BirdLife. I tried this but it did not help, so I deleted these steps
+
+
+##### Put matches together and build towards final data frame ######
+
+# combine Jetz and eBird matches into one using bind_rows
+colnames(eBird_UN_MUTI_UAI_match)
 colnames(Jetz_UN_MUTI_UAI)
-nomatch_Jetz_UN <- Jetz_UN_MUTI_UAI %>% select(Species, Species_Jetz) %>%
-  anti_join (UN, .)
-nrow(nomatch_Jetz_UN)
-View(nomatch_Jetz_UN)
 
-#why is this 80? according to earlier it should be 49... 
-##
-##
-##
-##
-##THIS IS THE ISSUE (nomatch_Jetz_UN) CHECK BACK IN HERE ^
+UN_combine1 <- bind_rows(Jetz_UN_MUTI_UAI, eBird_UN_MUTI_UAI_match)
+nrow(UN_combine1) # 453
 
-nrow(UAI)
-#4347 - also this is a commit test in GitHub 
+# get all the species with MUTI and/or UAI with no UN match
+UAI_and_MUTI_noUN <- UN_combine1 %>% select(-Species_UN, -Urban) %>%
+  anti_join(UAI_and_MUTI_all, .) 
+nrow(UAI_and_MUTI_noUN) # 3902
 
+# add the Species_UN and Urban columns back to this data frame but make them NA
+# we need to do this to combine these species with UN_combine2
+UAI_and_MUTI_noUN[ , 'Species_UN'] = NA
+UAI_and_MUTI_noUN[ , 'Urban'] = NA
 
-#see if there are eBird matches within the anti-join DF 
+# combine UN_combine1 (all species from UN with UAI or MUTI match) and all species in UAI/MUTI with no UN match 
+colnames(UAI_and_MUTI_noUN)
+colnames(UN_combine1)
+UN_combine2 <- bind_rows(UN_combine1, UAI_and_MUTI_noUN)
+nrow(UN_combine2) # 4355
 
+# get 80 UN species with no matches and add those
+UAI_MUTI_UN_final <- full_join(UN_combine2, UN_stillnomatch)
+  
+nrow(UAI_MUTI_UN_final) # should equal 4355 + 80 
 
-#see if there are BirdLife matches within the anit-join DF 
+##### Perform some Final Checks ####
+
+# how many species have UAI score?
+UAI_MUTI_UN_final %>% filter(!is.na(aveUAI)) %>% nrow() # 4347
+
+# how many species have MUTI score?
+UAI_MUTI_UN_final %>% filter(!is.na(MUTIscore)) %>% nrow() # 432
+
+# how many species have Urban score?
+UAI_MUTI_UN_final %>% filter(!is.na(Urban)) %>% nrow() # 533
+# how many are distinct species names (this should equal the number in the original data frame)?
+UAI_MUTI_UN_final %>% filter(!is.na(Urban)) %>% distinct(Species_UN) %>% nrow() # 528
+
+# how many species have UN but no MUTI or UAI?
+UAI_MUTI_UN_final %>% filter(!is.na(Urban)) %>% filter(is.na(MUTIscore) & is.na(aveUAI)) %>% nrow() # 80
+
+# how many species have MUTI but no UAI or UN?
+UAI_MUTI_UN_final %>% filter(!is.na(MUTIscore)) %>% filter(is.na(Urban) & is.na(aveUAI)) %>% nrow() # 8
+
+##### Export list of species and urban tolerance indices ######
+saveRDS (UAI_MUTI_UN_final, here("Outputs", "UAI_MUTI_UN_final.rds"))

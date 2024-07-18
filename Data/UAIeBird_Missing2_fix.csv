@@ -1,0 +1,41 @@
+,CommonName_UAI,aveUAI,Order_eBird,CommonName_eBird,Species_eBird,Species_eBird_fix,Notes
+1,African Reed Warbler,1.846914067,Passeriformes,Common Reed Warbler (African),Acrocephalus scirpaceus [baeticatus Group],NA,names in groups - dropping
+2,Antillean Mango,2.458430683,Caprimulgiformes,Hispaniolan Mango,Anthracothorax dominicus,Anthracothorax dominicus,
+3,Asian Pied Starling,1.997547215,Passeriformes,Indian Pied Starling,Gracupica contra,Gracupica contra,
+4,Australasian Bushlark,0.476124748,Passeriformes,Horsfield's Bushlark (Australasian),Mirafra javanica [javanica Group],NA,names in groups - dropping
+5,Australasian Pipit,0.644714665,Passeriformes,Australian Pipit,Anthus australis,Anthus australis,
+6,Australian Shoveler,1.144302746,Anseriformes,Australasian Shoveler,Spatula rhynchotis,Spatula rhynchotis,
+7,Blue Vanga,0.032893742,Passeriformes,Madagascar Blue Vanga,Cyanolanius madagascarinus,Cyanolanius madagascarinus,checked cities where recorded in UAI
+8,Blue-crowned Manakin,0.162024331,Passeriformes,Blue-capped Manakin,Lepidothrix coronata,Lepidothrix coronata,
+9,Blue-gray Saltator,2.118372804,Passeriformes,Bluish-gray Saltator,Saltator coerulescens,Saltator coerulescens,
+10,Blyth's Shrike-Babbler,0.240005232,Passeriformes,White-browed Shrike-Babbler (Blyth's),Pteruthius aeralatus [aeralatus Group],NA,names in groups - dropping
+11,Booted Racket-tail,0.544268904,NA,NA,NA,NA,group of species
+12,Cape Francolin,1.327246675,Galliformes,Cape Spurfowl,Pternistis capensis,Pternistis capensis,
+13,Crested Shrike-tit,0.575218079,Passeriformes,Eastern Shrike-tit,Falcunculus frontatus,Falcunculus frontatus,
+14,Erckel's Francolin,0.289946055,Galliformes,Erckel's Spurfowl,Pternistis erckelii,Pternistis erckelii,
+15,Eurasian Reed Warbler,1.37268812,Passeriformes,Common Reed Warbler,Acrocephalus scirpaceus,Acrocephalus scirpaceus,
+16,Fulvous-headed Pygmy-Tyrant,0.784318344,Passeriformes,Fulvous-faced Scrub-Tyrant,Euscarthmus fulviceps,Euscarthmus fulviceps,
+17,Golden-bellied Warbler,0.017410968,NA,NA,NA,NA,split into two species
+18,Gray Elaenia,0.35142138,NA,NA,NA,NA,split into 3 species
+19,Green Bee-eater,1.692348267,Coraciiformes,Asian Green Bee-eater,Merops orientalis,Merops orientalis,checked cities where recorded in UAI
+20,Long-tailed Sabrewing,0.023531607,Caprimulgiformes,Wedge-tailed Sabrewing,Pampa curvipennis,Pampa curvipennis,
+21,Mouse-colored Tyrannulet,1.466045483,NA,NA,NA,NA,split into 2 species
+22,Natal Francolin,1.157502791,Galliformes,Natal Spurfowl,Pternistis natalensis,Pternistis natalensis,
+23,Olivaceous Saltator,2.231372467,Passeriformes,Olive-gray Saltator,Saltator olivascens,Saltator olivascens,
+24,Orange-footed Scrubfowl,1.247367693,Galliformes,Orange-footed Megapode,Megapodius reinwardt,Megapodius reinwardt,
+25,Paraguayan Snipe,2.137126442,Charadriiformes,Pantanal Snipe,Gallinago paraguaiae,Gallinago paraguaiae,
+26,Rufous-crowned Pygmy-Tyrant,1.91916467,Passeriformes,Rufous-headed Pygmy-Tyrant,Pseudotriccus ruficeps,Pseudotriccus ruficeps,
+27,Slaty-backed Chat-Tyrant,0.058380848,Passeriformes,Chestnut-bellied Chat-Tyrant,Ochthoeca cinnamomeiventris,Ochthoeca cinnamomeiventris,
+28,Streamertail,0.768994134,NA,NA,NA,NA,more than one species
+29,Sunda Bush Warbler,0.189997287,Passeriformes,Aberrant Bush Warbler,Horornis flavolivaceus,Horornis flavolivaceus,
+30,Swainson's Francolin,0.876610092,Galliformes,Swainson's Spurfowl,Pternistis swainsonii,Pternistis swainsonii,
+31,Tropical Pewee,1.459896359,NA,NA,NA,NA,split into 3 species
+32,Tumbes Tyrant,0.00913103,Passeriformes,Tumbes Chat-Tyrant,Ochthoeca salvini,Ochthoeca salvini,
+33,Vieillot's Weaver,0.691693623,Passeriformes,Vieillot's Black Weaver,Ploceus nigerrimus,Ploceus nigerrimus,
+34,Vinous-breasted Starling,2.187533971,Passeriformes,Vinous-breasted Myna,Acridotheres leucocephalus,Acridotheres leucocephalus,
+35,Vivid Niltava,0.166962065,NA,NA,NA,NA,multiple possible species
+36,White-bellied Tyrannulet,0.956605618,Passeriformes,NA,NA,NA,unclear which species this is
+37,White-browed Shortwing,0.385112978,NA,NA,NA,NA,split into multiple species
+38,Woolly-necked Stork,1.228004455,NA,NA,NA,NA,split into 2 species
+39,Yellow-breasted Flycatcher,0.759786089,NA,NA,NA,NA,unclear which species this is
+40,Yellow-necked Francolin,0.710782735,Galliformes,Yellow-necked Spurfowl,Pternistis leucoscepus,Pternistis leucoscepus,

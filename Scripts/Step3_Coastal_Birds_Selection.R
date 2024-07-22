@@ -46,12 +46,27 @@ write.csv(df_unique_family_names, here("Notes", "families_all.csv"))
 #"Yes" = Coastal family 
 #"N/A" = Non-coastal family 
 
-coastal_families <- read.csv(here("Notes", "FamilyNames.csv"))
-colnames(coastal_families)
-#View(coastal_families)
-coastal_families$Family_all <- coastal_families$Family_all
+Familynames_new <- read.csv (here("Notes", "families_all.csv"))
+colnames(Familynames_new)
 
-### For all species from a "Coastal" (Yes) family, mark as a coastal species. 
+FamilyNames_old <- read.csv(here("Notes", "FamilyNames.csv"))
+colnames(FamilyNames_old)
+#View(coastal_families)
+FamilyNames_old$Family <- FamilyNames_old$BLFamilyLatin
+colnames(FamilyNames_old)
+
+
+#full join 
+families_joined <- full_join(Familynames_new, FamilyNames_old, by="Family")
+View(families_joined)
+#there are a few additional families, so let's look through Birds of the World and add their information in via editing csv! 
+write.csv(families_joined, here("Notes", "families_joined.csv"))
+
+####### For all species from a "Coastal" (Yes) family, mark as a coastal species. 
+
+#go off of our previous FamilyNames.csv (we want to double check that no additional families were added via this UPDATE process... and we don't want to redo work)
+#this section can be deleted eventually 
+
 
 
 

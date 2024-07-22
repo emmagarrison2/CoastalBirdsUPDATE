@@ -33,9 +33,10 @@ colnames(AllBirds.r)
 
 unique_family_names <- unique(AllBirds.r$Family_all)
 df_unique_family_names <- data.frame(Family = unique_family_names)
-#View(df_unique_family_names)
 
 #great - now lets download this df as a csv, and assess all Families using Birds of the World
+
+write.csv(df_unique_family_names, here("Notes", "families_all.csv"))
 
 ##############Round 1###################
 

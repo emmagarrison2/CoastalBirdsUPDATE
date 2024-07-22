@@ -46,7 +46,10 @@ write.csv(df_unique_family_names, here("Notes", "families_all.csv"))
 #"Yes" = Coastal family 
 #"N/A" = Non-coastal family 
 
-Familynames_new <- read.csv (here("Notes", "families_all.csv"))
+
+#go off of our previous FamilyNames.csv (FamilyNames_old) (we want to double check that no additional families were added via this UPDATE process... and we don't want to redo work)
+#this section can be deleted eventually 
+Familynames_new <- read.csv (here("Notes", "families_all_edited.csv"))
 colnames(Familynames_new)
 
 FamilyNames_old <- read.csv(here("Notes", "FamilyNames.csv"))
@@ -62,13 +65,41 @@ View(families_joined)
 #there are a few additional families, so let's look through Birds of the World and add their information in via editing csv! 
 write.csv(families_joined, here("Notes", "families_joined.csv"))
 
-####### For all species from a "Coastal" (Yes) family, mark as a coastal species. 
+#upload the edited version - 
+Family_List <- read.csv(here("Notes", "Family_List_Coastal.csv"))
+View(Family_List)
+colnames(Family_List)
+Family_List$Family_all <- Family_List$Family
 
-#go off of our previous FamilyNames.csv (we want to double check that no additional families were added via this UPDATE process... and we don't want to redo work)
-#this section can be deleted eventually 
+
+####### For all species from a "Coastal" (Yes) family, mark them as a coastal species. 
+#For AllBirds.r --> column = Family_all
+#For Family_List --> column = Family 
+
+#join them together 
+Coastal_Families <- full_join(AllBirds.r, Family_List, by = "Family_all")
+View(Coastal_Families)
+
+#that worked 
+
+#save rds of Coastal_Families, for quick recall 
+
+saveRDS(Coastal_Families, here("Outputs", "Coastal_Families.rds"))
 
 
 
 
-#Family_all from AllBirds.r with #BLFamilyLatin from coastal_families
+##############Round 1.5###################
 
+
+#in this step, we will filter through the species from special-case families (such as Accipitridae) to see if we should put any of these species down as coastal. 
+
+#I'll need to go off of our old list... cut down a csv of all species represented by old list that are from the following families... 
+
+##Accipitridae 
+##Cathartidae 
+##Falconiidae 
+
+Coastal_Fam <- readRDS(here("Outputs", "Coastal_Families.rds"))
+colnames(Coastal_Fam)
+refine_1 <- Coastal_Fam %>% select(Family_all == "Accipitridae", "Cathartidae", "Falconidae" )

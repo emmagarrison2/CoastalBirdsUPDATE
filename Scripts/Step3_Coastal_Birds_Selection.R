@@ -15,7 +15,7 @@ library(here)
 #created in Step2 script 
 
 #insert EDITED csv here 
-#AllBirds <- readRDS(here("Outputs", "UAI_MUTI_UN_final.rds"))
+AllBirds <- read.csv(here("Outputs", "UAI_MUTI_UN_final_edited.csv"))
 
 View(AllBirds)
 nrow(AllBirds) #4435, which is correct! 
@@ -24,8 +24,18 @@ nrow(AllBirds) #4435, which is correct!
 #family names written down for Species_UN (that didn't have UAI or MUTI scores)
 
 
-#combine rows Family_Jetz(from UAI, along with 80 species UN-only) and family.MUTI (from MUTI)
-#let's call this combined family row "Family_All"
+#combine rows Family_Jetz(from UAI) family.MUTI (from MUTI), and Family_UN_only (from UN)
+#let's call this combined family row "Family_all"
+
+AllBirds.r <- AllBirds %>% mutate (Family_all = coalesce(Family_Jetz, family.MUTI, Family_UN_only))
+View(AllBirds.r)
+colnames(AllBirds.r)
+
+unique_family_names <- unique(AllBirds.r$Family_all)
+df_unique_family_names <- data.frame(Family = unique_family_names)
+#View(df_unique_family_names)
+
+#great - now lets download this df as a csv, and assess all Families using Birds of the World
 
 ##############Round 1###################
 
@@ -36,9 +46,13 @@ nrow(AllBirds) #4435, which is correct!
 #"N/A" = Non-coastal family 
 
 coastal_families <- read.csv(here("Notes", "FamilyNames.csv"))
-View(coastal_families)
+colnames(coastal_families)
+#View(coastal_families)
+coastal_families$Family_all <- coastal_families$Family_all
 
 ### For all species from a "Coastal" (Yes) family, mark as a coastal species. 
 
-#FamilyJetz from AllBirds with #BLFamilyLatin from coastal_families
+
+
+#Family_all from AllBirds.r with #BLFamilyLatin from coastal_families
 

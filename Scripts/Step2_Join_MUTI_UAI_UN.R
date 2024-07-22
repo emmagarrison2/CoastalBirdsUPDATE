@@ -46,8 +46,9 @@ nrow(UAI)
 
 MUTI <- read.csv (here("Data", "Fanelli_Urban_Tolerance.csv"), header = T)
 colnames(MUTI)
+View(MUTI)
 MUTI.r <- MUTI %>% rename(MUTIscore = PC1_scores) 
-MUTI.f <- MUTI.r %>% select(MUTIscore, scientific_name, common_name)
+MUTI.f <- MUTI.r %>% select(MUTIscore, scientific_name, common_name, family)
 colnames(MUTI.f)
 View(MUTI.f)
 nrow(MUTI.f)
@@ -117,7 +118,6 @@ nrow(UAI_and_MUTI) # 4347
 View(UAI_and_MUTI)
 colnames(UAI_and_MUTI)
 
-
 # let's find out what 11 species are missing  and then manually join them! 
 
 nomatch_eBird_MUTI <- anti_join (MUTI.f, eBirdMUTI_UAI, by = "Species_eBird")
@@ -130,11 +130,18 @@ View(nomatch_eBird_MUTI)
 ###### what to do about these two species? They are Brandt's Cormorant, Double-crested cormorant, and Pelagic Cormorant, so they ARE Going to be coastal. It would be nice to keep them. 
 
 # since they are Jetz Taxonomy names... we need to do a join between nomatch_eBird_MUTI and UAI using Species_Jetz 
+#clean up column names for 
 colnames(UAI_and_MUTI)
+UAI_and_MUTI$family.MUTI <- UAI_and_MUTI$family.x
+colnames(UAI_and_MUTI)
+#UAI_and_MUTI <- UAI_and_MUTI %>% select (-family.x, -family.y)
+UAI_and_MUTI$family.MUTI <- UAI_and_MUTI$family
+colnames(UAI_and_MUTI)
+
 colnames(nomatch_eBird_MUTI)
 nomatch_eBird_MUTI.r <- nomatch_eBird_MUTI %>% 
-  rename(SciName_MUTI = scientific_name, CommonName_MUTI = common_name) %>%
-  select (MUTIscore, SciName_MUTI, CommonName_MUTI, Species_Jetz) 
+  rename(SciName_MUTI = scientific_name, CommonName_MUTI = common_name, family.MUTI = family) %>%
+  select (MUTIscore, SciName_MUTI, CommonName_MUTI, Species_Jetz, family.MUTI) 
 colnames(nomatch_eBird_MUTI.r)
 
 
@@ -147,7 +154,7 @@ colnames(UAI_and_MUTI)
 UAI_and_MUTI_finalfew <- UAI %>% rename(CommonName_UAI = CommonName) %>%
   full_join(., nomatch_eBird_MUTI.r, by="Species_Jetz") %>% # use full join to match cormorants and keep all species from MUTI that are not in UAI
   filter(!is.na(MUTIscore)) %>% # keep only the rows where species have a MUTI score
-  select(MUTIscore, SciName_MUTI, CommonName_MUTI, Species_eBird, Species_Jetz, Family_Jetz, Order_Jetz,
+  select(MUTIscore, SciName_MUTI, CommonName_MUTI, family.MUTI, Species_eBird, Species_Jetz, Family_Jetz, Order_Jetz,
          CommonName_UAI, aveUAI, Order_eBird, Species_BirdLife) # reorder columns to match UAI_and_MUTI
   
 View(UAI_and_MUTI_finalfew)
@@ -159,11 +166,12 @@ View(UAI_and_MUTI_finalfew)
 # we only want to keep the version in UAI_and_MUTI_finalfew as this has the MUTI and UAI score for these species
 # use anti_join to resolve this issue and then bind the two data frames together
 
-UAI_and_MUTI_all <- anti_join(UAI_and_MUTI, UAI_and_MUTI_finalfew, by = join_by(Species_Jetz,CommonName_UAI, aveUAI)) %>%
+UAI_and_MUTI_all <- anti_join(UAI_and_MUTI, UAI_and_MUTI_finalfew, by = join_by(Species_Jetz, CommonName_UAI, aveUAI)) %>%
   bind_rows(., UAI_and_MUTI_finalfew)
   
 nrow(UAI_and_MUTI_all) # 4355
 head(UAI_and_MUTI_all)
+colnames(UAI_and_MUTI_all)
 
 # perform some checks to make sure everything worked as expected
 
@@ -178,6 +186,8 @@ UAI_and_MUTI_all %>% filter(!is.na(aveUAI)) %>% nrow()
 # how many rows/species have both a UAI and MUTI score?
 UAI_and_MUTI_all %>% filter(!is.na(aveUAI) & !is.na(MUTIscore)) %>% nrow() 
 # 424 species
+
+View(UAI_and_MUTI_all)
 
 ##################################################################
 ##################################################################

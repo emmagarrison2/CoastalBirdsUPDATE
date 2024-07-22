@@ -314,3 +314,4 @@ UAI_MUTI_UN_final %>% filter(!is.na(MUTIscore)) %>% filter(is.na(Urban) & is.na(
 
 ##### Export list of species and urban tolerance indices ######
 saveRDS (UAI_MUTI_UN_final, here("Outputs", "UAI_MUTI_UN_final.rds"))
+write.csv(UAI_MUTI_UN_final, here("Outputs", "UAI_MUTI_UN_final.csv"))

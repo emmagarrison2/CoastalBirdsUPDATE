@@ -88,7 +88,6 @@ saveRDS(Coastal_Families, here("Outputs", "Coastal_Families.rds"))
 
 
 
-
 ##############Round 1.5###################
 
 
@@ -102,4 +101,34 @@ saveRDS(Coastal_Families, here("Outputs", "Coastal_Families.rds"))
 
 Coastal_Fam <- readRDS(here("Outputs", "Coastal_Families.rds"))
 colnames(Coastal_Fam)
-refine_1 <- Coastal_Fam %>% select(Family_all == "Accipitridae", "Cathartidae", "Falconidae" )
+unique(Coastal_Fam$Family_all)
+refine_1 <- Coastal_Fam %>% filter(Family_all %in% c("Accipitridae", "Cathartidae", "Falconidae"))
+View(refine_1)
+colnames(refine_1)
+nrow(refine_1) #163
+
+#great, now let's join with old coastal-species list, as I've probably already investigated most of these Accipitridae, Cathartidae, and Falconidae species 
+
+#the Species_Jetz column contains a scientific name for all species in df "refine_1"
+#duplicate column and name it "Species" 
+refine_1$Species <- refine_1$Species_Jetz
+#make sure Species column is formatted correctly for join 
+refine_1$Species <- gsub(" ", "_", refine_1$Species)
+View(refine_1)
+
+#read in old coastal species list 
+Old_List <- read.csv(here("Notes", "CoastalSpecies_11April24.csv"))
+#View(Old_List)
+#View(refine_1)
+#join with "Species" column from "CoastalSpecies_11April24.csv" (the old coastal species list)
+
+Raptor_Search <- left_join(refine_1, Old_List, by = "Species")
+View(Raptor_Search)
+Raptor_Search_2 <- Raptor_Search %>% filter(BLFamilyLatin %in% c("Accipitridae", "Cathartidae", "Falconidae"))
+View(Raptor_Search_2)
+
+#great, now let's investigate all the species with NA for column "CoastalSp" -- these are species that were added to our list in the recent refined-join 
+
+#to investigate these species on BOTW, let's export a csv 
+
+write.csv(Raptor_Search_2, here("Notes", "raptors_to_BOTW.csv"))

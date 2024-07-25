@@ -134,3 +134,39 @@ View(Raptor_Search)
 #to investigate these species on BOTW, let's export a csv 
 
 write.csv(Raptor_Search, here("Notes", "raptors_to_BOTW.csv"))
+
+
+#after going through list of NA species, and investigating on BOTW to assign as Coastal (Yes) or Non-coastal (No), read this edited csv in 
+Coastal_raptors <- read.csv (here("Notes", "Coastal_raptors.csv"))
+View(Coastal_raptors)
+#correct column is "Coastal" 
+
+colnames(Coastal_Families)
+Coastal_Families$Species <- Coastal_Families$Species_Jetz
+Coastal_Families$Species <- gsub(" ", "_", Coastal_Families$Species)
+
+#join with Coastal_Families by column "Species_Jetz", as this was the column we used to join refine_1 with Old_List 
+Coastal_Round_1 <- Coastal_Families %>%
+  left_join(Coastal_raptors, by = "Species", suffix = c(".fam", ".rap"))
+View(Coastal_Round_1)  
+
+#cool now let's create a new column (Coastal) to coalesce Coastal.fam (families) and Coastal.rap (select raptors)
+Coastal_Round_1.5 <- Coastal_Round_1 %>% 
+  mutate(Coastal = coalesce(Coastal.rap, Coastal.fam))
+View(Coastal_Round_1.5)
+
+#simplify number of columns, it's getting overwhelming 
+colnames(Coastal_Round_1.5)
+
+Coastal_Round_1_f <- Coastal_Round_1.5 %>% 
+  rename(Family_all = Family_all.fam) %>%
+  select(MUTIscore, SciName_MUTI, CommonName_MUTI, Species_eBird, Species_Jetz, Family_Jetz, CommonName_UAI, aveUAI, Species_BirdLife, Species_UN, Urban, family.MUTI, Family_all, Species, English, Coastal)
+View(Coastal_Round_1_f)
+
+
+
+####################################Round 2###################################
+####
+##
+#in this round, we will sort through the common names of species that were marked as "Yes" for Urban Tolerance 
+

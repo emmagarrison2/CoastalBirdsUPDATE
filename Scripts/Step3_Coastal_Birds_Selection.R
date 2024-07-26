@@ -163,10 +163,21 @@ Coastal_Round_1_f <- Coastal_Round_1.5 %>%
   select(MUTIscore, SciName_MUTI, CommonName_MUTI, Species_eBird, Species_Jetz, Family_Jetz, CommonName_UAI, aveUAI, Species_BirdLife, Species_UN, Urban, family.MUTI, Family_all, Species, English, Coastal)
 View(Coastal_Round_1_f)
 
-
+saveRDS(Coastal_Round_1_f, here("Outputs", "Coastal_Round_1.rds"))
 
 ####################################Round 2###################################
 ####
 ##
 #in this round, we will sort through the common names of species that were marked as "Yes" for Urban Tolerance 
+Round_1_yes <- Coastal_Round_1_f %>% 
+  filter(Coastal == "Yes")
+
+View(Round_1_yes)
+nrow(Round_1_yes)
+#825!  
+
+write.csv(Round_1_yes, here("Notes", "Round_1_yes.csv"))
+
+#now, look through the common names for these species... searching for key words that indicate NON-coastal habitats: "freshwater", "alpine", "upland", "lake", "river", 
+#"mountain", "prairie", "highland", "forest" 
 

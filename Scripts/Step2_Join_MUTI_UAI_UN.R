@@ -437,4 +437,3 @@ UAI_MUTI_UN_final <- UAI_MUTI_UN_final %>%
 ##### Export list of species and urban tolerance indices ######
 saveRDS (UAI_MUTI_UN_final, here("Outputs", "UAI_MUTI_UN_final.rds"))
 write.csv(UAI_MUTI_UN_final, here("Outputs", "UAI_MUTI_UN_final.csv"))
-

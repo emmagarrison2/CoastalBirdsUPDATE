@@ -9,34 +9,28 @@ library(ggeffects)
 library(sjPlot)
 library(dplyr)
 library(here)
+library(tidyverse)
 
 ########Starting point - load in "UAI_MUTI_UN_final.rds" file 
 # it is all species with at least one of the three urban tolerance index scores 
-#created in Step2 script 
 
-#insert EDITED csv here 
-AllBirds <- read.csv(here("Outputs", "UAI_MUTI_UN_final_edited.csv"))
+AllBirds <- readRDS(here("Outputs", "UAI_MUTI_UN_final.rds"))
 
 View(AllBirds)
-nrow(AllBirds) #4435, which is correct! 
+nrow(AllBirds) #4434, which is correct! 
 
-#had to alter the original UAI_MUTI_UN_final.csv from Step2 Script, because there were no 
-#family names written down for Species_UN (that didn't have UAI or MUTI scores)
+# extract a data frame that contain a list of family names
+unique_family_names <- AllBirds %>%
+  distinct(Family_eBird) %>%
+  tidyr::separate(., col = Family_eBird, # this splits the column Family_eBird into two columns
+                  into = c("Family_Sci", "Family_English"), # the first column is called Family_Sci and the second Family_English
+                  sep =  "^\\S*\\K\\s+") # split at the first space encountered
 
+nrow(unique_family_names) # 205 families
 
-#combine rows Family_Jetz(from UAI) family.MUTI (from MUTI), and Family_UN_only (from UN)
-#let's call this combined family row "Family_all"
+# great - now lets download this df as a csv, and assess all Families using Birds of the World
 
-AllBirds.r <- AllBirds %>% mutate (Family_all = coalesce(Family_Jetz, family.MUTI, Family_UN_only))
-View(AllBirds.r)
-colnames(AllBirds.r)
-
-unique_family_names <- unique(AllBirds.r$Family_all)
-df_unique_family_names <- data.frame(Family = unique_family_names)
-
-#great - now lets download this df as a csv, and assess all Families using Birds of the World
-
-write.csv(df_unique_family_names, here("Notes", "families_all.csv"))
+write.csv(unique_family_names, here("Notes", "families_all.csv"))
 
 ##############Round 1###################
 
@@ -47,23 +41,32 @@ write.csv(df_unique_family_names, here("Notes", "families_all.csv"))
 #"N/A" = Non-coastal family 
 
 
-#go off of our previous FamilyNames.csv (FamilyNames_old) (we want to double check that no additional families were added via this UPDATE process... and we don't want to redo work)
+# get a list of new families that have been added by cleaning up the joining process
 #this section can be deleted eventually 
-Familynames_new <- read.csv (here("Notes", "families_all_edited.csv"))
-colnames(Familynames_new)
+
 
 FamilyNames_old <- read.csv(here("Notes", "FamilyNames.csv"))
 colnames(FamilyNames_old)
-#View(coastal_families)
-FamilyNames_old$Family <- FamilyNames_old$BLFamilyLatin
+colnames(unique_family_names)
+
+
+FamilyNames_old$Family_Sci <- FamilyNames_old$BLFamilyLatin
 colnames(FamilyNames_old)
 
-
-#full join 
-families_joined <- full_join(Familynames_new, FamilyNames_old, by="Family")
+# using a left join
+# joining the already investigated family names to the new list of family names (unique_family_names)
+families_joined <- left_join(unique_family_names, FamilyNames_old, by="Family_Sci")
 View(families_joined)
+
+# get a list of newly added families that need to be investigated
+families_investigate <- families_joined %>%
+  filter(is.na(BLFamilyLatin))
+View(families_investigate) # 42 new families
+
 #there are a few additional families, so let's look through Birds of the World and add their information in via editing csv! 
-write.csv(families_joined, here("Notes", "families_joined.csv"))
+write.csv(families_investigate, here("Notes", "new_families_to_investigate.csv"))
+
+##### EMMA - I STOPPED HERE FOR NOW
 
 #upload the edited version - 
 Family_List <- read.csv(here("Notes", "Family_List_Coastal.csv"))

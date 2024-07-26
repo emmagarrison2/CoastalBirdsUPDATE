@@ -179,5 +179,5 @@ nrow(Round_1_yes)
 write.csv(Round_1_yes, here("Notes", "Round_1_yes.csv"))
 
 #now, look through the common names for these species... searching for key words that indicate NON-coastal habitats: "freshwater", "alpine", "upland", "lake", "river", 
-#"mountain", "prairie", "highland", "forest" 
+#"mountain", "prairie", "highland", "forest", "desert" 
 

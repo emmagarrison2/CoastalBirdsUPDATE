@@ -434,6 +434,10 @@ UAI_MUTI_UN_final <- UAI_MUTI_UN_final %>%
          SciName_MUTI, CommonName_MUTI, MUTIscore,
          SciName_UN, Urban)
 
+
+#View for visual assessment 
+View(UAI_MUTI_UN_final)
+
 ##### Export list of species and urban tolerance indices ######
 saveRDS (UAI_MUTI_UN_final, here("Outputs", "UAI_MUTI_UN_final.rds"))
 write.csv(UAI_MUTI_UN_final, here("Outputs", "UAI_MUTI_UN_final.csv"))

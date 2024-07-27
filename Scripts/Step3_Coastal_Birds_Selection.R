@@ -28,6 +28,8 @@ unique_family_names <- AllBirds %>%
 
 nrow(unique_family_names) # 205 families
 
+View(unique_family_names)
+
 # great - now lets download this df as a csv, and assess all Families using Birds of the World
 
 write.csv(unique_family_names, here("Notes", "families_all.csv"))
@@ -47,8 +49,9 @@ write.csv(unique_family_names, here("Notes", "families_all.csv"))
 
 FamilyNames_old <- read.csv(here("Notes", "FamilyNames.csv"))
 colnames(FamilyNames_old)
+nrow(FamilyNames_old)#194
 colnames(unique_family_names)
-
+nrow(unique_family_names)#205
 
 FamilyNames_old$Family_Sci <- FamilyNames_old$BLFamilyLatin
 colnames(FamilyNames_old)
@@ -57,6 +60,7 @@ colnames(FamilyNames_old)
 # joining the already investigated family names to the new list of family names (unique_family_names)
 families_joined <- left_join(unique_family_names, FamilyNames_old, by="Family_Sci")
 View(families_joined)
+nrow(families_joined)#205
 
 # get a list of newly added families that need to be investigated
 families_investigate <- families_joined %>%
@@ -101,6 +105,10 @@ saveRDS(Coastal_Families, here("Outputs", "Coastal_Families.rds"))
 ##Accipitridae 
 ##Cathartidae 
 ##Falconiidae 
+
+
+#########SARAH- note: we will be marking Accipitriduae, Cathartidae, and Falconidae as "Yes" for coastal families. 
+
 
 Coastal_Fam <- readRDS(here("Outputs", "Coastal_Families.rds"))
 colnames(Coastal_Fam)

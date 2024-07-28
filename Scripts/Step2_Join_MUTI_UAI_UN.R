@@ -192,7 +192,7 @@ UAI_and_MUTI_namesfixed <-  bind_rows(UAI_and_MUTI_namefix1b, UAI_and_MUTI_namef
 # we only want to keep the version in UAI_and_MUTI_finalfew as this has the MUTI and UAI score for these species
 # use anti_join to resolve this issue and then bind the two data frames together
 
-# check these two data frames have the same column names in the same order
+# check these two data frames have the same column names
 # we need to do this before we use bind_rows in the next step
 colnames(UAI_and_MUTI_finalfew)
 colnames(UAI_and_MUTI)
@@ -297,7 +297,7 @@ UN_stillnomatch <- Jetz_UN_MUTI_UAI %>% distinct(Species_UN) %>%
   anti_join(UN_nomatch, .)
 nrow(UN_stillnomatch) # 80 species
 
-# we tried to match using BirdLife but it did not help, so these steps were deleted
+# tried to match using BirdLife but it did not help, so these steps were deleted
 # going to assume these species are not present in UAI or MUTI data sets
 
 # try adding BirdLife, eBird and Jetz names from names convert
@@ -379,6 +379,8 @@ UAI_MUTI_UN_combined %>% filter(is.na(Species_Jetz)) %>% nrow()
 # There are currently multiple columns that contain family and order information
 # the next script (Step 3) will involve reducing this species list to only coastal birds and one of the steps relies on the family 
 # it would be helpful to have a single column for family and to use eBird families as those will best align with Birds of the World, which we will rely on to look up families
+# we also need to add common names for UN species, particularly the ones that don't also have UAI or MUTI scores
+# the UN data do not contain common names
 
 # import eBird taxonomy
 ebird_tax <- read.csv(here("Data","ebird_taxonomy_v2022.csv"), header=T) 
@@ -389,21 +391,51 @@ ebird <- ebird_tax %>%
 
 colnames(UAI_MUTI_UN_combined)
 
-UAI_MUTI_UN_final <- UAI_MUTI_UN_combined %>% 
+UAI_MUTI_UN_families <- UAI_MUTI_UN_combined %>% 
   select(-Family_MUTI, - Order_Jetz, -Order_eBird, -Family_Jetz) %>% # remove some columns to clean things up
   left_join(., ebird)
 
 # are any species missing a family from eBird?
-UAI_MUTI_UN_final %>% filter(is.na(Family_eBird))
+UAI_MUTI_UN_families %>% filter(is.na(Family_eBird))
 
 # does this species have a match in the eBird taxonomy using its common name (Yellow-throated scrubwren)
 ebird_tax %>% filter(PRIMARY_COM_NAME =='Yellow-throated Scrubwren')
 # it belongs in family Acanthizidae (Thornbills and Allies)
 # manually make this fix
-UAI_MUTI_UN_final$Family_eBird[UAI_MUTI_UN_final$Species_eBird == "Sericornis citreogularis"] <- "Acanthizidae (Thornbills and Allies)"
+UAI_MUTI_UN_families$Family_eBird[UAI_MUTI_UN_families$Species_eBird == "Sericornis citreogularis"] <- "Acanthizidae (Thornbills and Allies)"
 
 # confirm this worked by checking again that all species have a family
-UAI_MUTI_UN_final %>% filter(is.na(Family_eBird))
+UAI_MUTI_UN_families %>% filter(is.na(Family_eBird))
+
+# add common names from eBird taxonomy
+UAI_MUTI_UN_common <- ebird_tax %>% select(PRIMARY_COM_NAME, SCI_NAME) %>%
+  rename(CommonName_eBird = PRIMARY_COM_NAME, Species_eBird = SCI_NAME) %>%
+  right_join(., UAI_MUTI_UN_families, by="Species_eBird")
+
+length(unique(UAI_MUTI_UN_common$CommonName_eBird))
+
+commonname_dups <- UAI_MUTI_UN_common %>% count(CommonName_eBird) %>%
+  filter(n>1) %>%
+  left_join(., UAI_MUTI_UN_common)
+
+# manually make a few fixes
+
+# differentiate American and Northwestern Crows in the eBird common names
+UAI_MUTI_UN_common$CommonName_eBird[UAI_MUTI_UN_common$CommonName_MUTI == "Northwestern Crow"] <- "Northwestern Crow"
+
+
+# UN data has Little-Bronze Cuckoo and Gould's Bronze-Cuckoo so make this distinction in eBird common names
+UAI_MUTI_UN_common$CommonName_eBird[UAI_MUTI_UN_common$Species_Jetz == "Chrysococcyx russatus"] <- "Gould's Bronze-Cuckoo"
+
+# Lesser Whitethroat looks like it can be condensed into a single record with both UN and UAI
+# these steps mostly accomplish this, but we still need to delete the row that no longer contains any urban scores
+UAI_MUTI_UN_common$Species_UN[UAI_MUTI_UN_common$Species_Jetz == "Sylvia althaea"] <- "Sylvia curruca"
+UAI_MUTI_UN_common$Urban[UAI_MUTI_UN_common$Species_Jetz == "Sylvia althaea"] <- "U"
+UAI_MUTI_UN_common$Species_Jetz[UAI_MUTI_UN_common$Species_Jetz == "Sylvia althaea"] <- "Sylvia curruca"
+
+# delete the row for Lesser Whitethroat that is no longer needed and make the final data frame
+UAI_MUTI_UN_final <- UAI_MUTI_UN_common %>% slice(-3183)
+nrow(UAI_MUTI_UN_final) # we now have 4433 rows or species
 
 ##### Perform some Final Checks ####
 
@@ -419,19 +451,21 @@ UAI_MUTI_UN_final %>% filter(!is.na(Urban)) %>% nrow() # 533
 UAI_MUTI_UN_final %>% filter(!is.na(Urban)) %>% distinct(Species_UN) %>% nrow() # 528
 
 # how many species have UN but no MUTI or UAI?
-UAI_MUTI_UN_final %>% filter(!is.na(Urban)) %>% filter(is.na(MUTIscore) & is.na(aveUAI)) %>% nrow() # 80
+UAI_MUTI_UN_final %>% filter(!is.na(Urban)) %>% filter(is.na(MUTIscore) & is.na(aveUAI)) %>% nrow() # 79
 
 # how many species have MUTI but no UAI or UN?
 UAI_MUTI_UN_final %>% filter(!is.na(MUTIscore)) %>% filter(is.na(Urban) & is.na(aveUAI)) %>% nrow() # 7
 
 
 # last step: reorder columns to be in a more logical order
+# removing common names from UAI and MUTI and keeping only eBird common names to make next steps less confusing
 
 UAI_MUTI_UN_final <- UAI_MUTI_UN_final %>%
   rename(SciName_UN = Species_UN) %>%
-  select(Species_Jetz, Species_eBird, Species_BirdLife, Family_eBird,
-         CommonName_UAI, aveUAI,
-         SciName_MUTI, CommonName_MUTI, MUTIscore,
+  select(Species_Jetz, Species_eBird, Species_BirdLife, 
+         Family_eBird, CommonName_eBird,
+         aveUAI,
+         SciName_MUTI, MUTIscore,
          SciName_UN, Urban)
 
 

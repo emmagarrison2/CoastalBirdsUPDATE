@@ -43,6 +43,18 @@ write.csv(unique_family_names, here("Notes", "families_all.csv"))
 #"N/A" = Non-coastal family 
 
 
+##################################################################
+#################################################################
+# EVERYTHING IN THIS SECTION CAN EVENTUALLY BE REMOVED
+# SARAH'S SUGGESTION - ARCHIVE THIS SCRIPT (under a different file name) AND ALL THE FAMILY LIST CSV FILES THAT WE NO LONGER NEED
+# I RECOMMEND YOU PUT ALL OF THEM IN A FOLDER OUTSIDE OF YOUR R PROJECT
+# THAT WAY WE CAN ACCESS THEM IF WE NEED TO REVISIT THIS FOR SOME REASON 
+# OTHERWISE THE STEPS SHOULD BE TO EXPORT families_all.csv AS SHOWN IN LINE 35
+# ADD DESCRIPTION OF SEARCH PROCESS USING BIRDS OF THE WORLD
+# AND THEN IMPORT THE CSV FILE CALLED families_all_coastal.csv
+# FINALLY, JOIN THE COASTAL CLASSIFICATIONS TO AllBirds
+
+
 # get a list of new families that have been added by cleaning up the joining process
 #this section can be deleted eventually 
 
@@ -60,7 +72,13 @@ colnames(FamilyNames_old)
 # joining the already investigated family names to the new list of family names (unique_family_names)
 families_joined <- left_join(unique_family_names, FamilyNames_old, by="Family_Sci")
 View(families_joined)
-nrow(families_joined)#205
+nrow(families_joined) #205
+
+
+# get a list of already investigated families 
+families_good <- families_joined %>%
+  filter(!is.na(BLFamilyLatin))
+nrow(families_good) # 163 families
 
 # get a list of newly added families that need to be investigated
 families_investigate <- families_joined %>%
@@ -70,14 +88,30 @@ View(families_investigate) # 42 new families
 #there are a few additional families, so let's look through Birds of the World and add their information in via editing csv! 
 write.csv(families_investigate, here("Notes", "new_families_to_investigate.csv"))
 
-##### EMMA - I STOPPED HERE FOR NOW
+# Emma looked these 42 families up on BoW
+# import results of that process
+families_investigated <- read.csv(here("Notes", "new_families_INVESTIGATED.csv"), header=T)
 
-#upload the edited version - 
-Family_List <- read.csv(here("Notes", "Family_List_Coastal.csv"))
-View(Family_List)
-colnames(Family_List)
-Family_List$Family_all <- Family_List$Family
+# we need to combine these 42 with the 163 from above
+colnames(families_investigated)
+colnames(families_good)
 
+# first simplify both to keep them clean
+f1_simple <- families_investigated %>% select(Family_Sci, Family_English, Coastal, Notes)
+f2_simple <- families_good %>% select(Family_Sci, Family_English, Coastal, Notes)
+f_all <- bind_rows(f1_simple, f2_simple)
+
+# few last clean up steps
+# convert Accipitridae, Cathartidae, and Falconiidae to be Coastal = Yes
+f_all$Coastal[f_all$Notes == "INVESTIGATE"] <- "Yes" # change them to be coastal
+f_all$Notes[f_all$Notes == "INVESTIGATE"] <- "" # remove text that says "INVESTIGATE"
+# make all families that were not identified as Coastal have "No" in Coastal column
+families_FINAL <- f_all %>% mutate(Coastal = if_else(Coastal == "Yes", Coastal, "No"))
+
+write.csv(families_FINAL, here("Notes", "families_all_coastal.csv"))
+
+##################################################################
+#################################################################
 
 ####### For all species from a "Coastal" (Yes) family, mark them as a coastal species. 
 #For AllBirds.r --> column = Family_all
@@ -192,3 +226,54 @@ write.csv(Round_1_yes, here("Notes", "Round_1_yes.csv"))
 #now, look through the common names for these species... searching for key words that indicate NON-coastal habitats: "freshwater", "alpine", "upland", "lake", "river", 
 #"mountain", "prairie", "highland", "forest", "desert" 
 
+###### FINAL ROUND TO FIND ANY REMAINING COASTAL SPECIES #######
+###### Before proceeding, do one last pass to identify any additional coastal species ######
+# to do this, we will use the diet info columns that came from Wilman et al. 2014 (Elton traits) 
+
+head(AllBirds)
+# we need to search the original species list of 4434 species
+
+# import elton traits (Wilman et al. 2014)
+elton <- read.csv(here("Data", "elton.csv"), header=T)
+head(elton)
+colnames(elton) # look at column names of join 8 to identify columns that could be useful
+
+# these ones seem useful:
+unique(elton$Diet.Vfish) # percentage of diet that is fish. Filter to retain any species with > 0
+unique(elton$Diet.5Cat) # Omnivore, VertFishScav, Invertebrate all seem potentially relevant
+unique(elton$ForStrat.watbelowsurf) # percentage of time spent foraging below surf. Filter to retain any species with >0
+unique(elton$ForStrat.wataroundsurf) # percentage of time spent foraging around surf. Filter to retain any species with >0
+unique(elton$PelagicSpecialist) # Pelagic seabirds. Has values 0 or 1. Filter to retain species listed as 1
+
+
+# join elton traits and AllBirds
+AllBirds_elton <- elton %>%
+  rename(Species_Jetz = Scientific) %>%
+  select(Species_Jetz, Diet.Vfish, Diet.5Cat, ForStrat.watbelowsurf, # retain columns identified as useful above
+         ForStrat.wataroundsurf, PelagicSpecialist) %>%
+  left_join(AllBirds, ., by = "Species_Jetz")
+
+
+# the diet category (Diet.5Cat) is the most vague and will likely pull many birds that are not coastal
+# so, will implement an initial filter that the species must be one of the 3 diet categories AND...
+# they must also fit one of the other criteria in the second filtering step
+# note that the second set of filter requirements are OR statements 
+# this means a bird should be retained if they have Diet.Vfish > 0 OR if they do any of their foraging below surf etc
+# finally, we use a third filter to find all birds that meet the above requirements BUT are NOT currently classified as coastal
+# we will want to investigate these species to see if they warrant inclusion 
+
+coastaldiet <- AllBirds_elton %>% 
+  filter(Diet.5Cat %in% c("Omnivore", "VertFishScav", "Invertebrate")) %>% # the first pass is to keep species with diet classifications of Omnivore, Invertebrate or VertFishScav 
+  filter(Diet.Vfish > 0 |   # Now apply a second series of filtering requirements. First, keep any species with some fish in diet OR
+           ForStrat.watbelowsurf > 0 | # keep any species that do any of their foraging below surf OR
+           ForStrat.wataroundsurf >0 | # keep any species that do any of their foraging around surf OR
+           PelagicSpecialist == 1)  # keep any species that are classified as Pelagic Specialists
+
+nrow(coastaldiet) # 569 species
+View(coastaldiet)
+
+#### EMMA - 
+# for the next step, you will want to take the data frame that contains all the coastal species you identified in all the previous steps
+# you will need to use anti_join with the coastaldiet object to find which species were found by the diet classification method that are new
+# eventually (after checking that all the species look reasonable) you'll want to drop all the elton trait columns and then use bind_rows to add these new species to the existing coastal list
+coastal_new <- 

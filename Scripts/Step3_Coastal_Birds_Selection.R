@@ -40,8 +40,13 @@ write.csv(unique_family_names, here("Notes", "families_all.csv"))
 #"Coastal" or "Not-Coastal", based on whether the family habitat page mentioned coastal areas. 
 #The column "Coastal" categorizes these families. 
 #"Yes" = Coastal family 
-#"N/A" = Non-coastal family 
+#"No" = Non-coastal family 
 
+
+#We used Birds of the World (2022) to investigate each bird family represented by this dataset. If the family page mentioned use of
+#coastal habitats (such as shorelines, beaches, estuaries, mangroves, etc.) then the family (and all representative species) was marked
+#as "Yes" (coastal). If the Birds of the World family page did not mention use of coastal habitats or resources, then the all representative species of 
+#said family were marked as "No" (not-coastal).
 
 ##################################################################
 #################################################################
@@ -55,73 +60,33 @@ write.csv(unique_family_names, here("Notes", "families_all.csv"))
 # FINALLY, JOIN THE COASTAL CLASSIFICATIONS TO AllBirds
 
 
-# get a list of new families that have been added by cleaning up the joining process
-#this section can be deleted eventually 
-
-
-FamilyNames_old <- read.csv(here("Notes", "FamilyNames.csv"))
-colnames(FamilyNames_old)
-nrow(FamilyNames_old)#194
-colnames(unique_family_names)
-nrow(unique_family_names)#205
-
-FamilyNames_old$Family_Sci <- FamilyNames_old$BLFamilyLatin
-colnames(FamilyNames_old)
-
-# using a left join
-# joining the already investigated family names to the new list of family names (unique_family_names)
-families_joined <- left_join(unique_family_names, FamilyNames_old, by="Family_Sci")
-View(families_joined)
-nrow(families_joined) #205
-
-
-# get a list of already investigated families 
-families_good <- families_joined %>%
-  filter(!is.na(BLFamilyLatin))
-nrow(families_good) # 163 families
-
-# get a list of newly added families that need to be investigated
-families_investigate <- families_joined %>%
-  filter(is.na(BLFamilyLatin))
-View(families_investigate) # 42 new families
-
-#there are a few additional families, so let's look through Birds of the World and add their information in via editing csv! 
-write.csv(families_investigate, here("Notes", "new_families_to_investigate.csv"))
-
-# Emma looked these 42 families up on BoW
-# import results of that process
-families_investigated <- read.csv(here("Notes", "new_families_INVESTIGATED.csv"), header=T)
-
-# we need to combine these 42 with the 163 from above
-colnames(families_investigated)
-colnames(families_good)
-
-# first simplify both to keep them clean
-f1_simple <- families_investigated %>% select(Family_Sci, Family_English, Coastal, Notes)
-f2_simple <- families_good %>% select(Family_Sci, Family_English, Coastal, Notes)
-f_all <- bind_rows(f1_simple, f2_simple)
-
-# few last clean up steps
-# convert Accipitridae, Cathartidae, and Falconiidae to be Coastal = Yes
-f_all$Coastal[f_all$Notes == "INVESTIGATE"] <- "Yes" # change them to be coastal
-f_all$Notes[f_all$Notes == "INVESTIGATE"] <- "" # remove text that says "INVESTIGATE"
-# make all families that were not identified as Coastal have "No" in Coastal column
-families_FINAL <- f_all %>% mutate(Coastal = if_else(Coastal == "Yes", Coastal, "No"))
-
-write.csv(families_FINAL, here("Notes", "families_all_coastal.csv"))
 
 ##################################################################
 #################################################################
 
+
+
+#KEEP KEEP KEEP KEEP KEEP KEEP KEEP KEEP KEEP
+
 ####### For all species from a "Coastal" (Yes) family, mark them as a coastal species. 
-#For AllBirds.r --> column = Family_all
-#For Family_List --> column = Family 
+#For AllBirds --> column = Family_eBird
+ 
+#For List_of_Families --> column = Family_Sci
+
+#read in the csv that contains all families and their coastal status, as determined via investigation on Birds of the World (2022). 
+
+List_of_Families <- read.csv(here("Notes", "families_all_coastal.csv"))
+View(List_of_Families)
+colnames(List_of_Families) 
+colnames(AllBirds)
+
+List_of_Families_r <- List_of_Families %>% rename(Family_eBird = Family_Sci)
+colnames(List_of_Families_r) 
+
 
 #join them together 
-Coastal_Families <- full_join(AllBirds.r, Family_List, by = "Family_all")
+Coastal_Families <- full_join(AllBirds, List_of_Families_r, by = "Family_eBird")
 View(Coastal_Families)
-
-#that worked 
 
 #save rds of Coastal_Families, for quick recall 
 
@@ -129,91 +94,23 @@ saveRDS(Coastal_Families, here("Outputs", "Coastal_Families.rds"))
 
 
 
-##############Round 1.5###################
 
-
-#in this step, we will filter through the species from special-case families (such as Accipitridae) to see if we should put any of these species down as coastal. 
-
-#I'll need to go off of our old list... cut down a csv of all species represented by old list that are from the following families... 
-
-##Accipitridae 
-##Cathartidae 
-##Falconiidae 
-
-
-#########SARAH- note: we will be marking Accipitriduae, Cathartidae, and Falconidae as "Yes" for coastal families. 
-
-
-Coastal_Fam <- readRDS(here("Outputs", "Coastal_Families.rds"))
-colnames(Coastal_Fam)
-unique(Coastal_Fam$Family_all)
-refine_1 <- Coastal_Fam %>% filter(Family_all %in% c("Accipitridae", "Cathartidae", "Falconidae"))
-View(refine_1)
-colnames(refine_1)
-nrow(refine_1) #163
-
-#great, now let's join with old coastal-species list, as I've probably already investigated most of these Accipitridae, Cathartidae, and Falconidae species 
-
-#the Species_Jetz column contains a scientific name for all species in df "refine_1"
-#duplicate column and name it "Species" 
-refine_1$Species <- refine_1$Species_Jetz
-#make sure Species column is formatted correctly for join 
-refine_1$Species <- gsub(" ", "_", refine_1$Species)
-View(refine_1)
-
-#read in old coastal species list 
-Old_List <- read.csv(here("Notes", "CoastalSpecies_11April24.csv"))
-View(Old_List)
-#instead of an "NA", write in "No" for CoastalSp column for all non-coastal species 
-Old_List$CoastalSp <- ifelse(Old_List$CoastalSp =="Yes", "Yes", "No")
-View(Old_List)
-#View(refine_1)
-#join with "Species" column from "CoastalSpecies_11April24.csv" (the old coastal species list)
-
-Raptor_Search <- left_join(refine_1, Old_List, by = "Species")
-View(Raptor_Search)
-
-
-#great, now let's investigate all the species with NA for column "CoastalSp" -- these are species that were added to our list in the recent refined-join 
-
-#to investigate these species on BOTW, let's export a csv 
-
-write.csv(Raptor_Search, here("Notes", "raptors_to_BOTW.csv"))
-
-
-#after going through list of NA species, and investigating on BOTW to assign as Coastal (Yes) or Non-coastal (No), read this edited csv in 
-Coastal_raptors <- read.csv (here("Notes", "Coastal_raptors.csv"))
-View(Coastal_raptors)
-#correct column is "Coastal" 
-
-colnames(Coastal_Families)
-Coastal_Families$Species <- Coastal_Families$Species_Jetz
-Coastal_Families$Species <- gsub(" ", "_", Coastal_Families$Species)
-
-#join with Coastal_Families by column "Species_Jetz", as this was the column we used to join refine_1 with Old_List 
-Coastal_Round_1 <- Coastal_Families %>%
-  left_join(Coastal_raptors, by = "Species", suffix = c(".fam", ".rap"))
-View(Coastal_Round_1)  
-
-#cool now let's create a new column (Coastal) to coalesce Coastal.fam (families) and Coastal.rap (select raptors)
-Coastal_Round_1.5 <- Coastal_Round_1 %>% 
-  mutate(Coastal = coalesce(Coastal.rap, Coastal.fam))
-View(Coastal_Round_1.5)
-
-#simplify number of columns, it's getting overwhelming 
-colnames(Coastal_Round_1.5)
-
-Coastal_Round_1_f <- Coastal_Round_1.5 %>% 
-  rename(Family_all = Family_all.fam) %>%
-  select(MUTIscore, SciName_MUTI, CommonName_MUTI, Species_eBird, Species_Jetz, Family_Jetz, CommonName_UAI, aveUAI, Species_BirdLife, Species_UN, Urban, family.MUTI, Family_all, Species, English, Coastal)
-View(Coastal_Round_1_f)
-
-saveRDS(Coastal_Round_1_f, here("Outputs", "Coastal_Round_1.rds"))
 
 ####################################Round 2###################################
 ####
 ##
 #in this round, we will sort through the common names of species that were marked as "Yes" for Urban Tolerance 
+
+##test
+test_before <- readRDS(here("Outputs", "Coastal_Round_1.rds"))
+View(test_before)
+
+#so actually the csv we will use here will be..... families_all_coastal joined with AllBirds.r --> Coastal_families object is correct 
+
+test_after <- read.csv(here("Notes", "families_all_coastal.csv"))
+View(test_after)
+
+
 Round_1_yes <- Coastal_Round_1_f %>% 
   filter(Coastal == "Yes")
 

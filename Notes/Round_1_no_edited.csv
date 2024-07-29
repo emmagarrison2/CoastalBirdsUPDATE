@@ -1,4 +1,4 @@
-,Species_Jetz,Species_eBird,Species_BirdLife,Family_eBird,CommonName_eBird,aveUAI,SciName_MUTI,MUTIscore,SciName_UN,Urban,Family_Sci,X,Family_English,Coastal,Notes
+﻿,Species_Jetz,Species_eBird,Species_BirdLife,Family_eBird,CommonName_eBird,aveUAI,SciName_MUTI,MUTIscore,SciName_UN,Urban,Family_Sci,X,Family_English,Coastal,Notes
 1,Struthio camelus,Struthio camelus,Struthio camelus,Struthionidae (Ostriches),Common Ostrich,0.446052168,NA,NA,NA,NA,Struthionidae,199,(Ostriches),No,
 2,Rhea pennata,Rhea pennata,Rhea pennata,Rheidae (Rheas),Lesser Rhea,0.010671411,NA,NA,NA,NA,Rheidae,197,(Rheas),No,
 3,Nothocercus nigrocapillus,Nothocercus nigrocapillus,Nothocercus nigrocapillus,Tinamidae (Tinamous),Hooded Tinamou,0.03433696,NA,NA,NA,NA,Tinamidae,204,(Tinamous),No,
@@ -112,7 +112,7 @@
 111,Alectoris chukar,Alectoris chukar,Alectoris chukar,"Phasianidae (Pheasants, Grouse, and Allies)",Chukar,1.317174683,Alectoris chukar,-1.584595749,NA,NA,Phasianidae,88,"(Pheasants, Grouse, and Allies)",No,
 112,Perdicula asiatica,Perdicula asiatica,Perdicula asiatica,"Phasianidae (Pheasants, Grouse, and Allies)",Jungle Bush-Quail,1.035860041,NA,NA,NA,NA,Phasianidae,88,"(Pheasants, Grouse, and Allies)",No,
 113,Francolinus erckelii,Pternistis erckelii,Pternistis erckelii,"Phasianidae (Pheasants, Grouse, and Allies)",Erckel's Spurfowl,0.289946055,NA,NA,NA,NA,Phasianidae,88,"(Pheasants, Grouse, and Allies)",No,
-114,Francolinus capensis,Pternistis capensis,Pternistis capensis,"Phasianidae (Pheasants, Grouse, and Allies)",Cape Spurfowl,1.327246675,NA,NA,NA,NA,Phasianidae,88,"(Pheasants, Grouse, and Allies)",No,
+114,Francolinus capensis,Pternistis capensis,Pternistis capensis,"Phasianidae (Pheasants, Grouse, and Allies)",Cape Spurfowl,1.327246675,NA,NA,NA,NA,Phasianidae,88,"(Pheasants, Grouse, and Allies)",No,scrub vegetation
 115,Francolinus natalensis,Pternistis natalensis,Pternistis natalensis,"Phasianidae (Pheasants, Grouse, and Allies)",Natal Spurfowl,1.157502791,NA,NA,NA,NA,Phasianidae,88,"(Pheasants, Grouse, and Allies)",No,
 116,Francolinus swainsonii,Pternistis swainsonii,Pternistis swainsonii,"Phasianidae (Pheasants, Grouse, and Allies)",Swainson's Spurfowl,0.876610092,NA,NA,NA,NA,Phasianidae,88,"(Pheasants, Grouse, and Allies)",No,
 117,Francolinus leucoscepus,Pternistis leucoscepus,Pternistis leucoscepus,"Phasianidae (Pheasants, Grouse, and Allies)",Yellow-necked Spurfowl,0.710782735,NA,NA,NA,NA,Phasianidae,88,"(Pheasants, Grouse, and Allies)",No,
@@ -275,7 +275,7 @@
 274,Piaya melanogaster,Piaya melanogaster,Piaya melanogaster,Cuculidae (Cuckoos),Black-bellied Cuckoo,2.159224659,NA,NA,NA,NA,Cuculidae,59,(Cuckoos),No,
 275,Coccyzus melacoryphus,Coccyzus melacoryphus,Coccyzus melacoryphus,Cuculidae (Cuckoos),Dark-billed Cuckoo,1.716619129,NA,NA,NA,NA,Cuculidae,59,(Cuckoos),No,
 276,Coccyzus americanus,Coccyzus americanus,Coccyzus americanus,Cuculidae (Cuckoos),Yellow-billed Cuckoo,1.334088272,Coccyzus americanus,0.106218268,Coccyzus americanus,U,Cuculidae,59,(Cuckoos),No,
-277,Coccyzus minor,Coccyzus minor,Coccyzus minor,Cuculidae (Cuckoos),Mangrove Cuckoo,1.238939655,NA,NA,Coccyzus minor,N,Cuculidae,59,(Cuckoos),No,
+277,Coccyzus minor,Coccyzus minor,Coccyzus minor,Cuculidae (Cuckoos),Mangrove Cuckoo,1.238939655,NA,NA,Coccyzus minor,N,Cuculidae,59,(Cuckoos),Yes,mangroves
 278,Coccyzus erythropthalmus,Coccyzus erythropthalmus,Coccyzus erythropthalmus,Cuculidae (Cuckoos),Black-billed Cuckoo,1.371936674,Coccyzus erythropthalmus,0.192462831,Coccyzus erythropthalmus,U,Cuculidae,59,(Cuckoos),No,
 279,Coccyzus pluvialis,Coccyzus pluvialis,Coccyzus pluvialis,Cuculidae (Cuckoos),Chestnut-bellied Cuckoo,0.375464731,NA,NA,NA,NA,Cuculidae,59,(Cuckoos),No,
 280,Coccyzus vetula,Coccyzus vetula,Coccyzus vetula,Cuculidae (Cuckoos),Jamaican Lizard-Cuckoo,0.319581368,NA,NA,NA,NA,Cuculidae,59,(Cuckoos),No,
@@ -612,7 +612,7 @@
 611,Bubo scandiaca,Bubo scandiacus,Bubo scandiacus,Strigidae (Owls),Snowy Owl,1.357519236,NA,NA,Bubo scandiaca,N,Strigidae,48,(Owls),No,near coast but maybe not coastal? Im sure some hunt in estuarine watersheds 
 612,Bubo virginianus,Bubo virginianus,Bubo virginianus,Strigidae (Owls),Great Horned Owl,1.553593177,Bubo virginianus,1.358947022,Bubo virginianus,U,Strigidae,48,(Owls),No,near coast but maybe not coastal? Im sure some hunt in estuarine watersheds 
 613,Bubo bubo,Bubo bubo,Bubo bubo,Strigidae (Owls),Eurasian Eagle-Owl,1.21536123,NA,NA,Bubo bubo,N,Strigidae,48,(Owls),No,near coast but maybe not coastal? Im sure some hunt in estuarine watersheds 
-614,Ketupa ketupu,Ketupa ketupu,Ketupa ketupu,Strigidae (Owls),Buffy Fish-Owl,3.270671254,NA,NA,NA,NA,Strigidae,48,(Owls),No,near coast but maybe not coastal? Im sure some hunt in estuarine watersheds 
+614,Ketupa ketupu,Ketupa ketupu,Ketupa ketupu,Strigidae (Owls),Buffy Fish-Owl,3.270671254,NA,NA,NA,NA,Strigidae,48,(Owls),Yes,mangroves 
 615,Glaucidium gnoma,Glaucidium gnoma,Glaucidium gnoma,Strigidae (Owls),Northern Pygmy-Owl,0.539220784,Glaucidium gnoma,-1.8458469,NA,NA,Strigidae,48,(Owls),No,near coast but maybe not coastal? Im sure some hunt in estuarine watersheds 
 616,Glaucidium jardinii,Glaucidium jardinii,Glaucidium jardinii,Strigidae (Owls),Andean Pygmy-Owl,0.180435213,NA,NA,NA,NA,Strigidae,48,(Owls),No,near coast but maybe not coastal? Im sure some hunt in estuarine watersheds 
 617,Glaucidium bolivianum,Glaucidium bolivianum,Glaucidium bolivianum,Strigidae (Owls),Yungas Pygmy-Owl,0.004083036,NA,NA,NA,NA,Strigidae,48,(Owls),No,near coast but maybe not coastal? Im sure some hunt in estuarine watersheds 
@@ -1104,7 +1104,7 @@
 1103,Pitta moluccensis,Pitta moluccensis,Pitta moluccensis,Pittidae (Pittas),Blue-winged Pitta,2.919077527,NA,NA,NA,NA,Pittidae,176,(Pittas),No,
 1104,Pitta sordida,Pitta sordida,Pitta sordida,Pittidae (Pittas),Hooded Pitta,0.996553985,NA,NA,NA,NA,Pittidae,176,(Pittas),No,
 1105,Pitta versicolor,Pitta versicolor,Pitta versicolor,Pittidae (Pittas),Noisy Pitta,0.102349809,NA,NA,NA,NA,Pittidae,176,(Pittas),No,
-1106,Pitta megarhyncha,Pitta megarhyncha,Pitta megarhyncha,Pittidae (Pittas),Mangrove Pitta,2.790469397,NA,NA,NA,NA,Pittidae,176,(Pittas),No,
+1106,Pitta megarhyncha,Pitta megarhyncha,Pitta megarhyncha,Pittidae (Pittas),Mangrove Pitta,2.790469397,NA,NA,NA,NA,Pittidae,176,(Pittas),Yes,mangroves and tidal rivers
 1107,Pitta iris,Pitta iris,Pitta iris,Pittidae (Pittas),Rainbow Pitta,0.406336555,NA,NA,NA,NA,Pittidae,176,(Pittas),No,
 1108,Cymbilaimus lineatus,Cymbilaimus lineatus,Cymbilaimus lineatus,Thamnophilidae (Typical Antbirds),Fasciated Antshrike,0.776567573,NA,NA,NA,NA,Thamnophilidae,183,(Typical Antbirds),No,
 1109,Cymbilaimus sanctaemariae,Cymbilaimus sanctaemariae,Cymbilaimus sanctaemariae,Thamnophilidae (Typical Antbirds),Bamboo Antshrike,0.032621745,NA,NA,NA,NA,Thamnophilidae,183,(Typical Antbirds),No,
@@ -1221,7 +1221,7 @@
 1220,Sclerurus mexicanus,Sclerurus mexicanus,Sclerurus mexicanus,Furnariidae (Ovenbirds and Woodcreepers),Middle American Leaftosser,0.024687503,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
 1221,Sclerurus guatemalensis,Sclerurus guatemalensis,Sclerurus guatemalensis,Furnariidae (Ovenbirds and Woodcreepers),Scaly-throated Leaftosser,0.230014938,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
 1222,Sclerurus scansor,Sclerurus scansor,Sclerurus scansor,Furnariidae (Ovenbirds and Woodcreepers),Rufous-breasted Leaftosser,1.331166625,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
-1223,Geositta peruviana,Geositta peruviana,Geositta peruviana,Furnariidae (Ovenbirds and Woodcreepers),Coastal Miner,0.470396275,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
+1223,Geositta peruviana,Geositta peruviana,Geositta peruviana,Furnariidae (Ovenbirds and Woodcreepers),Coastal Miner,0.470396275,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),Yes,coastal dunes
 1224,Geositta cunicularia,Geositta cunicularia,Geositta cunicularia,Furnariidae (Ovenbirds and Woodcreepers),Common Miner,0.047713078,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
 1225,Geositta rufipennis,Geositta rufipennis,Geositta rufipennis,Furnariidae (Ovenbirds and Woodcreepers),Rufous-banded Miner,0.493184451,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
 1226,Geositta isabellina,Geositta isabellina,Geositta isabellina,Furnariidae (Ovenbirds and Woodcreepers),Creamy-rumped Miner,0.493412241,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
@@ -1282,7 +1282,7 @@
 1281,Cinclodes atacamensis,Cinclodes atacamensis,Cinclodes atacamensis,Furnariidae (Ovenbirds and Woodcreepers),White-winged Cinclodes,0.202307669,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
 1282,Cinclodes patagonicus,Cinclodes patagonicus,Cinclodes patagonicus,Furnariidae (Ovenbirds and Woodcreepers),Dark-bellied Cinclodes,1.247428724,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
 1283,Cinclodes taczanowskii,Cinclodes taczanowskii,Cinclodes taczanowskii,Furnariidae (Ovenbirds and Woodcreepers),Surf Cinclodes,1.912920579,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
-1284,Cinclodes nigrofumosus,Cinclodes nigrofumosus,Cinclodes nigrofumosus,Furnariidae (Ovenbirds and Woodcreepers),Seaside Cinclodes,2.567575705,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
+1284,Cinclodes nigrofumosus,Cinclodes nigrofumosus,Cinclodes nigrofumosus,Furnariidae (Ovenbirds and Woodcreepers),Seaside Cinclodes,2.567575705,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),Yes,Pacific tidal zones 
 1285,Anabazenops dorsalis,Anabazenops dorsalis,Anabazenops dorsalis,Furnariidae (Ovenbirds and Woodcreepers),Dusky-cheeked Foliage-gleaner,0.014682303,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
 1286,Anabazenops fuscus,Anabazenops fuscus,Anabazenops fuscus,Furnariidae (Ovenbirds and Woodcreepers),White-collared Foliage-gleaner,0.433119852,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
 1287,Philydor atricapillus,Philydor atricapillus,Philydor atricapillus,Furnariidae (Ovenbirds and Woodcreepers),Black-capped Foliage-gleaner,0.940740564,NA,NA,NA,NA,Furnariidae,155,(Ovenbirds and Woodcreepers),No,
@@ -1685,7 +1685,7 @@
 1684,Anthochaera carunculata,Anthochaera carunculata,Anthochaera carunculata,Meliphagidae (Honeyeaters),Red Wattlebird,1.407253096,NA,NA,NA,NA,Meliphagidae,54,(Honeyeaters),No,
 1685,Anthochaera paradoxa,Anthochaera paradoxa,Anthochaera paradoxa,Meliphagidae (Honeyeaters),Yellow Wattlebird,0.699807288,NA,NA,NA,NA,Meliphagidae,54,(Honeyeaters),No,
 1686,Lichenostomus versicolor,Gavicalis versicolor,Gavicalis versicolor,Meliphagidae (Honeyeaters),Varied Honeyeater,1.817136958,NA,NA,Lichenostomus versicolor,U,Meliphagidae,54,(Honeyeaters),No,
-1687,Lichenostomus fasciogularis,Gavicalis fasciogularis,Gavicalis fasciogularis,Meliphagidae (Honeyeaters),Mangrove Honeyeater,1.325490619,NA,NA,NA,NA,Meliphagidae,54,(Honeyeaters),No,
+1687,Lichenostomus fasciogularis,Gavicalis fasciogularis,Gavicalis fasciogularis,Meliphagidae (Honeyeaters),Mangrove Honeyeater,1.325490619,NA,NA,NA,NA,Meliphagidae,54,(Honeyeaters),Yes,Mangroves and estuaries 
 1688,Lichenostomus virescens,Gavicalis virescens,Gavicalis virescens,Meliphagidae (Honeyeaters),Singing Honeyeater,1.307918501,NA,NA,Lichenostomus virescens,U,Meliphagidae,54,(Honeyeaters),No,
 1689,Lichenostomus ornatus,Ptilotula ornata,Ptilotula ornata,Meliphagidae (Honeyeaters),Yellow-plumed Honeyeater,0.12311922,NA,NA,Lichenostomus ornatus,N,Meliphagidae,54,(Honeyeaters),No,
 1690,Lichenostomus penicillatus,Ptilotula penicillata,Ptilotula penicillata,Meliphagidae (Honeyeaters),White-plumed Honeyeater,1.670602678,NA,NA,NA,NA,Meliphagidae,54,(Honeyeaters),No,
@@ -1757,7 +1757,7 @@
 1756,Gerygone mouki,Gerygone mouki,Gerygone mouki,Acanthizidae (Thornbills and Allies),Brown Gerygone,0.444133795,NA,NA,NA,NA,Acanthizidae,80,(Thornbills and Allies),No,
 1757,Gerygone sulphurea,Gerygone sulphurea,Gerygone sulphurea,Acanthizidae (Thornbills and Allies),Golden-bellied Gerygone,2.451733148,NA,NA,NA,NA,Acanthizidae,80,(Thornbills and Allies),No,
 1758,Gerygone fusca,Gerygone fusca,Gerygone fusca,Acanthizidae (Thornbills and Allies),Western Gerygone,1.503300928,NA,NA,NA,NA,Acanthizidae,80,(Thornbills and Allies),No,
-1759,Gerygone levigaster,Gerygone levigaster,Gerygone levigaster,Acanthizidae (Thornbills and Allies),Mangrove Gerygone,1.596145523,NA,NA,NA,NA,Acanthizidae,80,(Thornbills and Allies),No,
+1759,Gerygone levigaster,Gerygone levigaster,Gerygone levigaster,Acanthizidae (Thornbills and Allies),Mangrove Gerygone,1.596145523,NA,NA,NA,NA,Acanthizidae,80,(Thornbills and Allies),Yes,mangroves  
 1760,Gerygone igata,Gerygone igata,Gerygone igata,Acanthizidae (Thornbills and Allies),Gray Gerygone,0.793920881,NA,NA,NA,NA,Acanthizidae,80,(Thornbills and Allies),No,
 1761,Aphelocephala leucopsis,Aphelocephala leucopsis,Aphelocephala leucopsis,Acanthizidae (Thornbills and Allies),Southern Whiteface,0.012440413,NA,NA,NA,NA,Acanthizidae,80,(Thornbills and Allies),No,
 1762,Pomatostomus temporalis,Pomatostomus temporalis,Pomatostomus temporalis,Pomatostomidae (Pseudo-Babblers),Gray-crowned Babbler,0.688901313,NA,NA,NA,NA,Pomatostomidae,178,(Pseudo-Babblers),No,
@@ -1810,7 +1810,7 @@
 1809,Vireo atricapilla,Vireo atricapilla,Vireo atricapilla,"Vireonidae (Vireos, Shrike-Babblers, and Erpornis)",Black-capped Vireo,0.439124201,Vireo atricapilla,-1.650951972,Vireo atricapilla,N,Vireonidae,67,"(Vireos, Shrike-Babblers, and Erpornis)",No,
 1810,Vireo griseus,Vireo griseus,Vireo griseus,"Vireonidae (Vireos, Shrike-Babblers, and Erpornis)",White-eyed Vireo,1.385768148,Vireo griseus,0.168881624,Vireo griseus,N,Vireonidae,67,"(Vireos, Shrike-Babblers, and Erpornis)",No,
 1811,Vireo crassirostris,Vireo crassirostris,Vireo crassirostris,"Vireonidae (Vireos, Shrike-Babblers, and Erpornis)",Thick-billed Vireo,1.853555478,NA,NA,NA,NA,Vireonidae,67,"(Vireos, Shrike-Babblers, and Erpornis)",No,
-1812,Vireo pallens,Vireo pallens,Vireo pallens,"Vireonidae (Vireos, Shrike-Babblers, and Erpornis)",Mangrove Vireo,1.019189164,NA,NA,NA,NA,Vireonidae,67,"(Vireos, Shrike-Babblers, and Erpornis)",No,
+1812,Vireo pallens,Vireo pallens,Vireo pallens,"Vireonidae (Vireos, Shrike-Babblers, and Erpornis)",Mangrove Vireo,1.019189164,NA,NA,NA,NA,Vireonidae,67,"(Vireos, Shrike-Babblers, and Erpornis)",Yes,mangroves 
 1813,Vireo modestus,Vireo modestus,Vireo modestus,"Vireonidae (Vireos, Shrike-Babblers, and Erpornis)",Jamaican Vireo,0.324472075,NA,NA,NA,NA,Vireonidae,67,"(Vireos, Shrike-Babblers, and Erpornis)",No,
 1814,Vireo gundlachii,Vireo gundlachii,Vireo gundlachii,"Vireonidae (Vireos, Shrike-Babblers, and Erpornis)",Cuban Vireo,1.225879015,NA,NA,NA,NA,Vireonidae,67,"(Vireos, Shrike-Babblers, and Erpornis)",No,
 1815,Vireo bellii,Vireo bellii,Vireo bellii,"Vireonidae (Vireos, Shrike-Babblers, and Erpornis)",Bell's Vireo,1.145324703,Vireo bellii,0.208714506,Vireo bellii,N,Vireonidae,67,"(Vireos, Shrike-Babblers, and Erpornis)",No,
@@ -1837,7 +1837,7 @@
 1836,Pachycephala pectoralis,Pachycephala pectoralis,Pachycephala pectoralis,Pachycephalidae (Whistlers and Allies),Golden Whistler,0.682681661,NA,NA,NA,NA,Pachycephalidae,81,(Whistlers and Allies),No,
 1837,Pachycephala melanura,Pachycephala melanura,Pachycephala melanura,Pachycephalidae (Whistlers and Allies),Black-tailed Whistler,0.617291311,NA,NA,Pachycephala melanura,N,Pachycephalidae,81,(Whistlers and Allies),No,
 1838,Pachycephala hypoxantha,Pachycephala hypoxantha,Pachycephala hypoxantha,Pachycephalidae (Whistlers and Allies),Bornean Whistler,0.359321435,NA,NA,NA,NA,Pachycephalidae,81,(Whistlers and Allies),No,
-1839,Pachycephala grisola,Pachycephala cinerea,Pachycephala cinerea,Pachycephalidae (Whistlers and Allies),Mangrove Whistler,0.371219516,NA,NA,NA,NA,Pachycephalidae,81,(Whistlers and Allies),No,
+1839,Pachycephala grisola,Pachycephala cinerea,Pachycephala cinerea,Pachycephalidae (Whistlers and Allies),Mangrove Whistler,0.371219516,NA,NA,NA,NA,Pachycephalidae,81,(Whistlers and Allies),Yes,mangroves and adjacent coastal vegetation 
 1840,Pachycephala simplex,Pachycephala simplex,Pachycephala simplex,Pachycephalidae (Whistlers and Allies),Gray Whistler,0.730034173,NA,NA,Pachycephala simplex,N,Pachycephalidae,81,(Whistlers and Allies),No,
 1841,Pachycephala rufiventris,Pachycephala rufiventris,Pachycephala rufiventris,Pachycephalidae (Whistlers and Allies),Rufous Whistler,0.833220677,NA,NA,Pachycephala rufiventris,U,Pachycephalidae,81,(Whistlers and Allies),No,
 1842,Pachycephala lanioides,Pachycephala lanioides,Pachycephala lanioides,Pachycephalidae (Whistlers and Allies),White-breasted Whistler,NA,NA,NA,Pachycephala lanioides,N,Pachycephalidae,81,(Whistlers and Allies),No,
@@ -1866,7 +1866,7 @@
 1865,Strepera fuliginosa,Strepera fuliginosa,Strepera fuliginosa,"Artamidae (Woodswallows, Bellmagpies, and Allies)",Black Currawong,0.272258902,NA,NA,NA,NA,Artamidae,143,"(Woodswallows, Bellmagpies, and Allies)",No,
 1866,Strepera versicolor,Strepera versicolor,Strepera versicolor,"Artamidae (Woodswallows, Bellmagpies, and Allies)",Gray Currawong,0.620148996,NA,NA,NA,NA,Artamidae,143,"(Woodswallows, Bellmagpies, and Allies)",No,
 1867,Platysteira cyanea,Platysteira cyanea,Platysteira cyanea,Platysteiridae (Wattle-eyes and Batises),Brown-throated Wattle-eye,0.436486956,NA,NA,NA,NA,Platysteiridae,177,(Wattle-eyes and Batises),No,
-1868,Batis capensis,Batis capensis,Batis capensis,Platysteiridae (Wattle-eyes and Batises),Cape Batis,1.183322102,NA,NA,NA,NA,Platysteiridae,177,(Wattle-eyes and Batises),No,
+1868,Batis capensis,Batis capensis,Batis capensis,Platysteiridae (Wattle-eyes and Batises),Cape Batis,1.183322102,NA,NA,NA,NA,Platysteiridae,177,(Wattle-eyes and Batises),No,forest edges - not coastal 
 1869,Batis molitor,Batis molitor,Batis molitor,Platysteiridae (Wattle-eyes and Batises),Chinspot Batis,1.174640942,NA,NA,NA,NA,Platysteiridae,177,(Wattle-eyes and Batises),No,
 1870,Prionops plumatus,Prionops plumatus,Prionops plumatus,"Vangidae (Vangas, Helmetshrikes, and Allies)",White Helmetshrike,0.576948987,NA,NA,NA,NA,Vangidae,145,"(Vangas, Helmetshrikes, and Allies)",No,
 1871,Bias musicus,Bias musicus,Bias musicus,"Vangidae (Vangas, Helmetshrikes, and Allies)",Black-and-white Shrike-flycatcher,0.766578409,NA,NA,NA,NA,Vangidae,145,"(Vangas, Helmetshrikes, and Allies)",No,
@@ -1905,7 +1905,7 @@
 1904,Rhipidura rufifrons,Rhipidura rufifrons,Rhipidura rufifrons,Rhipiduridae (Fantails),Rufous Fantail,0.854897866,NA,NA,NA,NA,Rhipiduridae,86,(Fantails),No,
 1905,Rhipidura rufifrons,Rhipidura dryas,Rhipidura dryas,Rhipiduridae (Fantails),Arafura Fantail,0.511326084,NA,NA,NA,NA,Rhipiduridae,86,(Fantails),No,
 1906,Rhipidura fuliginosa,Rhipidura albiscapa,Rhipidura albiscapa,Rhipiduridae (Fantails),Gray Fantail,0.936259599,NA,NA,NA,NA,Rhipiduridae,86,(Fantails),No,
-1907,Rhipidura phasiana,Rhipidura phasiana,Rhipidura phasiana,Rhipiduridae (Fantails),Mangrove Fantail,NA,NA,NA,Rhipidura phasiana,N,Rhipiduridae,86,(Fantails),No,
+1907,Rhipidura phasiana,Rhipidura phasiana,Rhipidura phasiana,Rhipiduridae (Fantails),Mangrove Fantail,NA,NA,NA,Rhipidura phasiana,N,Rhipiduridae,86,(Fantails),Yes,mangroves  
 1908,Rhipidura fuliginosa,Rhipidura fuliginosa,Rhipidura fuliginosa,Rhipiduridae (Fantails),New Zealand Fantail,0.834273265,NA,NA,Rhipidura fuliginosa,U,Rhipiduridae,86,(Fantails),No,
 1909,Dicrurus ludwigii,Dicrurus ludwigii,Dicrurus ludwigii,Dicruridae (Drongos),Common Square-tailed Drongo,2.091398499,NA,NA,NA,NA,Dicruridae,157,(Drongos),No,
 1910,Dicrurus adsimilis,Dicrurus adsimilis,Dicrurus adsimilis,Dicruridae (Drongos),Fork-tailed Drongo,1.19915575,NA,NA,NA,NA,Dicruridae,157,(Drongos),No,
@@ -1952,7 +1952,7 @@
 1951,Lanius isabellinus,Lanius phoenicuroides,Lanius phoenicuroides,Laniidae (Shrikes),Red-tailed Shrike,1.98960061,NA,NA,NA,NA,Laniidae,68,(Shrikes),No,
 1952,Lanius isabellinus,Lanius isabellinus,Lanius isabellinus,Laniidae (Shrikes),Isabelline Shrike,2.028052696,NA,NA,NA,NA,Laniidae,68,(Shrikes),No,
 1953,Lanius cristatus,Lanius cristatus,Lanius cristatus,Laniidae (Shrikes),Brown Shrike,1.836907276,NA,NA,NA,NA,Laniidae,68,(Shrikes),No,
-1954,Lanius vittatus,Lanius vittatus,Lanius vittatus,Laniidae (Shrikes),Bay-backed Shrike,0.96859316,NA,NA,NA,NA,Laniidae,68,(Shrikes),No,
+1954,Lanius vittatus,Lanius vittatus,Lanius vittatus,Laniidae (Shrikes),Bay-backed Shrike,0.96859316,NA,NA,NA,NA,Laniidae,68,(Shrikes),No,no mention of coastal 
 1955,Lanius schach,Lanius schach,Lanius schach,Laniidae (Shrikes),Long-tailed Shrike,1.612790526,NA,NA,NA,NA,Laniidae,68,(Shrikes),No,
 1956,Lanius tephronotus,Lanius tephronotus,Lanius tephronotus,Laniidae (Shrikes),Gray-backed Shrike,0.44754533,NA,NA,NA,NA,Laniidae,68,(Shrikes),No,
 1957,Lanius ludovicianus,Lanius ludovicianus,Lanius ludovicianus,Laniidae (Shrikes),Loggerhead Shrike,1.016959616,Lanius ludovicianus,-0.066193559,Lanius ludovicianus,U,Laniidae,68,(Shrikes),No,
@@ -2017,14 +2017,14 @@
 2016,Corvus dauuricus,Corvus dauuricus,Corvus dauuricus,"Corvidae (Crows, Jays, and Magpies)",Daurian Jackdaw,1.89575074,NA,NA,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
 2017,Corvus splendens,Corvus splendens,Corvus splendens,"Corvidae (Crows, Jays, and Magpies)",House Crow,2.352455492,NA,NA,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
 2018,Corvus enca,Corvus enca,Corvus enca,"Corvidae (Crows, Jays, and Magpies)",Slender-billed Crow,0.226005468,NA,NA,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
-2019,Corvus capensis,Corvus capensis,Corvus capensis,"Corvidae (Crows, Jays, and Magpies)",Cape Crow,0.891059407,NA,NA,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
+2019,Corvus capensis,Corvus capensis,Corvus capensis,"Corvidae (Crows, Jays, and Magpies)",Cape Crow,0.891059407,NA,NA,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,Upland farmland 
 2020,Corvus frugilegus,Corvus frugilegus,Corvus frugilegus,"Corvidae (Crows, Jays, and Magpies)",Rook,2.076834249,NA,NA,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
 2021,Corvus brachyrhynchos,Corvus brachyrhynchos,Corvus brachyrhynchos,"Corvidae (Crows, Jays, and Magpies)",American Crow,2.111014794,Corvus brachyrhynchos,1.683106507,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
 2022,Corvus caurinus,Corvus brachyrhynchos,Corvus caurinus,"Corvidae (Crows, Jays, and Magpies)",Northwestern Crow,NA,Corvus caurinus,3.151504418,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
 2023,Corvus leucognaphalus,Corvus leucognaphalus,Corvus leucognaphalus,"Corvidae (Crows, Jays, and Magpies)",White-necked Crow,0.202575731,NA,NA,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
 2024,Corvus jamaicensis,Corvus jamaicensis,Corvus jamaicensis,"Corvidae (Crows, Jays, and Magpies)",Jamaican Crow,0.84245354,NA,NA,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
 2025,Corvus sinaloae,Corvus sinaloae,Corvus sinaloae,"Corvidae (Crows, Jays, and Magpies)",Sinaloa Crow,1.166604027,NA,NA,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
-2026,Corvus ossifragus,Corvus ossifragus,Corvus ossifragus,"Corvidae (Crows, Jays, and Magpies)",Fish Crow,2.219179631,Corvus ossifragus,1.876350835,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
+2026,Corvus ossifragus,Corvus ossifragus,Corvus ossifragus,"Corvidae (Crows, Jays, and Magpies)",Fish Crow,2.219179631,Corvus ossifragus,1.876350835,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",Yes,primarily coastal - along beaches and estuarines 
 2027,Corvus cryptoleucus,Corvus cryptoleucus,Corvus cryptoleucus,"Corvidae (Crows, Jays, and Magpies)",Chihuahuan Raven,0.675951929,Corvus cryptoleucus,-0.740597643,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
 2028,Corvus corone,Corvus corone,Corvus corone,"Corvidae (Crows, Jays, and Magpies)",Carrion Crow,1.795451307,NA,NA,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
 2029,Corvus corone,Corvus cornix,Corvus corone,"Corvidae (Crows, Jays, and Magpies)",Hooded Crow,2.204623134,NA,NA,NA,NA,Corvidae,99,"(Crows, Jays, and Magpies)",No,
@@ -2060,11 +2060,11 @@
 2059,Eopsaltria australis,Eopsaltria australis,Eopsaltria australis,Petroicidae (Australasian Robins),Eastern Yellow Robin,0.532360986,NA,NA,Eopsaltria australis,U,Petroicidae,84,(Australasian Robins),No,
 2060,Eopsaltria griseogularis,Eopsaltria griseogularis,Eopsaltria griseogularis,Petroicidae (Australasian Robins),Western Yellow Robin,0.15830606,NA,NA,Eopsaltria griseogularis,N,Petroicidae,84,(Australasian Robins),No,
 2061,Eopsaltria georgiana,Eopsaltria georgiana,Quoyornis georgianus,Petroicidae (Australasian Robins),White-breasted Robin,0.292323121,NA,NA,NA,NA,Petroicidae,84,(Australasian Robins),No,
-2062,Eopsaltria pulverulenta,Eopsaltria pulverulenta,Peneoenanthe pulverulenta,Petroicidae (Australasian Robins),Mangrove Robin,1.106217408,NA,NA,NA,NA,Petroicidae,84,(Australasian Robins),No,
+2062,Eopsaltria pulverulenta,Eopsaltria pulverulenta,Peneoenanthe pulverulenta,Petroicidae (Australasian Robins),Mangrove Robin,1.106217408,NA,NA,NA,NA,Petroicidae,84,(Australasian Robins),Yes,mangroves 
 2063,Poecilodryas superciliosa,Poecilodryas superciliosa,Poecilodryas superciliosa,Petroicidae (Australasian Robins),White-browed Robin,1.566706023,NA,NA,NA,NA,Petroicidae,84,(Australasian Robins),No,
 2064,Heteromyias albispecularis,Heteromyias cinereifrons,Heteromyias cinereifrons,Petroicidae (Australasian Robins),Gray-headed Robin,0,NA,NA,NA,NA,Petroicidae,84,(Australasian Robins),No,
 2065,Drymodes brunneopygia,Drymodes brunneopygia,Drymodes brunneopygia,Petroicidae (Australasian Robins),Southern Scrub-Robin,0.021734722,NA,NA,NA,NA,Petroicidae,84,(Australasian Robins),No,
-2066,Chaetops frenatus,Chaetops frenatus,Chaetops frenatus,Chaetopidae (Rockjumpers),Cape Rockjumper,0.070329328,NA,NA,NA,NA,Chaetopidae,36,(Rockjumpers),No,NA
+2066,Chaetops frenatus,Chaetops frenatus,Chaetops frenatus,Chaetopidae (Rockjumpers),Cape Rockjumper,0.070329328,NA,NA,NA,NA,Chaetopidae,36,(Rockjumpers),No,mountain fynbos
 2067,Elminia longicauda,Elminia longicauda,Elminia longicauda,Stenostiridae (Fairy Flycatchers),African Blue Flycatcher,0.518427728,NA,NA,NA,NA,Stenostiridae,21,(Fairy Flycatchers),No,NA
 2068,Culicicapa ceylonensis,Culicicapa ceylonensis,Culicicapa ceylonensis,Stenostiridae (Fairy Flycatchers),Gray-headed Canary-Flycatcher,1.856766213,NA,NA,NA,NA,Stenostiridae,21,(Fairy Flycatchers),No,NA
 2069,Melanochlora sultanea,Melanochlora sultanea,Melanochlora sultanea,"Paridae (Tits, Chickadees, and Titmice)",Sultan Tit,0.324698433,NA,NA,NA,NA,Paridae,50,"(Tits, Chickadees, and Titmice)",No,
@@ -2130,8 +2130,8 @@
 2129,Sylvietta virens,Sylvietta virens,Sylvietta virens,Macrosphenidae (African Warblers),Green Crombec,0.669665219,NA,NA,NA,NA,Macrosphenidae,28,(African Warblers),No,NA
 2130,Sylvietta brachyura,Sylvietta brachyura,Sylvietta brachyura,Macrosphenidae (African Warblers),Northern Crombec,1.450776606,NA,NA,NA,NA,Macrosphenidae,28,(African Warblers),No,NA
 2131,Sylvietta whytii,Sylvietta whytii,Sylvietta whytii,Macrosphenidae (African Warblers),Red-faced Crombec,0.909443298,NA,NA,NA,NA,Macrosphenidae,28,(African Warblers),No,NA
-2132,Sylvietta rufescens,Sylvietta rufescens,Sylvietta rufescens,Macrosphenidae (African Warblers),Cape Crombec,0.832268242,NA,NA,NA,NA,Macrosphenidae,28,(African Warblers),No,NA
-2133,Sphenoeacus afer,Sphenoeacus afer,Sphenoeacus afer,Macrosphenidae (African Warblers),Cape Grassbird,0.753312483,NA,NA,NA,NA,Macrosphenidae,28,(African Warblers),No,NA
+2132,Sylvietta rufescens,Sylvietta rufescens,Sylvietta rufescens,Macrosphenidae (African Warblers),Cape Crombec,0.832268242,NA,NA,NA,NA,Macrosphenidae,28,(African Warblers),No,Dry savanna 
+2133,Sphenoeacus afer,Sphenoeacus afer,Sphenoeacus afer,Macrosphenidae (African Warblers),Cape Grassbird,0.753312483,NA,NA,NA,NA,Macrosphenidae,28,(African Warblers),No,"coastal scrub, but among many other habitats - going to mark as no due to mostly residing in grasslands and forest edge "
 2134,Bradypterus victorini,Cryptillas victorini,Cryptillas victorini,Macrosphenidae (African Warblers),Victorin's Warbler,0.191618545,NA,NA,NA,NA,Macrosphenidae,28,(African Warblers),No,NA
 2135,Neomixis tenella,Neomixis tenella,Neomixis tenella,Cisticolidae (Cisticolas and Allies),Common Jery,0.755422984,NA,NA,NA,NA,Cisticolidae,149,(Cisticolas and Allies),No,
 2136,Neomixis striatigula,Neomixis striatigula,Neomixis striatigula,Cisticolidae (Cisticolas and Allies),Stripe-throated Jery,0.044195612,NA,NA,NA,NA,Cisticolidae,149,(Cisticolas and Allies),No,
@@ -2172,33 +2172,33 @@
 2171,Cisticola fulvicapilla,Cisticola fulvicapilla,Cisticola fulvicapilla,Cisticolidae (Cisticolas and Allies),Piping Cisticola,1.05683691,NA,NA,NA,NA,Cisticolidae,149,(Cisticolas and Allies),No,
 2172,Cisticola juncidis,Cisticola juncidis,Cisticola juncidis,Cisticolidae (Cisticolas and Allies),Zitting Cisticola,1.597454972,NA,NA,NA,NA,Cisticolidae,149,(Cisticolas and Allies),No,
 2173,Cisticola exilis,Cisticola exilis,Cisticola exilis,Cisticolidae (Cisticolas and Allies),Golden-headed Cisticola,1.467751286,NA,NA,NA,NA,Cisticolidae,149,(Cisticolas and Allies),No,
-2174,Nesillas typica,Nesillas typica,Nesillas typica,Acrocephalidae (Reed Warblers and Allies),Malagasy Brush-Warbler,1.125396017,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2175,Acrocephalus aedon,Arundinax aedon,Arundinax aedon,Acrocephalidae (Reed Warblers and Allies),Thick-billed Warbler,1.91648864,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2176,Hippolais caligata,Iduna caligata,Iduna caligata,Acrocephalidae (Reed Warblers and Allies),Booted Warbler,1.940800312,NA,NA,Hippolais caligata,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2177,Hippolais rama,Iduna rama,Iduna rama,Acrocephalidae (Reed Warblers and Allies),Sykes's Warbler,1.83839303,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2178,Hippolais pallida,Iduna pallida,Iduna pallida,Acrocephalidae (Reed Warblers and Allies),Eastern Olivaceous Warbler,2.476489223,NA,NA,Hippolais pallida,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2179,Hippolais opaca,Iduna opaca,Iduna opaca,Acrocephalidae (Reed Warblers and Allies),Western Olivaceous Warbler,2.736324596,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2180,Chloropeta natalensis,Iduna natalensis,Iduna natalensis,Acrocephalidae (Reed Warblers and Allies),African Yellow-Warbler,1.709097513,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2181,Hippolais languida,Hippolais languida,Hippolais languida,Acrocephalidae (Reed Warblers and Allies),Upcher's Warbler,NA,NA,NA,Hippolais languida,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2182,Hippolais olivetorum,Hippolais olivetorum,Hippolais olivetorum,Acrocephalidae (Reed Warblers and Allies),Olive-tree Warbler,NA,NA,NA,Hippolais olivetorum,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2183,Hippolais polyglotta,Hippolais polyglotta,Hippolais polyglotta,Acrocephalidae (Reed Warblers and Allies),Melodious Warbler,1.49474865,NA,NA,Hippolais polyglotta,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2184,Hippolais icterina,Hippolais icterina,Hippolais icterina,Acrocephalidae (Reed Warblers and Allies),Icterine Warbler,1.069921393,NA,NA,Hippolais icterina,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2185,Acrocephalus paludicola,Acrocephalus paludicola,Acrocephalus paludicola,Acrocephalidae (Reed Warblers and Allies),Aquatic Warbler,NA,NA,NA,Acrocephalus paludicola,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2186,Acrocephalus bistrigiceps,Acrocephalus bistrigiceps,Acrocephalus bistrigiceps,Acrocephalidae (Reed Warblers and Allies),Black-browed Reed Warbler,2.339262654,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2187,Acrocephalus melanopogon,Acrocephalus melanopogon,Acrocephalus melanopogon,Acrocephalidae (Reed Warblers and Allies),Moustached Warbler,1.685153853,NA,NA,Acrocephalus melanopogon,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2188,Acrocephalus schoenobaenus,Acrocephalus schoenobaenus,Acrocephalus schoenobaenus,Acrocephalidae (Reed Warblers and Allies),Sedge Warbler,1.184457685,NA,NA,Acrocephalus schoenobaenus,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2189,Acrocephalus agricola,Acrocephalus agricola,Acrocephalus agricola,Acrocephalidae (Reed Warblers and Allies),Paddyfield Warbler,1.632665524,NA,NA,Acrocephalus agricola,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2190,Acrocephalus dumetorum,Acrocephalus dumetorum,Acrocephalus dumetorum,Acrocephalidae (Reed Warblers and Allies),Blyth's Reed Warbler,2.094205729,NA,NA,Acrocephalus dumetorum,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2191,Acrocephalus palustris,Acrocephalus palustris,Acrocephalus palustris,Acrocephalidae (Reed Warblers and Allies),Marsh Warbler,1.247421026,NA,NA,Acrocephalus palustris,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2192,Acrocephalus scirpaceus,Acrocephalus scirpaceus,Acrocephalus scirpaceus,Acrocephalidae (Reed Warblers and Allies),Common Reed Warbler,1.37268812,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2193,Acrocephalus griseldis,Acrocephalus griseldis,Acrocephalus griseldis,Acrocephalidae (Reed Warblers and Allies),Basra Reed Warbler,NA,NA,NA,Acrocephalus griseldis,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2194,Acrocephalus gracilirostris,Acrocephalus gracilirostris,Acrocephalus gracilirostris,Acrocephalidae (Reed Warblers and Allies),Lesser Swamp Warbler,1.649739406,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2195,Acrocephalus rufescens,Acrocephalus rufescens,Acrocephalus rufescens,Acrocephalidae (Reed Warblers and Allies),Greater Swamp Warbler,1.655700821,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2196,Acrocephalus newtoni,Acrocephalus newtoni,Acrocephalus newtoni,Acrocephalidae (Reed Warblers and Allies),Madagascar Swamp Warbler,1.437056849,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2197,Acrocephalus arundinaceus,Acrocephalus arundinaceus,Acrocephalus arundinaceus,Acrocephalidae (Reed Warblers and Allies),Great Reed Warbler,1.117057375,NA,NA,Acrocephalus arundinaceus,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2198,Acrocephalus arundinaceus,Acrocephalus orientalis,Acrocephalus orientalis,Acrocephalidae (Reed Warblers and Allies),Oriental Reed Warbler,2.386611909,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2199,Acrocephalus stentoreus,Acrocephalus stentoreus,Acrocephalus stentoreus,Acrocephalidae (Reed Warblers and Allies),Clamorous Reed Warbler,1.433223739,NA,NA,Acrocephalus stentoreus,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
-2200,Acrocephalus australis,Acrocephalus australis,Acrocephalus australis,Acrocephalidae (Reed Warblers and Allies),Australian Reed Warbler,1.827929449,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastal… 
+2174,Nesillas typica,Nesillas typica,Nesillas typica,Acrocephalidae (Reed Warblers and Allies),Malagasy Brush-Warbler,1.125396017,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2175,Acrocephalus aedon,Arundinax aedon,Arundinax aedon,Acrocephalidae (Reed Warblers and Allies),Thick-billed Warbler,1.91648864,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2176,Hippolais caligata,Iduna caligata,Iduna caligata,Acrocephalidae (Reed Warblers and Allies),Booted Warbler,1.940800312,NA,NA,Hippolais caligata,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2177,Hippolais rama,Iduna rama,Iduna rama,Acrocephalidae (Reed Warblers and Allies),Sykes's Warbler,1.83839303,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2178,Hippolais pallida,Iduna pallida,Iduna pallida,Acrocephalidae (Reed Warblers and Allies),Eastern Olivaceous Warbler,2.476489223,NA,NA,Hippolais pallida,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2179,Hippolais opaca,Iduna opaca,Iduna opaca,Acrocephalidae (Reed Warblers and Allies),Western Olivaceous Warbler,2.736324596,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2180,Chloropeta natalensis,Iduna natalensis,Iduna natalensis,Acrocephalidae (Reed Warblers and Allies),African Yellow-Warbler,1.709097513,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2181,Hippolais languida,Hippolais languida,Hippolais languida,Acrocephalidae (Reed Warblers and Allies),Upcher's Warbler,NA,NA,NA,Hippolais languida,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2182,Hippolais olivetorum,Hippolais olivetorum,Hippolais olivetorum,Acrocephalidae (Reed Warblers and Allies),Olive-tree Warbler,NA,NA,NA,Hippolais olivetorum,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2183,Hippolais polyglotta,Hippolais polyglotta,Hippolais polyglotta,Acrocephalidae (Reed Warblers and Allies),Melodious Warbler,1.49474865,NA,NA,Hippolais polyglotta,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2184,Hippolais icterina,Hippolais icterina,Hippolais icterina,Acrocephalidae (Reed Warblers and Allies),Icterine Warbler,1.069921393,NA,NA,Hippolais icterina,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2185,Acrocephalus paludicola,Acrocephalus paludicola,Acrocephalus paludicola,Acrocephalidae (Reed Warblers and Allies),Aquatic Warbler,NA,NA,NA,Acrocephalus paludicola,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2186,Acrocephalus bistrigiceps,Acrocephalus bistrigiceps,Acrocephalus bistrigiceps,Acrocephalidae (Reed Warblers and Allies),Black-browed Reed Warbler,2.339262654,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2187,Acrocephalus melanopogon,Acrocephalus melanopogon,Acrocephalus melanopogon,Acrocephalidae (Reed Warblers and Allies),Moustached Warbler,1.685153853,NA,NA,Acrocephalus melanopogon,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2188,Acrocephalus schoenobaenus,Acrocephalus schoenobaenus,Acrocephalus schoenobaenus,Acrocephalidae (Reed Warblers and Allies),Sedge Warbler,1.184457685,NA,NA,Acrocephalus schoenobaenus,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2189,Acrocephalus agricola,Acrocephalus agricola,Acrocephalus agricola,Acrocephalidae (Reed Warblers and Allies),Paddyfield Warbler,1.632665524,NA,NA,Acrocephalus agricola,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2190,Acrocephalus dumetorum,Acrocephalus dumetorum,Acrocephalus dumetorum,Acrocephalidae (Reed Warblers and Allies),Blyth's Reed Warbler,2.094205729,NA,NA,Acrocephalus dumetorum,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2191,Acrocephalus palustris,Acrocephalus palustris,Acrocephalus palustris,Acrocephalidae (Reed Warblers and Allies),Marsh Warbler,1.247421026,NA,NA,Acrocephalus palustris,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2192,Acrocephalus scirpaceus,Acrocephalus scirpaceus,Acrocephalus scirpaceus,Acrocephalidae (Reed Warblers and Allies),Common Reed Warbler,1.37268812,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2193,Acrocephalus griseldis,Acrocephalus griseldis,Acrocephalus griseldis,Acrocephalidae (Reed Warblers and Allies),Basra Reed Warbler,NA,NA,NA,Acrocephalus griseldis,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2194,Acrocephalus gracilirostris,Acrocephalus gracilirostris,Acrocephalus gracilirostris,Acrocephalidae (Reed Warblers and Allies),Lesser Swamp Warbler,1.649739406,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2195,Acrocephalus rufescens,Acrocephalus rufescens,Acrocephalus rufescens,Acrocephalidae (Reed Warblers and Allies),Greater Swamp Warbler,1.655700821,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2196,Acrocephalus newtoni,Acrocephalus newtoni,Acrocephalus newtoni,Acrocephalidae (Reed Warblers and Allies),Madagascar Swamp Warbler,1.437056849,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2197,Acrocephalus arundinaceus,Acrocephalus arundinaceus,Acrocephalus arundinaceus,Acrocephalidae (Reed Warblers and Allies),Great Reed Warbler,1.117057375,NA,NA,Acrocephalus arundinaceus,N,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2198,Acrocephalus arundinaceus,Acrocephalus orientalis,Acrocephalus orientalis,Acrocephalidae (Reed Warblers and Allies),Oriental Reed Warbler,2.386611909,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2199,Acrocephalus stentoreus,Acrocephalus stentoreus,Acrocephalus stentoreus,Acrocephalidae (Reed Warblers and Allies),Clamorous Reed Warbler,1.433223739,NA,NA,Acrocephalus stentoreus,U,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
+2200,Acrocephalus australis,Acrocephalus australis,Acrocephalus australis,Acrocephalidae (Reed Warblers and Allies),Australian Reed Warbler,1.827929449,NA,NA,NA,NA,Acrocephalidae,3,(Reed Warblers and Allies),No,mention of marsh --> did not explicitely say coastalâ€¦ 
 2201,Locustella certhiola,Helopsaltes certhiola,Locustella certhiola,Locustellidae (Grassbirds and Allies),Pallas's Grasshopper Warbler,2.417764777,NA,NA,NA,NA,Locustellidae,27,(Grassbirds and Allies),No,"swamps and marshes, but no mention of coastal"
 2202,Locustella ochotensis,Helopsaltes ochotensis,Locustella ochotensis,Locustellidae (Grassbirds and Allies),Middendorff's Grasshopper Warbler,1.648398512,NA,NA,NA,NA,Locustellidae,27,(Grassbirds and Allies),No,"swamps and marshes, but no mention of coastal"
 2203,Locustella lanceolata,Locustella lanceolata,Locustella lanceolata,Locustellidae (Grassbirds and Allies),Lanceolated Warbler,1.329879698,NA,NA,NA,NA,Locustellidae,27,(Grassbirds and Allies),No,"swamps and marshes, but no mention of coastal"
@@ -2239,7 +2239,7 @@
 2238,Tachycineta albiventer,Tachycineta albiventer,Tachycineta albiventer,Hirundinidae (Swallows),White-winged Swallow,1.615603395,NA,NA,NA,NA,Hirundinidae,101,(Swallows),No,
 2239,Tachycineta leucorrhoa,Tachycineta leucorrhoa,Tachycineta leucorrhoa,Hirundinidae (Swallows),White-rumped Swallow,1.983402358,NA,NA,NA,NA,Hirundinidae,101,(Swallows),No,
 2240,Tachycineta meyeni,Tachycineta leucopyga,Tachycineta meyeni,Hirundinidae (Swallows),Chilean Swallow,2.222093657,NA,NA,NA,NA,Hirundinidae,101,(Swallows),No,
-2241,Tachycineta albilinea,Tachycineta albilinea,Tachycineta albilinea,Hirundinidae (Swallows),Mangrove Swallow,1.380469309,NA,NA,NA,NA,Hirundinidae,101,(Swallows),No,
+2241,Tachycineta albilinea,Tachycineta albilinea,Tachycineta albilinea,Hirundinidae (Swallows),Mangrove Swallow,1.380469309,NA,NA,NA,NA,Hirundinidae,101,(Swallows),Yes,mangroves and coastal beaches
 2242,Tachycineta thalassina,Tachycineta thalassina,Tachycineta thalassina,Hirundinidae (Swallows),Violet-green Swallow,1.324753371,Tachycineta thalassina,1.110190891,NA,NA,Hirundinidae,101,(Swallows),No,
 2243,Tachycineta cyaneoviridis,Tachycineta cyaneoviridis,Tachycineta cyaneoviridis,Hirundinidae (Swallows),Bahama Swallow,0.684388457,NA,NA,NA,NA,Hirundinidae,101,(Swallows),No,
 2244,Riparia paludicola,Riparia paludicola,Riparia paludicola,Hirundinidae (Swallows),Plain Martin,1.485988497,NA,NA,NA,NA,Hirundinidae,101,(Swallows),No,
@@ -2292,7 +2292,7 @@
 2291,Pycnonotus sinensis,Pycnonotus sinensis,Pycnonotus sinensis,Pycnonotidae (Bulbuls),Light-vented Bulbul,2.683325463,NA,NA,NA,NA,Pycnonotidae,181,(Bulbuls),No,
 2292,Pycnonotus barbatus,Pycnonotus barbatus,Pycnonotus barbatus,Pycnonotidae (Bulbuls),Common Bulbul,1.857859077,NA,NA,NA,NA,Pycnonotidae,181,(Bulbuls),No,
 2293,Pycnonotus nigricans,Pycnonotus nigricans,Pycnonotus nigricans,Pycnonotidae (Bulbuls),Black-fronted Bulbul,1.597730289,NA,NA,NA,NA,Pycnonotidae,181,(Bulbuls),No,
-2294,Pycnonotus capensis,Pycnonotus capensis,Pycnonotus capensis,Pycnonotidae (Bulbuls),Cape Bulbul,1.46583281,NA,NA,NA,NA,Pycnonotidae,181,(Bulbuls),No,
+2294,Pycnonotus capensis,Pycnonotus capensis,Pycnonotus capensis,Pycnonotidae (Bulbuls),Cape Bulbul,1.46583281,NA,NA,NA,NA,Pycnonotidae,181,(Bulbuls),Yes,coastal scrub  
 2295,Pycnonotus xanthopygos,Pycnonotus xanthopygos,Pycnonotus xanthopygos,Pycnonotidae (Bulbuls),White-spectacled Bulbul,1.772280224,NA,NA,NA,NA,Pycnonotidae,181,(Bulbuls),No,
 2296,Pycnonotus leucotis,Pycnonotus leucotis,Pycnonotus leucotis,Pycnonotidae (Bulbuls),White-eared Bulbul,2.966843926,NA,NA,NA,NA,Pycnonotidae,181,(Bulbuls),No,
 2297,Pycnonotus aurigaster,Pycnonotus aurigaster,Pycnonotus aurigaster,Pycnonotidae (Bulbuls),Sooty-headed Bulbul,2.724559336,NA,NA,NA,NA,Pycnonotidae,181,(Bulbuls),No,
@@ -2371,7 +2371,7 @@
 2370,Sylvia nana,Curruca nana,Sylvia nana,"Sylviidae (Sylviid Warblers, Parrotbills, and Allies)",Asian Desert Warbler,NA,NA,NA,Sylvia nana,N,Sylviidae,57,"(Sylviid Warblers, Parrotbills, and Allies)",No,
 2371,Sylvia deserticola,Curruca deserticola,Sylvia deserticola,"Sylviidae (Sylviid Warblers, Parrotbills, and Allies)",Tristram's Warbler,NA,NA,NA,Sylvia deserticola,N,Sylviidae,57,"(Sylviid Warblers, Parrotbills, and Allies)",No,
 2372,Sylvia mystacea,Curruca mystacea,Sylvia mystacea,"Sylviidae (Sylviid Warblers, Parrotbills, and Allies)",Menetries's Warbler,2.731595144,NA,NA,Sylvia mystacea,N,Sylviidae,57,"(Sylviid Warblers, Parrotbills, and Allies)",No,
-2373,Sylvia rueppelli,Curruca ruppeli,Sylvia ruppeli,"Sylviidae (Sylviid Warblers, Parrotbills, and Allies)",Rüppell's Warbler,NA,NA,NA,Sylvia rueppelli,N,Sylviidae,57,"(Sylviid Warblers, Parrotbills, and Allies)",No,
+2373,Sylvia rueppelli,Curruca ruppeli,Sylvia ruppeli,"Sylviidae (Sylviid Warblers, Parrotbills, and Allies)",RÃ¼ppell's Warbler,NA,NA,NA,Sylvia rueppelli,N,Sylviidae,57,"(Sylviid Warblers, Parrotbills, and Allies)",No,
 2374,Sylvia melanothorax,Curruca melanothorax,Sylvia melanothorax,"Sylviidae (Sylviid Warblers, Parrotbills, and Allies)",Cyprus Warbler,NA,NA,NA,Sylvia melanothorax,N,Sylviidae,57,"(Sylviid Warblers, Parrotbills, and Allies)",No,
 2375,Sylvia melanocephala,Curruca melanocephala,Sylvia melanocephala,"Sylviidae (Sylviid Warblers, Parrotbills, and Allies)",Sardinian Warbler,2.245248574,NA,NA,Sylvia melanocephala,U,Sylviidae,57,"(Sylviid Warblers, Parrotbills, and Allies)",No,
 2376,Sylvia cantillans,Curruca iberiae,Sylvia cantillans,"Sylviidae (Sylviid Warblers, Parrotbills, and Allies)",Western Subalpine Warbler,1.843924722,NA,NA,Sylvia cantillans,N,Sylviidae,57,"(Sylviid Warblers, Parrotbills, and Allies)",No,
@@ -2402,7 +2402,7 @@
 2401,Zosterops poliogastrus,Zosterops poliogastrus,Zosterops poliogastrus,"Zosteropidae (White-eyes, Yuhinas, and Allies)",Heuglin's White-eye,2.403609512,NA,NA,NA,NA,Zosteropidae,87,"(White-eyes, Yuhinas, and Allies)",No,
 2402,Zosterops poliogastrus,Zosterops kikuyuensis,Zosterops kikuyuensis,"Zosteropidae (White-eyes, Yuhinas, and Allies)",Kikuyu White-eye,1.500107801,NA,NA,NA,NA,Zosteropidae,87,"(White-eyes, Yuhinas, and Allies)",No,
 2403,Zosterops senegalensis,Zosterops senegalensis,Zosterops senegalensis,"Zosteropidae (White-eyes, Yuhinas, and Allies)",Northern Yellow White-eye,1.410945778,NA,NA,NA,NA,Zosteropidae,87,"(White-eyes, Yuhinas, and Allies)",No,
-2404,Zosterops pallidus,Zosterops virens,Zosterops virens,"Zosteropidae (White-eyes, Yuhinas, and Allies)",Cape White-eye,2.150686707,NA,NA,NA,NA,Zosteropidae,87,"(White-eyes, Yuhinas, and Allies)",No,
+2404,Zosterops pallidus,Zosterops virens,Zosterops virens,"Zosteropidae (White-eyes, Yuhinas, and Allies)",Cape White-eye,2.150686707,NA,NA,NA,NA,Zosteropidae,87,"(White-eyes, Yuhinas, and Allies)",Yes,"coastal forest, along with inland areas "
 2405,Zosterops senegalensis,Zosterops anderssoni,Zosterops senegalensis,"Zosteropidae (White-eyes, Yuhinas, and Allies)",Southern Yellow White-eye,0.863980079,NA,NA,NA,NA,Zosteropidae,87,"(White-eyes, Yuhinas, and Allies)",No,
 2406,Zosterops maderaspatanus,Zosterops maderaspatanus,Zosterops maderaspatanus,"Zosteropidae (White-eyes, Yuhinas, and Allies)",Malagasy White-eye,0.999745674,NA,NA,NA,NA,Zosteropidae,87,"(White-eyes, Yuhinas, and Allies)",No,
 2407,Zosterops citrinella,Zosterops citrinella,Zosterops citrinella,"Zosteropidae (White-eyes, Yuhinas, and Allies)",Ashy-bellied White-eye,NA,NA,NA,Zosterops citrinella,N,Zosteropidae,87,"(White-eyes, Yuhinas, and Allies)",No,
@@ -2469,7 +2469,7 @@
 2468,Sitta pygmaea,Sitta pygmaea,Sitta pygmaea,Sittidae (Nuthatches),Pygmy Nuthatch,0.713856759,Sitta pygmaea,0.535431922,NA,NA,Sittidae,70,(Nuthatches),No,
 2469,Sitta pusilla,Sitta pusilla,Sitta pusilla,Sittidae (Nuthatches),Brown-headed Nuthatch,1.664476043,Sitta pusilla,0.685162376,NA,NA,Sittidae,70,(Nuthatches),No,
 2470,Sitta whiteheadi,Sitta whiteheadi,Sitta whiteheadi,Sittidae (Nuthatches),Corsican Nuthatch,NA,NA,NA,Sitta whiteheadi,N,Sittidae,70,(Nuthatches),No,
-2471,Sitta krueperi,Sitta krueperi,Sitta krueperi,Sittidae (Nuthatches),Krüper's Nuthatch,NA,NA,NA,Sitta krueperi,N,Sittidae,70,(Nuthatches),No,
+2471,Sitta krueperi,Sitta krueperi,Sitta krueperi,Sittidae (Nuthatches),KrÃ¼per's Nuthatch,NA,NA,NA,Sitta krueperi,N,Sittidae,70,(Nuthatches),No,
 2472,Sitta villosa,Sitta villosa,Sitta villosa,Sittidae (Nuthatches),Snowy-browed Nuthatch,1.899513207,NA,NA,NA,NA,Sittidae,70,(Nuthatches),No,
 2473,Sitta neumayer,Sitta neumayer,Sitta neumayer,Sittidae (Nuthatches),Western Rock Nuthatch,1.481686831,NA,NA,Sitta neumayer,N,Sittidae,70,(Nuthatches),No,
 2474,Sitta tephronota,Sitta tephronota,Sitta tephronota,Sittidae (Nuthatches),Eastern Rock Nuthatch,1.932317186,NA,NA,Sitta tephronota,N,Sittidae,70,(Nuthatches),No,
@@ -2530,7 +2530,7 @@
 2529,Thryothorus rufalbus,Thryophilus rufalbus,Thryophilus rufalbus,Troglodytidae (Wrens),Rufous-and-white Wren,1.024952344,NA,NA,NA,NA,Troglodytidae,105,(Wrens),No,
 2530,Thryothorus modestus,Cantorchilus modestus,Cantorchilus modestus,Troglodytidae (Wrens),Cabanis's Wren,0.562719859,NA,NA,NA,NA,Troglodytidae,105,(Wrens),No,
 2531,Thryothorus modestus,Cantorchilus elutus,Cantorchilus modestus,Troglodytidae (Wrens),Isthmian Wren,1.493536388,NA,NA,NA,NA,Troglodytidae,105,(Wrens),No,
-2532,Thryothorus nigricapillus,Cantorchilus nigricapillus,Cantorchilus nigricapillus,Troglodytidae (Wrens),Bay Wren,0.22030931,NA,NA,NA,NA,Troglodytidae,105,(Wrens),No,
+2532,Thryothorus nigricapillus,Cantorchilus nigricapillus,Cantorchilus nigricapillus,Troglodytidae (Wrens),Bay Wren,0.22030931,NA,NA,NA,NA,Troglodytidae,105,(Wrens),No,freshwater rivers 
 2533,Thryothorus superciliaris,Cantorchilus superciliaris,Cantorchilus superciliaris,Troglodytidae (Wrens),Superciliated Wren,0.75745071,NA,NA,NA,NA,Troglodytidae,105,(Wrens),No,
 2534,Thryothorus leucotis,Cantorchilus leucotis,Cantorchilus leucotis,Troglodytidae (Wrens),Buff-breasted Wren,1.413562107,NA,NA,NA,NA,Troglodytidae,105,(Wrens),No,
 2535,Thryothorus longirostris,Cantorchilus longirostris,Cantorchilus longirostris,Troglodytidae (Wrens),Long-billed Wren,1.737869038,NA,NA,NA,NA,Troglodytidae,105,(Wrens),No,
@@ -2577,14 +2577,14 @@
 2576,Onychognathus tristramii,Onychognathus tristramii,Onychognathus tristramii,Sturnidae (Starlings),Tristram's Starling,1.503784603,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
 2577,Lamprotornis corruscus,Notopholia corusca,Notopholia corusca,Sturnidae (Starlings),Black-bellied Starling,1.745571084,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
 2578,Lamprotornis hildebrandti,Lamprotornis hildebrandti,Lamprotornis hildebrandti,Sturnidae (Starlings),Hildebrandt's Starling,0.47358308,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
-2579,Lamprotornis purpuroptera,Lamprotornis purpuroptera,Lamprotornis purpuroptera,Sturnidae (Starlings),Rüppell's Starling,1.068200685,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
+2579,Lamprotornis purpuroptera,Lamprotornis purpuroptera,Lamprotornis purpuroptera,Sturnidae (Starlings),RÃ¼ppell's Starling,1.068200685,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
 2580,Lamprotornis caudatus,Lamprotornis caudatus,Lamprotornis caudatus,Sturnidae (Starlings),Long-tailed Glossy Starling,1.653495618,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
 2581,Lamprotornis mevesii,Lamprotornis mevesii,Lamprotornis mevesii,Sturnidae (Starlings),Meves's Starling,0.463546206,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
 2582,Lamprotornis splendidus,Lamprotornis splendidus,Lamprotornis splendidus,Sturnidae (Starlings),Splendid Starling,1.302118015,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
 2583,Lamprotornis superbus,Lamprotornis superbus,Lamprotornis superbus,Sturnidae (Starlings),Superb Starling,1.235831488,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
 2584,Spreo bicolor,Lamprotornis bicolor,Lamprotornis bicolor,Sturnidae (Starlings),African Pied Starling,0.983163487,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
 2585,Lamprotornis chalybaeus,Lamprotornis chalybaeus,Lamprotornis chalybaeus,Sturnidae (Starlings),Greater Blue-eared Starling,1.116491494,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
-2586,Lamprotornis nitens,Lamprotornis nitens,Lamprotornis nitens,Sturnidae (Starlings),Cape Starling,2.020856218,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,
+2586,Lamprotornis nitens,Lamprotornis nitens,Lamprotornis nitens,Sturnidae (Starlings),Cape Starling,2.020856218,NA,NA,NA,NA,Sturnidae,107,(Starlings),No,savanna woodland 
 2587,Melanotis caerulescens,Melanotis caerulescens,Melanotis caerulescens,Mimidae (Mockingbirds and Thrashers),Blue Mockingbird,1.194848407,NA,NA,NA,NA,Mimidae,106,(Mockingbirds and Thrashers),No,
 2588,Melanotis hypoleucus,Melanotis hypoleucus,Melanotis hypoleucus,Mimidae (Mockingbirds and Thrashers),Blue-and-white Mockingbird,0.930824781,NA,NA,NA,NA,Mimidae,106,(Mockingbirds and Thrashers),No,
 2589,Melanoptila glabrirostris,Melanoptila glabrirostris,Melanoptila glabrirostris,Mimidae (Mockingbirds and Thrashers),Black Catbird,0.962285587,NA,NA,NA,NA,Mimidae,106,(Mockingbirds and Thrashers),No,
@@ -2713,14 +2713,14 @@
 2712,Cyornis rubeculoides,Cyornis rubeculoides,Cyornis rubeculoides,Muscicapidae (Old World Flycatchers),Blue-throated Flycatcher,1.565584409,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2713,Cyornis lemprieri,Cyornis lemprieri,Cyornis lemprieri,Muscicapidae (Old World Flycatchers),Palawan Blue Flycatcher,0.07679625,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2714,Cyornis tickelliae,Cyornis tickelliae,Cyornis tickelliae,Muscicapidae (Old World Flycatchers),Tickell's Blue Flycatcher,1.281589885,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
-2715,Cyornis rufigastra,Cyornis rufigastra,Cyornis rufigastra,Muscicapidae (Old World Flycatchers),Mangrove Blue Flycatcher,1.582822824,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
+2715,Cyornis rufigastra,Cyornis rufigastra,Cyornis rufigastra,Muscicapidae (Old World Flycatchers),Mangrove Blue Flycatcher,1.582822824,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),Yes,mangroves and beach forests 
 2716,Rhinomyias brunneatus,Cyornis brunneatus,Cyornis brunneatus,Muscicapidae (Old World Flycatchers),Brown-chested Jungle Flycatcher,3.583735547,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2717,Niltava macgrigoriae,Niltava macgrigoriae,Niltava macgrigoriae,Muscicapidae (Old World Flycatchers),Small Niltava,0.400484466,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2718,Cyanoptila cyanomelana,Cyanoptila cyanomelana,Cyanoptila cyanomelana,Muscicapidae (Old World Flycatchers),Blue-and-white Flycatcher,1.65096252,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2719,Eumyias indigo,Eumyias indigo,Eumyias indigo,Muscicapidae (Old World Flycatchers),Indigo Flycatcher,0.375725543,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2720,Eumyias thalassinus,Eumyias thalassinus,Eumyias thalassinus,Muscicapidae (Old World Flycatchers),Verditer Flycatcher,1.714773008,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
-2721,Cossypha caffra,Cossypha caffra,Dessonornis caffer,Muscicapidae (Old World Flycatchers),Cape Robin-Chat,1.790624054,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
-2722,Cossypha semirufa,Cossypha semirufa,Cossypha semirufa,Muscicapidae (Old World Flycatchers),Rüppell's Robin-Chat,2.007653902,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
+2721,Cossypha caffra,Cossypha caffra,Dessonornis caffer,Muscicapidae (Old World Flycatchers),Cape Robin-Chat,1.790624054,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,montane forest
+2722,Cossypha semirufa,Cossypha semirufa,Cossypha semirufa,Muscicapidae (Old World Flycatchers),RÃ¼ppell's Robin-Chat,2.007653902,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2723,Cossypha heuglini,Cossypha heuglini,Cossypha heuglini,Muscicapidae (Old World Flycatchers),White-browed Robin-Chat,1.056817492,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2724,Cossypha natalensis,Cossypha natalensis,Cossypha natalensis,Muscicapidae (Old World Flycatchers),Red-capped Robin-Chat,2.038042939,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2725,Cossypha dichroa,Cossypha dichroa,Cossypha dichroa,Muscicapidae (Old World Flycatchers),Chorister Robin-Chat,1.018321136,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
@@ -2769,7 +2769,7 @@
 2768,Phoenicurus auroreus,Phoenicurus auroreus,Phoenicurus auroreus,Muscicapidae (Old World Flycatchers),Daurian Redstart,2.393857927,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2769,Monticola cinclorhynchus,Monticola cinclorhyncha,Monticola cinclorhyncha,Muscicapidae (Old World Flycatchers),Blue-capped Rock-Thrush,1.64692919,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2770,Monticola solitarius,Monticola solitarius,Monticola solitarius,Muscicapidae (Old World Flycatchers),Blue Rock-Thrush,1.710890256,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
-2771,Monticola rupestris,Monticola rupestris,Monticola rupestris,Muscicapidae (Old World Flycatchers),Cape Rock-Thrush,0.177002194,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
+2771,Monticola rupestris,Monticola rupestris,Monticola rupestris,Muscicapidae (Old World Flycatchers),Cape Rock-Thrush,0.177002194,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),Yes,forages in intertidal zone
 2772,Saxicola rubetra,Saxicola rubetra,Saxicola rubetra,Muscicapidae (Old World Flycatchers),Whinchat,1.221671545,NA,NA,Saxicola rubetra,N,Muscicapidae,55,(Old World Flycatchers),No,
 2773,Saxicola torquatus,Saxicola rubicola,Saxicola torquatus,Muscicapidae (Old World Flycatchers),European Stonechat,1.069869789,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
 2774,Saxicola torquatus,Saxicola maurus,Saxicola torquatus,Muscicapidae (Old World Flycatchers),Siberian Stonechat,1.161884839,NA,NA,NA,NA,Muscicapidae,55,(Old World Flycatchers),No,
@@ -2804,10 +2804,10 @@
 2803,Bombycilla garrulus,Bombycilla garrulus,Bombycilla garrulus,Bombycillidae (Waxwings),Bohemian Waxwing,2.46986979,NA,NA,NA,NA,Bombycillidae,103,(Waxwings),No,
 2804,Bombycilla cedrorum,Bombycilla cedrorum,Bombycilla cedrorum,Bombycillidae (Waxwings),Cedar Waxwing,2.046413012,Bombycilla cedrorum,1.381060521,NA,NA,Bombycillidae,103,(Waxwings),No,
 2805,Bombycilla japonica,Bombycilla japonica,Bombycilla japonica,Bombycillidae (Waxwings),Japanese Waxwing,2.694669627,NA,NA,NA,NA,Bombycillidae,103,(Waxwings),No,
-2806,Ptilogonys cinereus,Ptiliogonys cinereus,Ptiliogonys cinereus,Ptiliogonatidae (Silky-flycatchers),Gray Silky-flycatcher,1.428378891,NA,NA,NA,NA,Ptiliogonatidae,9,(Silky-flycatchers),No,woodlands near the coast… 
-2807,Phainopepla nitens,Phainopepla nitens,Phainopepla nitens,Ptiliogonatidae (Silky-flycatchers),Phainopepla,1.158402817,Phainopepla nitens,0.371533218,NA,NA,Ptiliogonatidae,9,(Silky-flycatchers),No,woodlands near the coast… 
+2806,Ptilogonys cinereus,Ptiliogonys cinereus,Ptiliogonys cinereus,Ptiliogonatidae (Silky-flycatchers),Gray Silky-flycatcher,1.428378891,NA,NA,NA,NA,Ptiliogonatidae,9,(Silky-flycatchers),No,woodlands near the coastâ€¦ 
+2807,Phainopepla nitens,Phainopepla nitens,Phainopepla nitens,Ptiliogonatidae (Silky-flycatchers),Phainopepla,1.158402817,Phainopepla nitens,0.371533218,NA,NA,Ptiliogonatidae,9,(Silky-flycatchers),No,woodlands near the coastâ€¦ 
 2808,Dulus dominicus,Dulus dominicus,Dulus dominicus,Dulidae (Palmchat),Palmchat,3.079810724,NA,NA,NA,NA,Dulidae,158,(Palmchat),No,
-2809,Promerops cafer,Promerops cafer,Promerops cafer,Promeropidae (Sugarbirds),Cape Sugarbird,1.015671003,NA,NA,NA,NA,Promeropidae,179,(Sugarbirds),No,
+2809,Promerops cafer,Promerops cafer,Promerops cafer,Promeropidae (Sugarbirds),Cape Sugarbird,1.015671003,NA,NA,NA,NA,Promeropidae,179,(Sugarbirds),No,"moves through coastal areas, but mostly in lowlands "
 2810,Prionochilus plateni,Prionochilus plateni,Prionochilus plateni,Dicaeidae (Flowerpeckers),Palawan Flowerpecker,0.192593431,NA,NA,NA,NA,Dicaeidae,156,(Flowerpeckers),No,
 2811,Dicaeum agile,Dicaeum agile,Dicaeum agile,Dicaeidae (Flowerpeckers),Thick-billed Flowerpecker,1.298694361,NA,NA,NA,NA,Dicaeidae,156,(Flowerpeckers),No,
 2812,Dicaeum australe,Dicaeum australe,Dicaeum australe,Dicaeidae (Flowerpeckers),Red-keeled Flowerpecker,2.092535968,NA,NA,NA,NA,Dicaeidae,156,(Flowerpeckers),No,
@@ -2881,13 +2881,13 @@
 2880,Ploceus pelzelni,Ploceus pelzelni,Ploceus pelzelni,Ploceidae (Weavers and Allies),Slender-billed Weaver,0.985556787,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
 2881,Ploceus nigricollis,Ploceus nigricollis,Ploceus nigricollis,Ploceidae (Weavers and Allies),Black-necked Weaver,0.320658633,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
 2882,Ploceus ocularis,Ploceus ocularis,Ploceus ocularis,Ploceidae (Weavers and Allies),Spectacled Weaver,1.344247698,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
-2883,Ploceus capensis,Ploceus capensis,Ploceus capensis,Ploceidae (Weavers and Allies),Cape Weaver,1.860083248,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
+2883,Ploceus capensis,Ploceus capensis,Ploceus capensis,Ploceidae (Weavers and Allies),Cape Weaver,1.860083248,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,Open country 
 2884,Ploceus subaureus,Ploceus subaureus,Ploceus subaureus,Ploceidae (Weavers and Allies),African Golden-Weaver,1.571461756,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
 2885,Ploceus xanthops,Ploceus xanthops,Ploceus xanthops,Ploceidae (Weavers and Allies),Holub's Golden-Weaver,1.35850884,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
 2886,Ploceus aurantius,Ploceus aurantius,Ploceus aurantius,Ploceidae (Weavers and Allies),Orange Weaver,1.356864306,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
 2887,Ploceus castanops,Ploceus castanops,Ploceus castanops,Ploceidae (Weavers and Allies),Northern Brown-throated Weaver,0.812449069,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
 2888,Ploceus velatus,Ploceus velatus,Ploceus velatus,Ploceidae (Weavers and Allies),Southern Masked-Weaver,2.575498734,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
-2889,Ploceus galbula,Ploceus galbula,Ploceus galbula,Ploceidae (Weavers and Allies),Rüppell's Weaver,1.542998251,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
+2889,Ploceus galbula,Ploceus galbula,Ploceus galbula,Ploceidae (Weavers and Allies),RÃ¼ppell's Weaver,1.542998251,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
 2890,Ploceus spekei,Ploceus spekei,Ploceus spekei,Ploceidae (Weavers and Allies),Speke's Weaver,1.493096125,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
 2891,Ploceus nigerrimus,Ploceus nigerrimus,Ploceus nigerrimus,Ploceidae (Weavers and Allies),Vieillot's Black Weaver,0.691693623,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
 2892,Ploceus cucullatus,Ploceus cucullatus,Ploceus cucullatus,Ploceidae (Weavers and Allies),Village Weaver,1.740387583,NA,NA,NA,NA,Ploceidae,173,(Weavers and Allies),No,
@@ -2966,9 +2966,9 @@
 2965,Passer pyrrhonotus,Passer pyrrhonotus,Passer pyrrhonotus,Passeridae (Old World Sparrows),Sind Sparrow,1.083232732,NA,NA,NA,NA,Passeridae,56,(Old World Sparrows),No,
 2966,Passer rutilans,Passer cinnamomeus,Passer cinnamomeus,Passeridae (Old World Sparrows),Russet Sparrow,0.650263413,NA,NA,NA,NA,Passeridae,56,(Old World Sparrows),No,
 2967,Passer flaveolus,Passer flaveolus,Passer flaveolus,Passeridae (Old World Sparrows),Plain-backed Sparrow,1.605673708,NA,NA,NA,NA,Passeridae,56,(Old World Sparrows),No,
-2968,Passer moabiticus,Passer moabiticus,Passer moabiticus,Passeridae (Old World Sparrows),Dead Sea Sparrow,NA,NA,NA,Passer moabiticus,N,Passeridae,56,(Old World Sparrows),No,
+2968,Passer moabiticus,Passer moabiticus,Passer moabiticus,Passeridae (Old World Sparrows),Dead Sea Sparrow,NA,NA,NA,Passer moabiticus,N,Passeridae,56,(Old World Sparrows),No,no mention of coastal habitat 
 2969,Passer rufocinctus,Passer rufocinctus,Passer rufocinctus,Passeridae (Old World Sparrows),Kenya Rufous Sparrow,1.321720541,NA,NA,NA,NA,Passeridae,56,(Old World Sparrows),No,
-2970,Passer melanurus,Passer melanurus,Passer melanurus,Passeridae (Old World Sparrows),Cape Sparrow,2.132729576,NA,NA,NA,NA,Passeridae,56,(Old World Sparrows),No,
+2970,Passer melanurus,Passer melanurus,Passer melanurus,Passeridae (Old World Sparrows),Cape Sparrow,2.132729576,NA,NA,NA,NA,Passeridae,56,(Old World Sparrows),No,no mention of coastal habitat 
 2971,Passer griseus,Passer griseus,Passer griseus,Passeridae (Old World Sparrows),Northern Gray-headed Sparrow,0.923293914,NA,NA,NA,NA,Passeridae,56,(Old World Sparrows),No,
 2972,Passer swainsonii,Passer swainsonii,Passer swainsonii,Passeridae (Old World Sparrows),Swainson's Sparrow,2.170032134,NA,NA,NA,NA,Passeridae,56,(Old World Sparrows),No,
 2973,Passer gongonensis,Passer gongonensis,Passer gongonensis,Passeridae (Old World Sparrows),Parrot-billed Sparrow,1.600180684,NA,NA,NA,NA,Passeridae,56,(Old World Sparrows),No,
@@ -2978,7 +2978,7 @@
 2977,Petronia xanthocollis,Gymnoris xanthocollis,Gymnoris xanthocollis,Passeridae (Old World Sparrows),Yellow-throated Sparrow,0.819609009,NA,NA,Petronia xanthocollis,U,Passeridae,56,(Old World Sparrows),No,
 2978,Petronia petronia,Petronia petronia,Petronia petronia,Passeridae (Old World Sparrows),Rock Sparrow,0.923261222,NA,NA,Petronia petronia,N,Passeridae,56,(Old World Sparrows),No,
 2979,Dendronanthus indicus,Dendronanthus indicus,Dendronanthus indicus,Motacillidae (Wagtails and Pipits),Forest Wagtail,2.07621,NA,NA,NA,NA,Motacillidae,74,(Wagtails and Pipits),No,
-2980,Motacilla capensis,Motacilla capensis,Motacilla capensis,Motacillidae (Wagtails and Pipits),Cape Wagtail,2.016174678,NA,NA,NA,NA,Motacillidae,74,(Wagtails and Pipits),No,
+2980,Motacilla capensis,Motacilla capensis,Motacilla capensis,Motacillidae (Wagtails and Pipits),Cape Wagtail,2.016174678,NA,NA,NA,NA,Motacillidae,74,(Wagtails and Pipits),Yes,sandy and rocky coastlines 
 2981,Motacilla flaviventris,Motacilla flaviventris,Motacilla flaviventris,Motacillidae (Wagtails and Pipits),Madagascar Wagtail,1.095199451,NA,NA,NA,NA,Motacillidae,74,(Wagtails and Pipits),No,
 2982,Motacilla cinerea,Motacilla cinerea,Motacilla cinerea,Motacillidae (Wagtails and Pipits),Gray Wagtail,2.08137182,NA,NA,Motacilla cinerea,N,Motacillidae,74,(Wagtails and Pipits),No,
 2983,Motacilla flava,Motacilla flava,Motacilla flava,Motacillidae (Wagtails and Pipits),Western Yellow Wagtail,1.259406766,NA,NA,Motacilla flava,N,Motacillidae,74,(Wagtails and Pipits),No,
@@ -3069,7 +3069,7 @@
 3068,Serinus striolatus,Crithagra striolata,Crithagra striolata,"Fringillidae (Finches, Euphonias, and Allies)",Streaky Seedeater,1.973932511,NA,NA,NA,NA,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
 3069,Serinus gularis,Crithagra gularis,Crithagra gularis,"Fringillidae (Finches, Euphonias, and Allies)",Streaky-headed Seedeater,2.28733987,NA,NA,NA,NA,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
 3070,Serinus tristriatus,Crithagra tristriata,Crithagra tristriata,"Fringillidae (Finches, Euphonias, and Allies)",Brown-rumped Seedeater,2.324320672,NA,NA,NA,NA,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
-3071,Serinus totta,Crithagra totta,Crithagra totta,"Fringillidae (Finches, Euphonias, and Allies)",Cape Siskin,0.395187997,NA,NA,NA,NA,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
+3071,Serinus totta,Crithagra totta,Crithagra totta,"Fringillidae (Finches, Euphonias, and Allies)",Cape Siskin,0.395187997,NA,NA,NA,NA,Fringillidae,51,"(Finches, Euphonias, and Allies)",Yes,coastal scrub 
 3072,Carduelis flavirostris,Linaria flavirostris,Linaria flavirostris,"Fringillidae (Finches, Euphonias, and Allies)",Twite,1.709969846,NA,NA,NA,NA,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
 3073,Carduelis cannabina,Linaria cannabina,Linaria cannabina,"Fringillidae (Finches, Euphonias, and Allies)",Eurasian Linnet,1.152401437,NA,NA,Carduelis cannabina,U,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
 3074,Carduelis flammea,Acanthis flammea,Acanthis flammea,"Fringillidae (Finches, Euphonias, and Allies)",Common Redpoll,2.045894292,NA,NA,Carduelis flammea,U,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
@@ -3086,7 +3086,7 @@
 3085,Serinus pusillus,Serinus pusillus,Serinus pusillus,"Fringillidae (Finches, Euphonias, and Allies)",Fire-fronted Serin,NA,NA,NA,Serinus pusillus,N,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
 3086,Serinus syriacus,Serinus syriacus,Serinus syriacus,"Fringillidae (Finches, Euphonias, and Allies)",Syrian Serin,0.96119845,NA,NA,Serinus syriacus,N,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
 3087,Serinus flavivertex,Serinus flavivertex,Serinus flavivertex,"Fringillidae (Finches, Euphonias, and Allies)",Yellow-crowned Canary,0.564103538,NA,NA,NA,NA,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
-3088,Serinus canicollis,Serinus canicollis,Serinus canicollis,"Fringillidae (Finches, Euphonias, and Allies)",Cape Canary,1.53779545,NA,NA,NA,NA,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
+3088,Serinus canicollis,Serinus canicollis,Serinus canicollis,"Fringillidae (Finches, Euphonias, and Allies)",Cape Canary,1.53779545,NA,NA,NA,NA,Fringillidae,51,"(Finches, Euphonias, and Allies)",Yes,coastal dunes and rocky/sandy beaches 
 3089,Carduelis spinus,Spinus spinus,Spinus spinus,"Fringillidae (Finches, Euphonias, and Allies)",Eurasian Siskin,1.8398561,NA,NA,Carduelis spinus,U,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
 3090,Carduelis pinus,Spinus pinus,Spinus pinus,"Fringillidae (Finches, Euphonias, and Allies)",Pine Siskin,1.812039562,Spinus pinus,-0.945585905,Carduelis pinus,U,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
 3091,Carduelis notata,Spinus notatus,Spinus notatus,"Fringillidae (Finches, Euphonias, and Allies)",Black-headed Siskin,0.843994268,NA,NA,NA,NA,Fringillidae,51,"(Finches, Euphonias, and Allies)",No,
@@ -3118,7 +3118,7 @@
 3117,Emberiza hortulana,Emberiza hortulana,Emberiza hortulana,Emberizidae (Old World Buntings),Ortolan Bunting,0.503557073,NA,NA,Emberiza hortulana,N,Emberizidae,82,(Old World Buntings),No,
 3118,Emberiza caesia,Emberiza caesia,Emberiza caesia,Emberizidae (Old World Buntings),Cretzschmar's Bunting,NA,NA,NA,Emberiza caesia,N,Emberizidae,82,(Old World Buntings),No,
 3119,Emberiza flaviventris,Emberiza flaviventris,Emberiza flaviventris,Emberizidae (Old World Buntings),Golden-breasted Bunting,0.514991789,NA,NA,NA,NA,Emberizidae,82,(Old World Buntings),No,
-3120,Emberiza capensis,Emberiza capensis,Emberiza capensis,Emberizidae (Old World Buntings),Cape Bunting,0.292991986,NA,NA,NA,NA,Emberizidae,82,(Old World Buntings),No,
+3120,Emberiza capensis,Emberiza capensis,Emberiza capensis,Emberizidae (Old World Buntings),Cape Bunting,0.292991986,NA,NA,NA,NA,Emberizidae,82,(Old World Buntings),No,sandy soils - not going to count as coastal 
 3121,Emberiza tahapisi,Emberiza tahapisi,Emberiza tahapisi,Emberizidae (Old World Buntings),Cinnamon-breasted Bunting,1.454448611,NA,NA,NA,NA,Emberizidae,82,(Old World Buntings),No,
 3122,Emberiza striolata,Emberiza sahari,Emberiza sahari,Emberizidae (Old World Buntings),House Bunting,3.465375573,NA,NA,NA,NA,Emberizidae,82,(Old World Buntings),No,
 3123,Emberiza striolata,Emberiza striolata,Emberiza striolata,Emberizidae (Old World Buntings),Striolated Bunting,1.72910297,NA,NA,Emberiza striolata,U,Emberizidae,82,(Old World Buntings),No,
@@ -3180,7 +3180,7 @@
 3179,Oriturus superciliosus,Oriturus superciliosus,Oriturus superciliosus,Passerellidae (New World Sparrows),Striped Sparrow,0.935679435,NA,NA,NA,NA,Passerellidae,2,(New World Sparrows),No,mention of marsh but not saltwater or coastal 
 3180,Pooecetes gramineus,Pooecetes gramineus,Pooecetes gramineus,Passerellidae (New World Sparrows),Vesper Sparrow,1.121059471,Pooecetes gramineus,-1.175525451,NA,NA,Passerellidae,2,(New World Sparrows),No,mention of marsh but not saltwater or coastal 
 3181,Ammodramus leconteii,Ammospiza leconteii,Ammospiza leconteii,Passerellidae (New World Sparrows),LeConte's Sparrow,1.316405561,Ammospiza leconteii,-0.484447642,NA,NA,Passerellidae,2,(New World Sparrows),No,mention of marsh but not saltwater or coastal 
-3182,Ammodramus maritimus,Ammospiza maritima,Ammospiza maritima,Passerellidae (New World Sparrows),Seaside Sparrow,1.207444999,Ammospiza maritima,-1.372249983,NA,NA,Passerellidae,2,(New World Sparrows),No,mention of marsh but not saltwater or coastal 
+3182,Ammodramus maritimus,Ammospiza maritima,Ammospiza maritima,Passerellidae (New World Sparrows),Seaside Sparrow,1.207444999,Ammospiza maritima,-1.372249983,NA,NA,Passerellidae,2,(New World Sparrows),Yes,tidal marshes 
 3183,Ammodramus nelsoni,Ammospiza nelsoni,Ammospiza nelsoni,Passerellidae (New World Sparrows),Nelson's Sparrow,0.822631122,Ammospiza nelsoni,-1.349277151,NA,NA,Passerellidae,2,(New World Sparrows),No,mention of marsh but not saltwater or coastal 
 3184,Ammodramus caudacutus,Ammospiza caudacuta,Ammospiza caudacuta,Passerellidae (New World Sparrows),Saltmarsh Sparrow,1.742834434,Ammospiza caudacuta,-0.194703114,NA,NA,Passerellidae,2,(New World Sparrows),No,mention of marsh but not saltwater or coastal 
 3185,Passerculus sandwichensis,Passerculus sandwichensis,Passerculus sandwichensis,Passerellidae (New World Sparrows),Savannah Sparrow,1.314990839,Passerculus sandwichensis,-0.152309638,NA,NA,Passerellidae,2,(New World Sparrows),No,mention of marsh but not saltwater or coastal 
@@ -3322,7 +3322,7 @@
 3321,Dendroica pharetra,Setophaga pharetra,Setophaga pharetra,Parulidae (New World Warblers),Arrowhead Warbler,0.356006065,NA,NA,NA,NA,Parulidae,52,(New World Warblers),No,
 3322,Wilsonia citrina,Setophaga citrina,Setophaga citrina,Parulidae (New World Warblers),Hooded Warbler,1.382565725,Setophaga citrina,-1.215219801,NA,NA,Parulidae,52,(New World Warblers),No,
 3323,Setophaga ruticilla,Setophaga ruticilla,Setophaga ruticilla,Parulidae (New World Warblers),American Redstart,1.903169327,Setophaga ruticilla,0.20794161,NA,NA,Parulidae,52,(New World Warblers),No,
-3324,Dendroica tigrina,Setophaga tigrina,Setophaga tigrina,Parulidae (New World Warblers),Cape May Warbler,2.09664662,Setophaga tigrina,-1.189080387,Dendroica tigrina,N,Parulidae,52,(New World Warblers),No,
+3324,Dendroica tigrina,Setophaga tigrina,Setophaga tigrina,Parulidae (New World Warblers),Cape May Warbler,2.09664662,Setophaga tigrina,-1.189080387,Dendroica tigrina,N,Parulidae,52,(New World Warblers),No,coniferous habitats
 3325,Dendroica cerulea,Setophaga cerulea,Setophaga cerulea,Parulidae (New World Warblers),Cerulean Warbler,1.180616142,Setophaga cerulea,-1.690794604,Dendroica cerulea,N,Parulidae,52,(New World Warblers),No,
 3326,Parula americana,Setophaga americana,Setophaga americana,Parulidae (New World Warblers),Northern Parula,1.814142599,Setophaga americana,-0.140402961,NA,NA,Parulidae,52,(New World Warblers),No,
 3327,Parula pitiayumi,Setophaga pitiayumi,Setophaga pitiayumi,Parulidae (New World Warblers),Tropical Parula,1.552154785,NA,NA,NA,NA,Parulidae,52,(New World Warblers),No,
@@ -3486,7 +3486,7 @@
 3485,Tangara desmaresti,Tangara desmaresti,Tangara desmaresti,Thraupidae (Tanagers and Allies),Brassy-breasted Tanager,1.008213256,NA,NA,NA,NA,Thraupidae,146,(Tanagers and Allies),No,
 3486,Tangara cyanoventris,Tangara cyanoventris,Tangara cyanoventris,Thraupidae (Tanagers and Allies),Gilt-edged Tanager,0.90272183,NA,NA,NA,NA,Thraupidae,146,(Tanagers and Allies),No,
 3487,Tangara lavinia,Tangara lavinia,Tangara lavinia,Thraupidae (Tanagers and Allies),Rufous-winged Tanager,0.317374646,NA,NA,NA,NA,Thraupidae,146,(Tanagers and Allies),No,
-3488,Tangara gyrola,Tangara gyrola,Tangara gyrola,Thraupidae (Tanagers and Allies),Bay-headed Tanager,0.568940805,NA,NA,NA,NA,Thraupidae,146,(Tanagers and Allies),No,
+3488,Tangara gyrola,Setophaga castanea,Tangara gyrola,Thraupidae (Tanagers and Allies),Bay-headed Tanager,0.568940805,NA,NA,NA,NA,Thraupidae,146,(Tanagers and Allies),No,
 3489,Tangara chrysotis,Tangara chrysotis,Tangara chrysotis,Thraupidae (Tanagers and Allies),Golden-eared Tanager,0.00682012,NA,NA,NA,NA,Thraupidae,146,(Tanagers and Allies),No,
 3490,Tangara xanthocephala,Tangara xanthocephala,Tangara xanthocephala,Thraupidae (Tanagers and Allies),Saffron-crowned Tanager,0.102916462,NA,NA,NA,NA,Thraupidae,146,(Tanagers and Allies),No,
 3491,Tangara parzudakii,Tangara parzudakii,Tangara parzudakii,Thraupidae (Tanagers and Allies),Flame-faced Tanager,0.05375669,NA,NA,NA,NA,Thraupidae,146,(Tanagers and Allies),No,

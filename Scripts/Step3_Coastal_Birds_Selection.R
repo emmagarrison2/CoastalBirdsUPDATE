@@ -135,7 +135,7 @@ View(Coastal_Round_2)
 #looks good! 
 
 
-####################################Round 2###################################
+####################################Round 3###################################
 ####
 ##
 #in this round, we will sort through the common names of species that were marked as "Yes" for Urban Tolerance 
@@ -156,8 +156,43 @@ write.csv(Round_1_no, here("Notes", "Round_1_no.csv"))
 #for all flagged species, look on Birds of the World (2022) species page for mentions of coastal habitat/resource use. 
 
 
+#upload edited csv 
+
+edits_for_round_3 <- read.csv(here("Notes", "Round_1_no_edited.csv"))
+
+#View to visually check 
+View(edits_for_round_3)
+colnames(edits_for_round_3)
+
+#join round 3 with round 2 
+
+p_Coastal_Round_3 <- Coastal_Round_2 %>%
+  left_join(edits_for_round_3, by = "Species_eBird", suffix = c("", ".r2")) %>%
+  mutate(
+    Coastal = ifelse(!is.na(Coastal.r2), Coastal.r2, Coastal), 
+    Notes = ifelse(!is.na(Notes.r2), Notes.r2, Notes)
+  ) %>%
+  select(-ends_with(".r2"), -"X", -"X.1")
 
 
+nrow(p_Coastal_Round_3)
+#4438.... it should be 4433, there are a few duplicate rows 
+
+#lets identify these duplicates 
+duplicates_round_3 <- p_Coastal_Round_3 %>%
+  group_by(Species_eBird) %>%
+  filter(n() > 1)
+
+View(duplicates_round_3)
+
+#duplicates look exactly the same, all columns... let's just manually remove duplicates 
+
+Coastal_Round_3 <- p_Coastal_Round_3 %>%
+  distinct(Species_eBird, .keep_all = TRUE)
+
+View(Coastal_Round_3)
+nrow(Coastal_Round_3)
+#4431 - after I've removed all duplicates, we lost 2 more species... which seems to be fine. 
 
 
 

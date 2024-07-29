@@ -19,7 +19,7 @@ AllBirds <- readRDS(here("Outputs", "UAI_MUTI_UN_final.rds"))
 View(AllBirds)
 nrow(AllBirds) #4434, which is correct! 
 
-# extract a data frame that contain a list of family names
+# extract a data frame that contains a list of family names
 unique_family_names <- AllBirds %>%
   distinct(Family_eBird) %>%
   tidyr::separate(., col = Family_eBird, # this splits the column Family_eBird into two columns
@@ -65,9 +65,6 @@ write.csv(unique_family_names, here("Notes", "families_all.csv"))
 #################################################################
 
 
-
-#KEEP KEEP KEEP KEEP KEEP KEEP KEEP KEEP KEEP
-
 ####### For all species from a "Coastal" (Yes) family, mark them as a coastal species. 
 #For AllBirds --> column = Family_eBird
  
@@ -79,21 +76,22 @@ List_of_Families <- read.csv(here("Notes", "families_all_coastal.csv"))
 View(List_of_Families)
 colnames(List_of_Families) 
 colnames(AllBirds)
+View(AllBirds)
 
-List_of_Families_r <- List_of_Families %>% rename(Family_eBird = Family_Sci)
-colnames(List_of_Families_r) 
+#reformat AllBirds Family_eBird column so that it is compatable to join with List_of_Families 
+
+AllBirds$Family_Sci <- word(AllBirds$Family_eBird, 1)
+View(AllBirds)
 
 
 #join them together 
-Coastal_Families <- full_join(AllBirds, List_of_Families_r, by = "Family_eBird")
-View(Coastal_Families)
+Coastal_Round_1 <- left_join(AllBirds, List_of_Families, by = "Family_Sci")
+View(Coastal_Round_1)
+nrow(Coastal_Round_1)#4433 - correct number of rows in AllBirds, which was the left part of left_join 
+ 
+#save rds of Coastal_Round_1, for quick recall 
 
-#save rds of Coastal_Families, for quick recall 
-
-saveRDS(Coastal_Families, here("Outputs", "Coastal_Families.rds"))
-
-
-
+saveRDS(Coastal_Round_1, here("Outputs", "Coastal_Round_1.rds"))
 
 
 ####################################Round 2###################################
@@ -101,34 +99,44 @@ saveRDS(Coastal_Families, here("Outputs", "Coastal_Families.rds"))
 ##
 #in this round, we will sort through the common names of species that were marked as "Yes" for Urban Tolerance 
 
-##test
-test_before <- readRDS(here("Outputs", "Coastal_Round_1.rds"))
-View(test_before)
 
-#so actually the csv we will use here will be..... families_all_coastal joined with AllBirds.r --> Coastal_families object is correct 
-
-test_after <- read.csv(here("Notes", "families_all_coastal.csv"))
-View(test_after)
-
-
-Round_1_yes <- Coastal_Round_1_f %>% 
+Round_1_yes <- Coastal_Round_1 %>% 
   filter(Coastal == "Yes")
 
 View(Round_1_yes)
 nrow(Round_1_yes)
-#825!  
+#823!  
 
 write.csv(Round_1_yes, here("Notes", "Round_1_yes.csv"))
 
 #now, look through the common names for these species... searching for key words that indicate NON-coastal habitats: "freshwater", "alpine", "upland", "lake", "river", 
 #"mountain", "prairie", "highland", "forest", "desert" 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###### FINAL ROUND TO FIND ANY REMAINING COASTAL SPECIES #######
 ###### Before proceeding, do one last pass to identify any additional coastal species ######
 # to do this, we will use the diet info columns that came from Wilman et al. 2014 (Elton traits) 
 
 head(AllBirds)
-# we need to search the original species list of 4434 species
+# we need to search the original species list of 4433 species
 
 # import elton traits (Wilman et al. 2014)
 elton <- read.csv(here("Data", "elton.csv"), header=T)

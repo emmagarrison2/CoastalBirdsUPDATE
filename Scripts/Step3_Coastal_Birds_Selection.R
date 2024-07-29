@@ -151,8 +151,8 @@ nrow(Round_1_no)
 write.csv(Round_1_no, here("Notes", "Round_1_no.csv"))
 
 #now, edit this Round_1_no.csv file (containing all species from families marked as "No" in Round 1) -> 
-#search through common names for coastal-identifier words: "Coast", "Coastal", Sea", "Tide", "Intertidal", "Beach", "Mangrove",
-#"Ocean", "Barnacle", "Kelp", "Fish", "Crab", "Bay", "Cove", "Cape", "Estuary", "Lagoon", and "Reef" 
+#search through common names for coastal-identifier words: "Coast", "Coastal", "Sea", "Tide", "Intertidal", "Beach", "Mangrove",
+#"Ocean", "Barnacle", "Kelp", "Fish", "Crab", "Bay", "Cove", "Cape", "Estuary", "Lagoon", "Reef", and "Surf" 
 #for all flagged species, look on Birds of the World (2022) species page for mentions of coastal habitat/resource use. 
 
 

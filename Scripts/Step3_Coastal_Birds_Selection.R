@@ -113,15 +113,47 @@ write.csv(Round_1_yes, here("Notes", "Round_1_yes.csv"))
 #"mountain", "prairie", "highland", "forest", "desert" 
 
 
+#read in edited csv 
+
+edits_for_round_2 <- read.csv(here("Notes", "Round_1_yes_edited.csv"))
+
+colnames(edits_for_round_2)
 
 
+Coastal_Round_2 <- Coastal_Round_1 %>%
+  left_join(edits_for_round_2, by = "Species_eBird", suffix = c("", ".r2")) %>%
+  mutate(
+    Coastal = ifelse(!is.na(Coastal.r2), Coastal.r2, Coastal), 
+    Notes = ifelse(!is.na(Notes.r2), Notes.r2, Notes)
+  ) %>%
+  select(-ends_with(".r2"), -"X", -"X.1")
+
+#View Coastal_Round_2 for double-checking 
+View(Coastal_Round_2)
 
 
+#looks good! 
 
 
+####################################Round 2###################################
+####
+##
+#in this round, we will sort through the common names of species that were marked as "Yes" for Urban Tolerance 
 
 
+Round_1_no <- Coastal_Round_1 %>% 
+  filter(Coastal == "No")
 
+View(Round_1_no)
+nrow(Round_1_no)
+#3610!  
+
+write.csv(Round_1_no, here("Notes", "Round_1_no.csv"))
+
+#now, edit this Round_1_no.csv file (containing all species from families marked as "No" in Round 1) -> 
+#search through common names for coastal-identifier words: "Coast", "Coastal", Sea", "Tide", "Intertidal", "Beach", "Mangrove",
+#"Ocean", "Barnacle", "Kelp", "Fish", "Crab", "Bay", "Cove", "Cape", "Estuary", "Lagoon", and "Reef" 
+#for all flagged species, look on Birds of the World (2022) species page for mentions of coastal habitat/resource use. 
 
 
 

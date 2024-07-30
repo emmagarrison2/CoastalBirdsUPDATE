@@ -72,7 +72,7 @@ write.csv(unique_family_names, here("Notes", "families_all.csv"))
 
 #read in the csv that contains all families and their coastal status, as determined via investigation on Birds of the World (2022). 
 
-List_of_Families <- read.csv(here("Notes", "families_all_coastal.csv"))
+List_of_Families <- read.csv(here("Notes", "families_all_coastal.csv")) %>% select(-X)
 View(List_of_Families)
 colnames(List_of_Families) 
 colnames(AllBirds)
@@ -109,9 +109,79 @@ nrow(Round_1_yes)
 
 write.csv(Round_1_yes, here("Notes", "Round_1_yes.csv"))
 
-#now, look through the common names for these species... searching for key words that indicate NON-coastal habitats: "freshwater", "alpine", "upland", "lake", "river", 
+###
+# generate a list of descriptors in the common names of the 4434 species in AllBirds
+# we will manually filter this list to identify words in the common names that relate to habitat and/or diet
+
+twowordnames <- AllBirds %>%
+  select(CommonName_eBird) %>%
+  mutate(space = str_count(CommonName_eBird, " ")) %>% # identify how many words each species has in its names using number of spaces
+  filter(space == 1) %>% # keep only species with names that contain two words (a single space)
+  separate_wider_delim(CommonName_eBird, delim = " ", names = c("descriptor1", "species")) 
+# some of these still have hyphenated terms in the species column that could be descriptive
+
+threewordnames <- AllBirds %>%
+  select(CommonName_eBird) %>%
+  mutate(space = str_count(CommonName_eBird, " ")) %>% # identify how many words each species has in its names using number of spaces
+  filter(space == 2) %>% # keep only species with names that contain two words (two spaces)
+  separate_wider_delim(CommonName_eBird, delim = " ", names = c("descriptor1", "descriptor2", "species") )
+# some of these still have hyphenated terms in the species column that could be descriptive
+
+hyphennames <- data.frame(species = c(twowordnames$species, threewordnames$species)) %>%
+  mutate(hyphen = str_count(species, "-")) %>% # identify species with hyphenated names
+  filter(hyphen == 1) %>% # keep only species with names that contain a hyphen
+  separate_wider_delim(species, delim = "-", names = c("descriptor1", "species") )
+  
+  separate_wider_delim(name, delim = "-", names = c("descriptor2", "species"))
+
+# put all the descriptive words from common names together into a single data frame and remove duplicates
+alldescriptors <- data.frame( # make a data frame
+  descriptors = sort( # arrange in alphabetical order
+    c(twowordnames$descriptor1, threewordnames$descriptor1, threewordnames$descriptor2, hyphennames$descriptor1))) %>% 
+  distinct() # remove duplicated descriptors
+
+# export as csv 
+# mark all terms that are associated with:
+# a habitat (but not a specific place)
+# a diet
+# an Ocean or Sea (e.g., Pacific)
+# or indicated a species association or interaction between the bird and another species (e.g., plant, insect, mammal)
+write.csv(alldescriptors, here("Notes", "descriptors.csv"))
+
+# import the marked up list
+# use column coastal_Y.N.M to sort
+descriptors_marked <- read.csv(here("Notes", "descriptors_marked.csv"), header=T)
+head(descriptors_marked)
+
+noncoastal_terms <- descriptors_marked %>% 
+  filter(coastal_Y.N.M =="N") %>% # keep all terms that are clearly non-coastal
+  select(descriptors) # select the column of descriptive terms
+
+# convert to a character vector 
+NCterms_vec <- as.vector(noncoastal_terms[,1])
+class(NCterms_vec)
+
+# convert complete list of common names from Round_1_yes to a character vector 
+head(Round_1_yes)
+commname_vec <- as.vector(Round_1_yes[,5]) # common names are in 5th column
+
+# now, look through the commname_vec that contains the species in Round_1_yes using the terms stored in NCterms_vec
+# we are searching for key words that indicate NON-coastal habitats, diets or associations with other species that are non-coastal
+# e.g., "freshwater", "alpine", "upland", "lake", "river", 
 #"mountain", "prairie", "highland", "forest", "desert" 
 
+R1_noncoastal <- map(NCterms_vec, str_detect, string = commname_vec) %>%
+  reduce(`|`) %>% 
+  magrittr::extract(commname_vec, .) %>%
+  tibble()
+
+R1_noncoastal
+
+# export data frame, look up species and mark ones to keep and remove
+write.csv(R1_noncoastal, here("Notes", "Round_1_noncoastal.csv"))
+
+# read in edited csv
+# use it to update coastal species list
 
 #read in edited csv 
 

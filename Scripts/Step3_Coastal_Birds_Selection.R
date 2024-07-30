@@ -133,7 +133,7 @@ hyphennames <- data.frame(species = c(twowordnames$species, threewordnames$speci
   separate_wider_delim(species, delim = "-", names = c("descriptor1", "species") )
 
   #SARAH - the following line of code has an error - does not recognize the object "name" 
-  separate_wider_delim(name, delim = "-", names = c("descriptor2", "species"))
+  #separate_wider_delim(name, delim = "-", names = c("descriptor2", "species"))
 
 # put all the descriptive words from common names together into a single data frame and remove duplicates
 alldescriptors <- data.frame( # make a data frame

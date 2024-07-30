@@ -222,10 +222,42 @@ nrow(Round_1_no)
 
 write.csv(Round_1_no, here("Notes", "Round_1_no.csv"))
 
+
+
+# # # # # # # # # # # # # # # # # # 
+
+#now, develop list of species with coastal descriptor terms in their Common Names 
+
+coastal_terms <- descriptors_marked %>% 
+  filter(coastal_Y.N.M %in% c("M", "Y")) %>% # keep all terms that are clearly coastal (Y) and possibly coastal (M)
+  select(descriptors) # select the column of descriptive terms
+
+# convert to a character vector 
+C.terms_vec <- as.vector(coastal_terms[,1])
+class(C.terms_vec)
+
+# convert complete list of common names from Round_1_yes to a character vector 
+head(Round_1_no)
+commname_vec_2 <- as.vector(Round_1_no[,5]) # common names are in 5th column
+
 #now, edit this Round_1_no.csv file (containing all species from families marked as "No" in Round 1) -> 
-#search through common names for coastal-identifier words: "Coast", "Coastal", "Sea", "Tide", "Intertidal", "Beach", "Mangrove",
-#"Ocean", "Barnacle", "Kelp", "Fish", "Crab", "Bay", "Cove", "Cape", "Estuary", "Lagoon", "Reef", and "Surf" 
+#search through common names for coastal-identifier words stored in CTerms_vec (i.e. "Coastal", "Sea", "Tide", "Beach", "Mangrove", etc.) 
 #for all flagged species, look on Birds of the World (2022) species page for mentions of coastal habitat/resource use. 
+
+R3_coastal <- map(C.terms_vec, str_detect, string = commname_vec_2) %>%
+  reduce(`|`) %>% 
+  magrittr::extract(commname_vec_2, .) %>%
+  tibble()
+
+R3_coastal
+View(R3_coastal)
+# export data frame, look up species and mark ones to keep and remove
+write.csv(R3_coastal, here("Notes", "Coastal_Names_Investigate.csv"))
+
+
+
+
+# # # # # # # # # # # # # # # # # # 
 
 
 #upload edited csv 
@@ -265,6 +297,14 @@ Coastal_Round_3 <- p_Coastal_Round_3 %>%
 View(Coastal_Round_3)
 nrow(Coastal_Round_3)
 #4431 - after I've removed all duplicates, we lost 2 more species... which seems to be fine. 
+
+
+
+
+
+
+
+
 
 
 

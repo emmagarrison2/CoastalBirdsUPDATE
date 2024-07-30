@@ -13,7 +13,7 @@
 12,Anser anser,Anser anser,Anser anser,"Anatidae (Ducks, Geese, and Waterfowl)",Graylag Goose,1.409726721,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 13,Anser cygnoides,Anser cygnoides,Anser cygnoid,"Anatidae (Ducks, Geese, and Waterfowl)",Swan Goose,2.778898076,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 14,Anser albifrons,Anser albifrons,Anser albifrons,"Anatidae (Ducks, Geese, and Waterfowl)",Greater White-fronted Goose,1.422496831,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
-15,Anser fabalis,Anser fabalis,Anser fabalis,"Anatidae (Ducks, Geese, and Waterfowl)",Taiga Bean-Goose,1.708669296,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
+15,Anser fabalis,Anser fabalis,Anser fabalis,"Anatidae (Ducks, Geese, and Waterfowl)",Taiga Bean-Goose,1.708669296,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",No,freshwater lakes 
 16,Anser brachyrhynchus,Anser brachyrhynchus,Anser brachyrhynchus,"Anatidae (Ducks, Geese, and Waterfowl)",Pink-footed Goose,1.670812293,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 17,Branta bernicla,Branta bernicla,Branta bernicla,"Anatidae (Ducks, Geese, and Waterfowl)",Brant,1.720846385,NA,NA,Branta bernicla,N,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 18,Branta leucopsis,Branta leucopsis,Branta leucopsis,"Anatidae (Ducks, Geese, and Waterfowl)",Barnacle Goose,1.359123395,NA,NA,Branta leucopsis,N,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
@@ -53,7 +53,7 @@
 52,Nettapus pulchellus,Nettapus pulchellus,Nettapus pulchellus,"Anatidae (Ducks, Geese, and Waterfowl)",Green Pygmy-Goose,1.396210761,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 53,Nettapus coromandelianus,Nettapus coromandelianus,Nettapus coromandelianus,"Anatidae (Ducks, Geese, and Waterfowl)",Cotton Pygmy-Goose,1.29839131,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 54,Callonetta leucophrys,Callonetta leucophrys,Callonetta leucophrys,"Anatidae (Ducks, Geese, and Waterfowl)",Ringed Teal,1.810459088,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
-55,Aix sponsa,Aix sponsa,Aix sponsa,"Anatidae (Ducks, Geese, and Waterfowl)",Wood Duck,1.951865355,Aix sponsa,1.743509213,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
+55,Aix sponsa,Aix sponsa,Aix sponsa,"Anatidae (Ducks, Geese, and Waterfowl)",Wood Duck,1.951865355,Aix sponsa,1.743509213,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",No,freshwater 
 56,Aix galericulata,Aix galericulata,Aix galericulata,"Anatidae (Ducks, Geese, and Waterfowl)",Mandarin Duck,2.590875574,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 57,Chenonetta jubata,Chenonetta jubata,Chenonetta jubata,"Anatidae (Ducks, Geese, and Waterfowl)",Maned Duck,1.56996267,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 58,Amazonetta brasiliensis,Amazonetta brasiliensis,Amazonetta brasiliensis,"Anatidae (Ducks, Geese, and Waterfowl)",Brazilian Teal,1.882545518,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
@@ -61,7 +61,7 @@
 60,Anas querquedula,Spatula querquedula,Spatula querquedula,"Anatidae (Ducks, Geese, and Waterfowl)",Garganey,1.381836045,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 61,Anas hottentota,Spatula hottentota,Spatula hottentota,"Anatidae (Ducks, Geese, and Waterfowl)",Blue-billed Teal,1.454391041,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 62,Anas versicolor,Spatula versicolor,Spatula versicolor,"Anatidae (Ducks, Geese, and Waterfowl)",Silver Teal,1.321946419,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
-63,Anas puna,Spatula puna,Spatula puna,"Anatidae (Ducks, Geese, and Waterfowl)",Puna Teal,0.484651279,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
+63,Anas puna,Spatula puna,Spatula puna,"Anatidae (Ducks, Geese, and Waterfowl)",Puna Teal,0.484651279,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",No,high elevation lakes 
 64,Anas discors,Spatula discors,Spatula discors,"Anatidae (Ducks, Geese, and Waterfowl)",Blue-winged Teal,1.581460779,Spatula discors,-1.095003472,Anas discors,N,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 65,Anas cyanoptera,Spatula cyanoptera,Spatula cyanoptera,"Anatidae (Ducks, Geese, and Waterfowl)",Cinnamon Teal,1.389446169,Spatula cyanoptera,0.291610958,Anas cyanoptera,N,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
 66,Anas platalea,Spatula platalea,Spatula platalea,"Anatidae (Ducks, Geese, and Waterfowl)",Red Shoveler,1.469769585,NA,NA,NA,NA,Anatidae,43,"(Ducks, Geese, and Waterfowl)",Yes,
@@ -172,10 +172,10 @@
 171,Porzana albicollis,Mustelirallus albicollis,Porzana albicollis,"Rallidae (Rails, Gallinules, and Coots)",Ash-throated Crake,1.954074384,NA,NA,NA,NA,Rallidae,45,"(Rails, Gallinules, and Coots)",Yes,coastal marshes or water 
 172,Pardirallus nigricans,Pardirallus nigricans,Pardirallus nigricans,"Rallidae (Rails, Gallinules, and Coots)",Blackish Rail,2.579482545,NA,NA,NA,NA,Rallidae,45,"(Rails, Gallinules, and Coots)",Yes,coastal marshes or water 
 173,Pardirallus sanguinolentus,Pardirallus sanguinolentus,Pardirallus sanguinolentus,"Rallidae (Rails, Gallinules, and Coots)",Plumbeous Rail,1.624513369,NA,NA,NA,NA,Rallidae,45,"(Rails, Gallinules, and Coots)",Yes,coastal marshes or water 
-174,Aramides ypecaha,Aramides ypecaha,Aramides ypecaha,"Rallidae (Rails, Gallinules, and Coots)",Giant Wood-Rail,2.001981558,NA,NA,NA,NA,Rallidae,45,"(Rails, Gallinules, and Coots)",Yes,coastal marshes or water 
+174,Aramides ypecaha,Aramides ypecaha,Aramides ypecaha,"Rallidae (Rails, Gallinules, and Coots)",Giant Wood-Rail,2.001981558,NA,NA,NA,NA,Rallidae,45,"(Rails, Gallinules, and Coots)",No,freshwater 
 175,Aramides cajanea,Aramides albiventris,Aramides albiventris,"Rallidae (Rails, Gallinules, and Coots)",Russet-naped Wood-Rail,1.35255105,NA,NA,NA,NA,Rallidae,45,"(Rails, Gallinules, and Coots)",Yes,coastal marshes or water 
 176,Aramides cajanea,Aramides cajaneus,Aramides cajaneus,"Rallidae (Rails, Gallinules, and Coots)",Gray-cowled Wood-Rail,1.980598113,NA,NA,NA,NA,Rallidae,45,"(Rails, Gallinules, and Coots)",Yes,coastal marshes or water 
-177,Aramides saracura,Aramides saracura,Aramides saracura,"Rallidae (Rails, Gallinules, and Coots)",Slaty-breasted Wood-Rail,2.671109525,NA,NA,NA,NA,Rallidae,45,"(Rails, Gallinules, and Coots)",Yes,coastal marshes or water 
+177,Aramides saracura,Aramides saracura,Aramides saracura,"Rallidae (Rails, Gallinules, and Coots)",Slaty-breasted Wood-Rail,2.671109525,NA,NA,NA,NA,Rallidae,45,"(Rails, Gallinules, and Coots)",No,no mention of coastal habitat 
 178,Gallinula ventralis,Tribonyx ventralis,Tribonyx ventralis,"Rallidae (Rails, Gallinules, and Coots)",Black-tailed Nativehen,1.595525766,NA,NA,NA,NA,Rallidae,45,"(Rails, Gallinules, and Coots)",Yes,coastal marshes or water 
 179,Gallinula mortierii,Tribonyx mortierii,Tribonyx mortierii,"Rallidae (Rails, Gallinules, and Coots)",Tasmanian Nativehen,0.661412864,NA,NA,Gallinula mortierii,N,Rallidae,45,"(Rails, Gallinules, and Coots)",Yes,coastal marshes or water 
 180,Gallinula melanops,Porphyriops melanops,Porphyriops melanops,"Rallidae (Rails, Gallinules, and Coots)",Spot-flanked Gallinule,2.119885438,NA,NA,NA,NA,Rallidae,45,"(Rails, Gallinules, and Coots)",Yes,coastal marshes or water 
@@ -345,8 +345,8 @@
 344,Limnodromus griseus,Limnodromus griseus,Limnodromus griseus,Scolopacidae (Sandpipers and Allies),Short-billed Dowitcher,1.501627678,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
 345,Limnodromus scolopaceus,Limnodromus scolopaceus,Limnodromus scolopaceus,Scolopacidae (Sandpipers and Allies),Long-billed Dowitcher,1.307477054,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
 346,Lymnocryptes minimus,Lymnocryptes minimus,Lymnocryptes minimus,Scolopacidae (Sandpipers and Allies),Jack Snipe,2.752541894,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
-347,Scolopax rusticola,Scolopax rusticola,Scolopax rusticola,Scolopacidae (Sandpipers and Allies),Eurasian Woodcock,0.931723438,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
-348,Scolopax minor,Scolopax minor,Scolopax minor,Scolopacidae (Sandpipers and Allies),American Woodcock,1.36266642,Scolopax minor,0.532789862,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
+347,Scolopax rusticola,Scolopax rusticola,Scolopax rusticola,Scolopacidae (Sandpipers and Allies),Eurasian Woodcock,0.931723438,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,seacliffs 
+348,Scolopax minor,Scolopax minor,Scolopax minor,Scolopacidae (Sandpipers and Allies),American Woodcock,1.36266642,Scolopax minor,0.532789862,NA,NA,Scolopacidae,62,(Sandpipers and Allies),No,no mention of coastal habitat 
 349,Gallinago hardwickii,Gallinago hardwickii,Gallinago hardwickii,Scolopacidae (Sandpipers and Allies),Latham's Snipe,1.640906998,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
 350,Gallinago gallinago,Gallinago gallinago,Gallinago gallinago,Scolopacidae (Sandpipers and Allies),Common Snipe,1.491174562,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
 351,Gallinago gallinago,Gallinago delicata,Gallinago delicata,Scolopacidae (Sandpipers and Allies),Wilson's Snipe,1.378698537,Gallinago delicata,-1.252805323,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
@@ -370,7 +370,7 @@
 369,Catoptrophorus semipalmatus,Tringa semipalmata,Tringa semipalmata,Scolopacidae (Sandpipers and Allies),Willet,1.34763576,Tringa semipalmata,-0.710956912,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
 370,Tringa flavipes,Tringa flavipes,Tringa flavipes,Scolopacidae (Sandpipers and Allies),Lesser Yellowlegs,1.473890016,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
 371,Tringa stagnatilis,Tringa stagnatilis,Tringa stagnatilis,Scolopacidae (Sandpipers and Allies),Marsh Sandpiper,1.319950633,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
-372,Tringa glareola,Tringa glareola,Tringa glareola,Scolopacidae (Sandpipers and Allies),Wood Sandpiper,1.334634424,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
+372,Tringa glareola,Tringa glareola,Tringa glareola,Scolopacidae (Sandpipers and Allies),Wood Sandpiper,1.334634424,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,rarely coastal
 373,Tringa totanus,Tringa totanus,Tringa totanus,Scolopacidae (Sandpipers and Allies),Common Redshank,1.604988696,NA,NA,NA,NA,Scolopacidae,62,(Sandpipers and Allies),Yes,
 374,Dromas ardeola,Dromas ardeola,Dromas ardeola,Dromadidae (Crab-Plover),Crab-Plover,1.933691987,NA,NA,NA,NA,Dromadidae,119,(Crab-Plover),Yes,
 375,Catharacta skua,Stercorarius skua,Catharacta skua,Stercorariidae (Skuas and Jaegers),Great Skua,1.077097816,NA,NA,NA,NA,Stercorariidae,123,(Skuas and Jaegers),Yes,
@@ -559,7 +559,7 @@
 558,Ixobrychus exilis,Ixobrychus exilis,Ixobrychus exilis,"Ardeidae (Herons, Egrets, and Bitterns)",Least Bittern,1.824398979,Ixobrychus exilis,0.980183627,Ixobrychus exilis,N,Ardeidae,63,"(Herons, Egrets, and Bitterns)",Yes,
 559,Ixobrychus involucris,Ixobrychus involucris,Ixobrychus involucris,"Ardeidae (Herons, Egrets, and Bitterns)",Stripe-backed Bittern,2.384410626,NA,NA,NA,NA,Ardeidae,63,"(Herons, Egrets, and Bitterns)",Yes,
 560,Tigrisoma lineatum,Tigrisoma lineatum,Tigrisoma lineatum,"Ardeidae (Herons, Egrets, and Bitterns)",Rufescent Tiger-Heron,1.86395331,NA,NA,NA,NA,Ardeidae,63,"(Herons, Egrets, and Bitterns)",Yes,
-561,Tigrisoma fasciatum,Tigrisoma fasciatum,Tigrisoma fasciatum,"Ardeidae (Herons, Egrets, and Bitterns)",Fasciated Tiger-Heron,0.574282065,NA,NA,NA,NA,Ardeidae,63,"(Herons, Egrets, and Bitterns)",Yes,
+561,Tigrisoma fasciatum,Tigrisoma fasciatum,Tigrisoma fasciatum,"Ardeidae (Herons, Egrets, and Bitterns)",Fasciated Tiger-Heron,0.574282065,NA,NA,NA,NA,Ardeidae,63,"(Herons, Egrets, and Bitterns)",No,no mention of coastal habitat 
 562,Tigrisoma mexicanum,Tigrisoma mexicanum,Tigrisoma mexicanum,"Ardeidae (Herons, Egrets, and Bitterns)",Bare-throated Tiger-Heron,0.782969074,NA,NA,NA,NA,Ardeidae,63,"(Herons, Egrets, and Bitterns)",Yes,
 563,Ardea herodias,Ardea herodias,Ardea herodias,"Ardeidae (Herons, Egrets, and Bitterns)",Great Blue Heron,1.619159269,Ardea herodias,2.046111681,NA,NA,Ardeidae,63,"(Herons, Egrets, and Bitterns)",Yes,
 564,Ardea cinerea,Ardea cinerea,Ardea cinerea,"Ardeidae (Herons, Egrets, and Bitterns)",Gray Heron,1.689177808,NA,NA,NA,NA,Ardeidae,63,"(Herons, Egrets, and Bitterns)",Yes,
@@ -637,8 +637,8 @@
 636,Neophron percnopterus,Neophron percnopterus,Neophron percnopterus,"Accipitridae (Hawks, Eagles, and Kites)",Egyptian Vulture,1.161109339,NA,NA,NA,NA,Accipitridae,53,"(Hawks, Eagles, and Kites)",Yes,
 637,Chondrohierax uncinatus,Chondrohierax uncinatus,Chondrohierax uncinatus,"Accipitridae (Hawks, Eagles, and Kites)",Hook-billed Kite,1.552151596,NA,NA,NA,NA,Accipitridae,53,"(Hawks, Eagles, and Kites)",Yes,
 638,Leptodon cayanensis,Leptodon cayanensis,Leptodon cayanensis,"Accipitridae (Hawks, Eagles, and Kites)",Gray-headed Kite,0.969572046,NA,NA,NA,NA,Accipitridae,53,"(Hawks, Eagles, and Kites)",Yes,
-639,Pernis apivorus,Pernis apivorus,Pernis apivorus,"Accipitridae (Hawks, Eagles, and Kites)",European Honey-buzzard,1.302738493,NA,NA,NA,NA,Accipitridae,53,"(Hawks, Eagles, and Kites)",Yes,
-640,Pernis ptilorhyncus,Pernis ptilorhynchus,Pernis ptilorhynchus,"Accipitridae (Hawks, Eagles, and Kites)",Oriental Honey-buzzard,1.76029718,NA,NA,NA,NA,Accipitridae,53,"(Hawks, Eagles, and Kites)",Yes,
+639,Pernis apivorus,Pernis apivorus,Pernis apivorus,"Accipitridae (Hawks, Eagles, and Kites)",European Honey-buzzard,1.302738493,NA,NA,NA,NA,Accipitridae,53,"(Hawks, Eagles, and Kites)",No,no mention of coastal habitat 
+640,Pernis ptilorhyncus,Pernis ptilorhynchus,Pernis ptilorhynchus,"Accipitridae (Hawks, Eagles, and Kites)",Oriental Honey-buzzard,1.76029718,NA,NA,NA,NA,Accipitridae,53,"(Hawks, Eagles, and Kites)",No,no mention of coastal habitat 
 641,Elanoides forficatus,Elanoides forficatus,Elanoides forficatus,"Accipitridae (Hawks, Eagles, and Kites)",Swallow-tailed Kite,0.815307594,NA,NA,NA,NA,Accipitridae,53,"(Hawks, Eagles, and Kites)",Yes,
 642,Lophoictinia isura,Lophoictinia isura,Lophoictinia isura,"Accipitridae (Hawks, Eagles, and Kites)",Square-tailed Kite,0.906312185,NA,NA,NA,NA,Accipitridae,53,"(Hawks, Eagles, and Kites)",Yes,
 643,Aviceda jerdoni,Aviceda jerdoni,Aviceda jerdoni,"Accipitridae (Hawks, Eagles, and Kites)",Jerdon's Baza,3.713046242,NA,NA,NA,NA,Accipitridae,53,"(Hawks, Eagles, and Kites)",Yes,
@@ -812,7 +812,7 @@
 811,Falco novaeseelandiae,Falco novaeseelandiae,Falco novaeseelandiae,Falconidae (Falcons and Caracaras),New Zealand Falcon,0.416801126,NA,NA,NA,NA,Falconidae,65,(Falcons and Caracaras),Yes,
 812,Falco berigora,Falco berigora,Falco berigora,Falconidae (Falcons and Caracaras),Brown Falcon,0.555342499,NA,NA,Falco berigora,N,Falconidae,65,(Falcons and Caracaras),Yes,
 813,Falco femoralis,Falco femoralis,Falco femoralis,Falconidae (Falcons and Caracaras),Aplomado Falcon,2.036616891,NA,NA,NA,NA,Falconidae,65,(Falcons and Caracaras),Yes,
-814,Falco rufigularis,Falco rufigularis,Falco rufigularis,Falconidae (Falcons and Caracaras),Bat Falcon,1.642458603,NA,NA,NA,NA,Falconidae,65,(Falcons and Caracaras),Yes,
+814,Falco rufigularis,Falco rufigularis,Falco rufigularis,Falconidae (Falcons and Caracaras),Bat Falcon,1.642458603,NA,NA,NA,NA,Falconidae,65,(Falcons and Caracaras),No,no mention of coastal 
 815,Falco peregrinus,Falco peregrinus,Falco peregrinus,Falconidae (Falcons and Caracaras),Peregrine Falcon,1.974832947,NA,NA,Falco peregrinus,U,Falconidae,65,(Falcons and Caracaras),Yes,
 816,Falco mexicanus,Falco mexicanus,Falco mexicanus,Falconidae (Falcons and Caracaras),Prairie Falcon,0.978760431,Falco mexicanus,-1.465331271,Falco mexicanus,N,Falconidae,65,(Falcons and Caracaras),No,various inland habitats 
 817,Calcarius lapponicus,Calcarius lapponicus,Calcarius lapponicus,Calcariidae (Longspurs and Snow Buntings),Lapland Longspur,0.854378095,NA,NA,NA,NA,Calcariidae,10,(Longspurs and Snow Buntings),Yes,beaches / concentrate near coastlines

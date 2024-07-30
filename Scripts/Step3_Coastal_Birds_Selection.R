@@ -81,13 +81,13 @@ View(AllBirds)
 #reformat AllBirds Family_eBird column so that it is compatable to join with List_of_Families 
 
 AllBirds$Family_Sci <- word(AllBirds$Family_eBird, 1)
-View(AllBirds)
+head(AllBirds)
 
 
 #join them together 
 Coastal_Round_1 <- left_join(AllBirds, List_of_Families, by = "Family_Sci")
 View(Coastal_Round_1)
-nrow(Coastal_Round_1)#4433 - correct number of rows in AllBirds, which was the left part of left_join 
+nrow(Coastal_Round_1) #4433 - correct number of rows in AllBirds, which was the left part of left_join 
  
 #save rds of Coastal_Round_1, for quick recall 
 
@@ -97,8 +97,7 @@ saveRDS(Coastal_Round_1, here("Outputs", "Coastal_Round_1.rds"))
 ####################################Round 2###################################
 ####
 ##
-#in this round, we will sort through the common names of species that were marked as "Yes" for Urban Tolerance 
-
+#in this round, we will sort through the common names of species that were marked as "Yes" for Coastal 
 
 Round_1_yes <- Coastal_Round_1 %>% 
   filter(Coastal == "Yes")
@@ -106,8 +105,6 @@ Round_1_yes <- Coastal_Round_1 %>%
 View(Round_1_yes)
 nrow(Round_1_yes)
 #823!  
-
-write.csv(Round_1_yes, here("Notes", "Round_1_yes.csv"))
 
 ###
 # generate a list of descriptors in the common names of the 4434 species in AllBirds
@@ -132,9 +129,6 @@ hyphennames <- data.frame(species = c(twowordnames$species, threewordnames$speci
   filter(hyphen == 1) %>% # keep only species with names that contain a hyphen
   separate_wider_delim(species, delim = "-", names = c("descriptor1", "species") )
 
-  #SARAH - the following line of code has an error - does not recognize the object "name" 
-  #separate_wider_delim(name, delim = "-", names = c("descriptor2", "species"))
-
 # put all the descriptive words from common names together into a single data frame and remove duplicates
 alldescriptors <- data.frame( # make a data frame
   descriptors = sort( # arrange in alphabetical order
@@ -142,7 +136,7 @@ alldescriptors <- data.frame( # make a data frame
   distinct() # remove duplicated descriptors
 
 # export as csv 
-# mark all terms that are associated with:
+# manually mark all terms that are associated with:
 # a habitat (but not a specific place)
 # a diet
 # an Ocean or Sea (e.g., Pacific)
@@ -155,6 +149,7 @@ descriptors_marked <- read.csv(here("Notes", "descriptors_marked.csv"), header=T
 head(descriptors_marked)
 View(descriptors_marked)
 
+# first focus on non-coastal terms
 noncoastal_terms <- descriptors_marked %>% 
   filter(coastal_Y.N.M =="N") %>% # keep all terms that are clearly non-coastal
   select(descriptors) # select the column of descriptive terms
@@ -167,7 +162,7 @@ class(NCterms_vec)
 head(Round_1_yes)
 commname_vec <- as.vector(Round_1_yes[,5]) # common names are in 5th column
 
-# now, look through the commname_vec that contains the species in Round_1_yes using the terms stored in NCterms_vec
+# now, look through commname_vec which contains the species in Round_1_yes using the terms stored in NCterms_vec
 # we are searching for key words that indicate NON-coastal habitats, diets or associations with other species that are non-coastal
 # e.g., "freshwater", "alpine", "upland", "lake", "river", 
 #"mountain", "prairie", "highland", "forest", "desert" 
@@ -177,41 +172,59 @@ R1_noncoastal <- map(NCterms_vec, str_detect, string = commname_vec) %>%
   magrittr::extract(commname_vec, .) %>%
   tibble()
 
-R1_noncoastal
+colnames(R1_noncoastal) <- "CommonName_eBird"
+
+print(R1_noncoastal, n=Inf)
 
 # export data frame, look up species and mark ones to keep and remove
 write.csv(R1_noncoastal, here("Notes", "Round_1_noncoastal.csv"))
 
+# manually look up species and determine whether they should be marked as coastal or not
 # read in edited csv
 # use it to update coastal species list
 
-#read in edited csv 
+# read in edited csv 
+R1_noncoastal_edited <- read.csv(here("Notes", "Round_1_noncoastal_edited.csv"), header=T) %>%
+  select(-X)
 
-edits_for_round_2 <- read.csv(here("Notes", "Round_1_yes_edited.csv"))
+head(R1_noncoastal_edited)
+colnames(R1_noncoastal_edited)
+nrow(R1_noncoastal_edited)
 
-colnames(edits_for_round_2)
+# combine with Coastal_Round_1 to make the updates
+# this takes a few steps
 
+# remind ourselves how many species are in the data
+nrow(Coastal_Round_1) # 4433
 
-Coastal_Round_2 <- Coastal_Round_1 %>%
-  left_join(edits_for_round_2, by = "Species_eBird", suffix = c("", ".r2")) %>%
-  mutate(
-    Coastal = ifelse(!is.na(Coastal.r2), Coastal.r2, Coastal), 
-    Notes = ifelse(!is.na(Notes.r2), Notes.r2, Notes)
-  ) %>%
-  select(-ends_with(".r2"), -"X", -"X.1")
+# get all the species that were not modified in any way in the past step (any species not in R1_noncoastal_edited)
+Coastal_Round_1_edit1 <- anti_join(Coastal_Round_1, R1_noncoastal_edited, by="CommonName_eBird")
+# note: you need to specify to use CommonName_eBird for this join for it to work correctly
 
-#View Coastal_Round_2 for double-checking 
+# does the number of rows in edit1 equal the number of rows in Round_1 minus the number of rows in noncoastal_edited?
+# this should be "TRUE"
+nrow(Coastal_Round_1_edit1) == nrow(Coastal_Round_1) - nrow(R1_noncoastal_edited)
+
+# update the coastal classification for all species in R1_noncoastal_edited
+Coastal_Round_1_edit2 <- left_join(R1_noncoastal_edited, Coastal_Round_1)
+nrow(Coastal_Round_1_edit2) # should be the same number as in R1_noncoastal_edited
+
+# bind everything back together
+Coastal_Round_2 <- bind_rows(Coastal_Round_1_edit1, Coastal_Round_1_edit2)  
+
+# make sure all the species are still present
+nrow(Coastal_Round_2) == nrow(Coastal_Round_1)
+
+# View Coastal_Round_2 for double-checking 
 View(Coastal_Round_2)
 
+# looks good! 
 
-#looks good! 
 
-
-####################################Round 3###################################
+#################################### Round 3 ###################################
 ####
 ##
 #in this round, we will sort through the common names of species that were marked as "Yes" for Urban Tolerance 
-
 
 Round_1_no <- Coastal_Round_1 %>% 
   filter(Coastal == "No")
@@ -219,10 +232,6 @@ Round_1_no <- Coastal_Round_1 %>%
 View(Round_1_no)
 nrow(Round_1_no)
 #3610!  
-
-write.csv(Round_1_no, here("Notes", "Round_1_no.csv"))
-
-
 
 # # # # # # # # # # # # # # # # # # 
 
@@ -240,7 +249,7 @@ class(C.terms_vec)
 head(Round_1_no)
 commname_vec_2 <- as.vector(Round_1_no[,5]) # common names are in 5th column
 
-#now, edit this Round_1_no.csv file (containing all species from families marked as "No" in Round 1) -> 
+# now, edit this Round_1_no.csv file (containing all species from families marked as "No" in Round 1) -> 
 #search through common names for coastal-identifier words stored in CTerms_vec (i.e. "Coastal", "Sea", "Tide", "Beach", "Mangrove", etc.) 
 #for all flagged species, look on Birds of the World (2022) species page for mentions of coastal habitat/resource use. 
 
@@ -250,17 +259,21 @@ R3_coastal <- map(C.terms_vec, str_detect, string = commname_vec_2) %>%
   tibble()
 
 R3_coastal
+nrow(R3_coastal) # 221
+
 View(R3_coastal)
 # export data frame, look up species and mark ones to keep and remove
+# CONSIDER NAMING THIS CSV FILE TO BE CONSISTENT WITH THE NAMING SCHEME USED IN THE PREVIOUS ROUND
 write.csv(R3_coastal, here("Notes", "Coastal_Names_Investigate.csv"))
-
-
-
 
 # # # # # # # # # # # # # # # # # # 
 
 
-#upload edited csv 
+# upload edited csv 
+# SEE THE CODE FOR LINES 188 to 220 FOR HOW TO BEST JOIN THE EDITS
+# YOU SHOULD BE ABLE TO MIMIC THAT PROCESS HERE
+# YOU'LL WANT TO MAKE THE JOIN TO Coastal_Round_2
+
 
 edits_for_round_3 <- read.csv(here("Notes", "Round_1_no_edited.csv"))
 

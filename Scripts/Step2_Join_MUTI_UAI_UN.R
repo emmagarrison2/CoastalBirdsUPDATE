@@ -399,12 +399,12 @@ UAI_MUTI_UN_families <- UAI_MUTI_UN_combined %>%
 UAI_MUTI_UN_families %>% filter(is.na(Family_eBird))
 
 # does this species have a match in the eBird taxonomy using its common name (Yellow-throated scrubwren)
-ebird_tax %>% filter(PRIMARY_COM_NAME =='Yellow-throated Scrubwren')
+ebird_tax %>% filter(PRIMARY_COM_NAME =="Yellow-throated Scrubwren")
 # it belongs in family Acanthizidae (Thornbills and Allies)
-# manually make this fix
+# manually make thes fixes
 UAI_MUTI_UN_families$Family_eBird[UAI_MUTI_UN_families$Species_eBird == "Sericornis citreogularis"] <- "Acanthizidae (Thornbills and Allies)"
 
-# confirm this worked by checking again that all species have a family
+# confirm this worked by checking again that all species have a family and a common name
 UAI_MUTI_UN_families %>% filter(is.na(Family_eBird))
 
 # add common names from eBird taxonomy
@@ -412,6 +412,13 @@ UAI_MUTI_UN_common <- ebird_tax %>% select(PRIMARY_COM_NAME, SCI_NAME) %>%
   rename(CommonName_eBird = PRIMARY_COM_NAME, Species_eBird = SCI_NAME) %>%
   right_join(., UAI_MUTI_UN_families, by="Species_eBird")
 
+# do all species have a common name?
+UAI_MUTI_UN_common %>% filter(is.na(CommonName_eBird))
+
+# manually fix this species
+UAI_MUTI_UN_common$CommonName_eBird[UAI_MUTI_UN_common$Species_eBird == "Sericornis citreogularis"] <- "Yellow-throated Scrubwren"
+
+# do all species have unique common names?
 length(unique(UAI_MUTI_UN_common$CommonName_eBird))
 
 commonname_dups <- UAI_MUTI_UN_common %>% count(CommonName_eBird) %>%
@@ -422,7 +429,6 @@ commonname_dups <- UAI_MUTI_UN_common %>% count(CommonName_eBird) %>%
 
 # differentiate American and Northwestern Crows in the eBird common names
 UAI_MUTI_UN_common$CommonName_eBird[UAI_MUTI_UN_common$CommonName_MUTI == "Northwestern Crow"] <- "Northwestern Crow"
-
 
 # UN data has Little-Bronze Cuckoo and Gould's Bronze-Cuckoo so make this distinction in eBird common names
 UAI_MUTI_UN_common$CommonName_eBird[UAI_MUTI_UN_common$Species_Jetz == "Chrysococcyx russatus"] <- "Gould's Bronze-Cuckoo"
@@ -436,6 +442,9 @@ UAI_MUTI_UN_common$Species_Jetz[UAI_MUTI_UN_common$Species_Jetz == "Sylvia altha
 # delete the row for Lesser Whitethroat that is no longer needed and make the final data frame
 UAI_MUTI_UN_final <- UAI_MUTI_UN_common %>% slice(-3183)
 nrow(UAI_MUTI_UN_final) # we now have 4433 rows or species
+
+# do all species have unique common names now?
+length(unique(UAI_MUTI_UN_final$CommonName_eBird)) # should be 4433
 
 ##### Perform some Final Checks ####
 

@@ -1,16 +1,150 @@
 descriptors,diet_habitat,coastal_Y/N/M,notes
+Corn,Y,N,diet?
+Bahama,Y,M,island habitat
+Bank,Y,M,habitat
+Brush,Y,M,habitat
+Brushland,Y,M,habitat
+Carrion,Y,M,diet
+Cave,Y,M,habitat
+Coconut,Y,M,habitat or diet
+Dead,Y,M,could be Dead Sea
+Glacier,Y,M,habitat
+Grass,Y,N,habitat
+Grasshopper,Y,N,diet
+Grassland,Y,N,habitat
+Ground,Y,N,habitat. Unlikely to be coastal
+Hawaiian,Y,M,island habitat
+House,Y,M,"habitat, possibly coastal urban?"
+Island,Y,M,habitat
+Islands,Y,M,habitat
+Lake,Y,M,habitat
+Marsh,Y,M,habitat
+Mediterranean,Y,M,sea
+Oak,Y,M,diet or species association. Oaks can be close to coast
+Oasis,Y,M,"habitat, probably not coastal but keeping as maybe to be conservative"
+Pacific,Y,M,ocean
+Pacific-slope,Y,M,ocean
+Paddyfield,Y,M,flooded farmlands
+Palm,Y,M,"diet or species association, could be coastal palm"
+Palm-nut,Y,M,"diet or species association, could be coastal palm"
+Plantain,Y,M,diet or species association
+Reed,Y,M,habitat
+River,Y,M,habitat
+Riverbank,Y,M,habitat
+Roadside,Y,M,habitat
+Rock,Y,M,habitat
+Rush,Y,M,habitat or species association
+Sand,Y,M,habitat
+Sandhill,Y,M,habitat
+Scrub,Y,M,habitat
+Sedge,Y,M,"diet or species association, probably not coastal but sedges are widespread so marking as maybe"
+Seed,Y,N,diet. Unlikely to be coastal
+Serpent,Y,M,diet?
+Snail,Y,M,diet
+Snake,Y,M,diet
+Snow,Y,M,"possibly habitat, could be coastal in artic/antarctic"
+Snowy,Y,M,"possibly habitat, could be coastal in artic/antarctic"
+Subalpine,Y,M,"habitat, probably not coastal but marked as maybe to be conservative"
+Subtropical,Y,M,"habitat, probably not coastal but marked as maybe to be conservative"
+Swamp,Y,M,habitat
+Torrent,Y,M,habitat- fast moving stream /water 
+Tropical,Y,M,habitat
+Tundra,Y,M,habitat
+Turtle,Y,M,species association
+Water,Y,M,habitat
+Worm-eating,Y,M,diet
+Acorn,Y,N,diet or habitat
+Alder,Y,N,diet or habitat
+Alpine,Y,N,habitat
+Ant,Y,N,diet
+Anteater,Y,N,diet
+Bamboo,Y,N,habitat or diet
+Barn,Y,N,habitat (nesting)
+Bat,Y,N,diet?
+Boreal,Y,N,habitat
+Bush,Y,N,habitat
+Cactus,Y,N,habitat
+Canyon,Y,N,habitat
+Cattle,Y,N,species association
+Cedar,Y,N,habitat
+Chimney,Y,N,habitat
+Desert,Y,N,habitat
+Field,Y,N,habitat
+Forest,Y,N,habitat
+Garden,Y,N,habitat
+Highland,Y,N,habitat
+Hill,Y,N,habitat
+Himalayan,Y,N,"habitat, mountain range "
+Honey,Y,N,diet
+Inland,Y,N,habitat
+Jungle,Y,N,habitat
+Juniper,Y,N,habitat
+Leaf,Y,N,habitat or diet (or color). Keeping to be conservative
+Lowland,Y,N,habitat
+Magnolia,Y,N,habitat or species association
+Meadow,Y,N,habitat
+Mistletoe,Y,N,diet or species association
+Montane,Y,N,habitat
+Moorland,Y,N,habitat
+Mountain,Y,N,habitat
+Orchard,Y,N,habitat
+Pampa,Y,N,habitat
+Pine,Y,N,diet or species association
+Pinyon,Y,N,diet or species association
+Plain,Y,N,"probably referring to color, but could be habitat"
+Pond,Y,N,habitat
+Prairie,Y,N,habitat
+Puna,Y,N,high plateau ecosystem in andes 
+Sage,Y,N,habitat or diet
+Sagebrush,Y,N,habitat or diet
+Savanna,Y,N,habitat
+Savannah,Y,N,habitat
+Sierran,Y,N,Sierra nevada
+Spruce,Y,N,diet or species association
+Steppe,Y,N,habitat
+Taiga,Y,N,habitat
+Terrestrial,Y,N,habitat
+Tiger,Y,N,species association
+Tree,Y,N,habitat
+Upland,Y,N,habitat
+Willow,Y,N,habitat or diet
+Wood,Y,N,habitat 
+Woodland,Y,N,habitat 
+Aquatic,Y,Y,habitat
+Arctic,Y,Y,could refer to ocean
+Atlantic,Y,Y,ocean
+Balearic,Y,Y,sea
+Barnacle,Y,Y,diet
+Bay,Y,Y,possibly habitat
+Beach,Y,Y,habitat
+Cape,Y,Y,often used to decribe a coastal point
+Carib,Y,Y,sea
+Caribbean,Y,Y,sea
+Caspian,Y,Y,Caspian sea
+Cliff,Y,Y,habitat
+Coastal,Y,Y,habitat
+Crab,Y,Y,diet
+Dolphin,Y,Y,species association
+Fish,Y,Y, diet
+Herring,Y,Y,diet
+Kelp,Y,Y,habitat or diet
+Mangrove,Y,Y,habitat
+Pelagic,Y,Y,habitat
+Reef,Y,Y,habitat
+Saltmarsh,Y,Y,habitat
+Sea,Y,Y,habitat
+Seaside,Y,Y,habitat
+Shore,Y,Y,habitat
+Surf,Y,Y,habitat
 Abbott's,,,
 Aberrant,,,
 Abert's,,,
 Abyssinian,,,
 Acadian,,,
-Acorn,Y,N,diet or habitat
 African,,,
 Albert's,,,
-Alder,Y,N,diet or habitat
 Alexandrine,,,
 Allen's,,,
-Alpine,Y,N,habitat
 Altamira,,,
 Amazilia,,,
 Amazon,,,
@@ -25,16 +159,12 @@ Andaman,,,
 Andean,,,
 Angola,,,
 Anna's,,,
-Ant,Y,N,diet
-Anteater,Y,N,diet
 Antillean,,,
 Apical,,,
 Aplomado,,,
 Apolinar's,,,
-Aquatic,Y,Y,habitat
 Arabian,,,
 Arafura,,,
-Arctic,Y,Y,could refer to ocean
 Arizona,,,
 Armenian,,,
 Arrow-marked,,,
@@ -51,7 +181,6 @@ Ashy-headed,,,
 Ashy-throated,,,
 Asian,,,
 Atherton,,,
-Atlantic,Y,Y,ocean
 Audouin's,,,
 Audubon's,,,
 Augur,,,
@@ -67,19 +196,15 @@ Azure-shouldered,,,
 Azure-winged,,,
 Bachman's,,,
 Baglafecht,,,
-Bahama,Y,M,island habitat
 Baillon's,,,
 Baird's,,,
 Bald,,,
-Balearic,Y,Y,sea
 Baltimore,,,
-Bamboo,Y,N,habitat or diet
 Band-backed,,,
 Band-rumped,,,
 Band-tailed,,,
 Band-winged,,,
 Banded,,,
-Bank,Y,M,habitat
 Bar-bellied,,,
 Bar-breasted,,,
 Bar-crested,,,
@@ -92,20 +217,15 @@ Bare-faced,,,
 Bare-necked,,,
 Bare-throated,,,
 Barking,,,
-Barn,Y,N,habitat (nesting)
-Barnacle,Y,Y,diet
 Barred,,,
 Barren,,,
 Barrow's,,,
 Basra,,,
 Bassian,,,
-Bat,Y,N,diet?
-Bay,Y,Y,possibly habitat
 Bay-backed,,,
 Bay-breasted,,,
 Bay-headed,,,
 Baya,,,
-Beach,Y,Y,habitat
 Bean,,,
 Bearded,,,
 Beardless,,,
@@ -217,7 +337,6 @@ Bolivian,,,
 Bonaparte's,,,
 Bonelli's,,,
 Booted,,,
-Boreal,Y,N,habitat
 Bornean,,,
 Botteri's,,,
 Boucard's,,,
@@ -260,8 +379,6 @@ Brown-rumped,,,
 Brown-throated,,,
 Brownish-flanked,,,
 Bruce's,,,
-Brush,Y,M,habitat
-Brushland,Y,M,habitat
 Buff-banded,,,
 Buff-bellied,,,
 Buff-breasted,,,
@@ -283,13 +400,11 @@ Bulwer's,,,
 Bumblebee,,,
 Burnished-buff,,,
 Burrowing,,,
-Bush,Y,N,habitat
 Bushy-crested,,,
 Buzzard,,,
 Caatinga,,,
 Cabanis's,,,
 Cackling,,,
-Cactus,Y,N,habitat
 Caica,,,
 Calandra,,,
 California,,,
@@ -298,23 +413,14 @@ Campo,,,
 Canada,,,
 Canary,,,
 Canivet's,,,
-Canyon,Y,N,habitat
-Cape,Y,Y,often used to decribe a coastal point
 Capped,,,
 Caqueta,,,
 Caracas,,,
 Cardinal,,,
-Carib,Y,Y,sea
-Caribbean,Y,Y,sea
 Carmiol's,,,
 Carolina,,,
-Carrion,Y,M,diet
-Caspian,Y,Y,Caspian sea
 Cassin's,,,
-Cattle,Y,N,species association
-Cave,Y,M,habitat
 Ceara,,,
-Cedar,Y,N,habitat
 Cerulean,,,
 Cetti's,,,
 Chabert,,,
@@ -348,7 +454,6 @@ Chiguanco,,,
 Chihuahuan,,,
 Chilean,,,
 Chiloe,,,
-Chimney,Y,N,habitat
 Chinese,,,
 Chinspot,,,
 Chipping,,,
@@ -374,14 +479,11 @@ Clapper,,,
 Clark's,,,
 Claudia's,,,
 Clay-colored,,,
-Cliff,Y,Y,
 Coal,,,
-Coastal,Y,Y,habitat
 Cobalt-rumped,,,
 Cobalt-winged,,,
 Cocoa,,,
 Cocoi,,,
-Coconut,Y,M,habitat or diet
 Colima,,,
 Collared,,,
 Colombian,,,
@@ -399,7 +501,6 @@ Coppery-bellied,,,
 Coraya,,,
 Cordilleran,,,
 Cordoba,,,
-Corn,Y,diet?,
 Correndera,,,
 Corsican,,,
 Cory's,,,
@@ -407,7 +508,6 @@ Coscoroba,,,
 Costa's,,,
 Cotton,,,
 Couch's,,,
-Crab,Y,Y,diet
 Crag,,,
 Crane,,,
 Cream-backed,,,
@@ -456,16 +556,13 @@ Dark-sided,,,
 Dartford,,,
 Daurian,,,
 David's,,,
-Dead,Y,M,could be Dead Sea
 Deep-blue,,,
 Des,,,
-Desert,Y,N,habitat
 Diademed,,,
 Diamond,,,
 Dideric,,,
 Dinelli's,,,
 Diuca,,,
-Dolphin,Y,Y,species association
 Dot-winged,,,
 Double-banded,,,
 Double-barred,,,
@@ -517,7 +614,6 @@ Fasciated,,,
 Fawn-breasted,,,
 Ferruginous,,,
 Festive,,,
-Field,Y,N,habitat
 Fiery-capped,,,
 Fine-barred,,,
 Finsch's,,,
@@ -527,7 +623,6 @@ Fire-eyed,,,
 Fire-fronted,,,
 Fiscal,,,
 Fischer's,,,
-Fish,Y,Y, diet
 Flame,,,
 Flame-colored,,,
 Flame-crested,,,
@@ -545,7 +640,6 @@ Flycatcher,,,
 Flying,,,
 Foliage,,,
 Forbes-Watson's,,,
-Forest,Y,N,habitat
 Fork-tailed,,,
 Forster's,,,
 Forty-spotted,,,
@@ -563,7 +657,6 @@ Fulvous-vented,,,
 Fuscous,,,
 Gambel's,,,
 Gang-gang,,,
-Garden,Y,N,habitat
 Garnet-throated,,,
 Gartered,,,
 Geoffroy's,,,
@@ -573,7 +666,6 @@ Gila,,,
 Gilbert's,,,
 Gilded,,,
 Gilt-edged,,,
-Glacier,Y,M,habitat
 Glaucous,,,
 Glaucous-blue,,,
 Glaucous-winged,,,
@@ -613,10 +705,7 @@ Gorgeted,,,
 Gould's,,,
 Grace's,,,
 Graceful,,,
-Grass,Y,M,habitat
 Grass-green,,,
-Grasshopper,Y,M,diet
-Grassland,Y,M,habitat
 Gray,,,
 Gray-and-gold,,,
 Gray-and-white,,,
@@ -671,7 +760,6 @@ Green-winged,,,
 Greenish,,,
 Groove-billed,,,
 Grosbeak,,,
-Ground,Y,M,habitat. Unlikely to be coastal but pretty vague so marking as maybe
 Guanay,,,
 Guatemalan,,,
 Guayaquil,,,
@@ -695,7 +783,6 @@ Hartert's,,,
 Hartlaub's,,,
 Hasselt's,,,
 Hauxwell's,,,
-Hawaiian,Y,M,island habitat
 Hawk,,,
 Hazel,,,
 Heart-spotted,,,
@@ -705,12 +792,8 @@ Hen,,,
 Henslow's,,,
 Hepatic,,,
 Hermit,,,
-Herring,Y,Y,diet
 Heuglin's,,,
-Highland,Y,N,habitat
 Hildebrandt's,,,
-Hill,Y,N,habitat
-Himalayan,Y,N,"habitat, mountain range "
 Hispaniolan,,,
 Hoary,,,
 Hoary-headed,,,
@@ -718,12 +801,10 @@ Hodgson's,,,
 Hoffmann's,,,
 Holland,,,
 Holub's,,,
-Honey,Y,N,diet
 Hooded,,,
 Hook-billed,,,
 Horned,,,
 Horsfield's,,,
-House,Y,M,"habitat, possibly coastal urban?"
 Hudsonian,,,
 Huet,,,
 Humboldt,,,
@@ -740,11 +821,8 @@ Indigo,,,
 Indigo-banded,,,
 Indigo-capped,,,
 Indochinese,,,
-Inland,Y,N,habitat
 Intermediate,,,
 Isabelline,,,
-Island,Y,M,habitat
-Islands,Y,M,habitat
 Isthmian,,,
 Italian,,,
 Ivory-billed,,,
@@ -758,12 +836,9 @@ Java,,,
 Javan,,,
 Jerdon's,,,
 Jet,,,
-Jungle,Y,N,habitat
 Junin,,,
-Juniper,Y,N,habitat
 Karoo,,,
 Keel-billed,,,
-Kelp,Y,Y,habitat or diet
 Kentish,,,
 Kentucky,,,
 Kenya,,,
@@ -780,7 +855,6 @@ Kurrichane,,,
 La,,,
 Laced,,,
 Ladder-backed,,,
-Lake,Y,M,habitat
 Lance-tailed,,,
 Lanceolated,,,
 Lapland,,,
@@ -795,7 +869,6 @@ Lawrence's,,,
 Laysan,,,
 Lazuli,,,
 Leaden,,,
-Leaf,Y,N,habitat or diet (or color). Keeping to be conservative
 Least,,,
 LeConte's,,,
 Lemon-bellied,,,
@@ -828,7 +901,6 @@ Long-winged,,,
 Loten's,,,
 Louisiana,,,
 Lovely,,,
-Lowland,Y,N,habitat
 Lucifer,,,
 Lucy's,,,
 Luzon,,,
@@ -840,7 +912,6 @@ Madagascar,,,
 Madre,,,
 Magellanic,,,
 Magnificent,,,
-Magnolia,Y,N,habitat or species association
 Magpie,,,
 Maguari,,,
 Malabar,,,
@@ -851,7 +922,6 @@ Malaysian,,,
 Manchurian,,,
 Mandarin,,,
 Maned,,,
-Mangrove,Y,Y,habitat
 Manu,,,
 Manx,,,
 Many-banded,,,
@@ -868,13 +938,10 @@ Marmora's,,,
 Maroon,,,
 Maroon-bellied,,,
 Maroon-tailed,,,
-Marsh,Y,M,habitat
 Mascarene,,,
 Masked,,,
 May,,,
-Meadow,Y,N,habitat
 Mealy,,,
-Mediterranean,Y,M,sea
 Meller's,,,
 Melodious,,,
 Menetries's,,,
@@ -890,20 +957,16 @@ Military,,,
 Milky,,,
 Mississippi,,,
 Mistle,,,
-Mistletoe,Y,N,diet or species association
 Mitred,,,
 Monk,,,
 Montagu's,,,
-Montane,Y,N,habitat
 Montezuma,,,
-Moorland,Y,N,habitat
 Morelet's,,,
 Morning,,,
 Morrison's,,,
 Mottle-backed,,,
 Mottle-cheeked,,,
 Mottled,,,
-Mountain,Y,N,habitat
 Mourning,,,
 Mouse-colored,,,
 Moussier's,,,
@@ -944,8 +1007,6 @@ Nuttall's,,,
 Nutting's,,,
 Nyanza,,,
 Oahu,,,
-Oak,Y,M,diet or species association. Oaks can be close to coast
-Oasis,Y,M,"habitat, probably not coastal but keeping as maybe to be conservative"
 Ocellated,,,
 Ochraceous,,,
 Ochre-backed,,,
@@ -986,7 +1047,6 @@ Orange-fronted,,,
 Orange-headed,,,
 Orange-throated,,,
 Orange-winged,,,
-Orchard,Y,N,habitat
 Oriental,,,
 Orinocan,,,
 Oriole,,,
@@ -995,9 +1055,6 @@ Orphean,,,
 Ortolan,,,
 Ovambo,,,
 Owlet,,,
-Pacific,Y,M,ocean
-Pacific-slope,Y,M,ocean
-Paddyfield,Y,M,flooded farmlands
 Painted,,,
 Palawan,,,
 Pale,,,
@@ -1016,9 +1073,6 @@ Pale-yellow,,,
 Palestine,,,
 Pallas's,,,
 Pallid,,,
-Palm,Y,M,"diet or species association, could be coastal palm"
-Palm-nut,Y,M,"diet or species association, could be coastal palm"
-Pampa,Y,N,habitat
 Panama,,,
 Pantanal,,,
 Paperbark,,,
@@ -1038,7 +1092,6 @@ Pearled,,,
 Pearly-vented,,,
 Pechora,,,
 Pectoral,,,
-Pelagic,Y,Y,habitat
 Penan,,,
 Penduline,,,
 Pere,,,
@@ -1058,7 +1111,6 @@ Pigeon,,,
 Pileated,,,
 Pin-striped,,,
 Pin-tailed,,,
-Pine,Y,N,diet or species association
 Pink,,,
 Pink-backed,,,
 Pink-eared,,,
@@ -1066,10 +1118,8 @@ Pink-footed,,,
 Pink-headed,,,
 Pink-necked,,,
 Pinnated,,,
-Pinyon,Y,N,diet or species association
 Piping,,,
 Piratic,,,
-Plain,Y,N,"probably referring to color, but could be habitat"
 Plain-backed,,,
 Plain-bellied,,,
 Plain-breasted,,,
@@ -1082,7 +1132,6 @@ Plain-mantled,,,
 Plain-winged,,,
 Plaintive,,,
 Planalto,,,
-Plantain,Y,M,diet or species association
 Plum-headed,,,
 Plumbeous,,,
 Plumbeous-backed,,,
@@ -1091,12 +1140,9 @@ Plush-crested,,,
 Point-tailed,,,
 Pomarine,,,
 Pompadour,,,
-Pond,Y,N,habitat
 Powerful,,,
-Prairie,Y,N,habitat
 Prothonotary,,,
 Puff-throated,,,
-Puna,Y,N,high plateau ecosystem in andes 
 Purple,,,
 Purple-backed,,,
 Purple-collared,,,
@@ -1157,8 +1203,6 @@ Red-wattled,,,
 Red-whiskered,,,
 Red-winged,,,
 Reddish,,,
-Reed,Y,M,habitat
-Reef,Y,Y,habitat
 Regent,,,
 Reichenow's,,,
 Resplendent,,,
@@ -1171,13 +1215,9 @@ Ring-billed,,,
 Ring-necked,,,
 Ring-tailed,,,
 Ringed,,,
-River,Y,M,habitat
-Riverbank,Y,M,habitat
 Rivoli's,,,
-Roadside,Y,M,habitat
 Robin,,,
 Robust,,,
-Rock,Y,M,habitat
 Rose,,,
 Rose-breasted,,,
 Rose-crowned,,,
@@ -1229,7 +1269,6 @@ Rufous-vented,,,
 Rufous-webbed,,,
 Rufous-winged,,,
 Rüppell's,,,
-Rush,Y,M,habitat or species association
 Russet,,,
 Russet-backed,,,
 Russet-crowned,,,
@@ -1256,14 +1295,9 @@ Saffron,,,
 Saffron-billed,,,
 Saffron-crested,,,
 Saffron-crowned,,,
-Sage,Y,N,habitat or diet
-Sagebrush,Y,N,habitat or diet
 Sagra's,,,
 Sakhalin,,,
-Saltmarsh,Y,Y,habitat
 San,,,
-Sand,Y,M,habitat
-Sandhill,Y,M,habitat
 Sandpiper,,,
 Sandwich,,,
 Sapphire-spangled,,,
@@ -1273,8 +1307,6 @@ Sardinian,,,
 Sarus,,,
 Satin,,,
 Saunders's,,,
-Savanna,Y,N,habitat
-Savannah,Y,N,habitat
 Savi's,,,
 Saw-billed,,,
 Saw-whet,,,
@@ -1308,17 +1340,11 @@ Scott's,,,
 Scottish,,,
 Screaming,,,
 Screech,,,
-Scrub,Y,M,habitat
-Sea,Y,Y,habitat
-Seaside,Y,Y,habitat
-Sedge,Y,M,"diet or species association, probably not coastal but sedges are widespread so marking as maybe"
-Seed,Y,M,diet
 Semicollared,,,
 Semipalmated,,,
 Semiplumbeous,,,
 Senegal,,,
 Sepia-capped,,,
-Serpent,Y,M,diet?
 Sharp-billed,,,
 Sharp-shinned,,,
 Sharp-tailed,,,
@@ -1326,7 +1352,6 @@ Sharpe's,,,
 Shining,,,
 Shining-green,,,
 Shiny,,,
-Shore,Y,Y,habitat
 Short-billed,,,
 Short-crested,,,
 Short-eared,,,
@@ -1339,7 +1364,6 @@ Sibilant,,,
 Sick's,,,
 Sickle-winged,,,
 Sierra,,,
-Sierran,Y,N,Sierra nevada
 Silky,,,
 Silver,,,
 Silver-backed,,,
@@ -1373,10 +1397,6 @@ Smoke-colored,,,
 Smoky,,,
 Smoky-brown,,,
 Smooth-billed,,,
-Snail,Y,M,diet
-Snake,Y,M,diet
-Snow,Y,M,"possibly habitat, could be coastal in artic/antarctic"
-Snowy,Y,M,"possibly habitat, could be coastal in artic/antarctic"
 Snowy-bellied,,,
 Snowy-browed,,,
 Snowy-crowned,,,
@@ -1418,7 +1438,6 @@ Spot-winged,,,
 Spotless,,,
 Spotted,,,
 Sprague's,,,
-Spruce,Y,N,diet or species association
 Spur-winged,,,
 Squacco,,,
 Squamate,,,
@@ -1430,7 +1449,6 @@ Steamer,,,
 Steely-vented,,,
 Steere's,,,
 Steller's,,,
-Steppe,Y,N,habitat
 Stilt,,,
 Stock,,,
 Stolid,,,
@@ -1469,8 +1487,6 @@ Strong-billed,,,
 Stubble,,,
 Styan's,,,
 Stygian,,,
-Subalpine,Y,M,"habitat, probably not coastal but marked as maybe to be conservative"
-Subtropical,Y,M,"habitat, probably not coastal but marked as maybe to be conservative"
 Sudan,,,
 Suiriri,,,
 Sulphur-bearded,,,
@@ -1486,13 +1502,11 @@ Sunda,,,
 Superb,,,
 Superciliaried,,,
 Superciliated,,,
-Surf,Y,Y,habitat
 Surucua,,,
 Swainson's,,,
 Swallow,,,
 Swallow-tailed,,,
 Swallow-winged,,,
-Swamp,Y,M,habitat
 Swan,,,
 Swee,,,
 Swift,,,
@@ -1501,7 +1515,6 @@ Sword-billed,,,
 Sykes's,,,
 Syrian,,,
 Tacazze,,,
-Taiga,Y,N,habitat
 Taiwan,,,
 Tambourine,,,
 Tanimbar,,,
@@ -1519,7 +1532,6 @@ Tawny-shouldered,,,
 Temminck's,,,
 Tennessee,,,
 Terek,,,
-Terrestrial,Y,N,habitat
 Thekla's,,,
 Thick,,,
 Thick-billed,,,
@@ -1532,33 +1544,27 @@ Thrush,,,
 Thrush-like,,,
 Tickell's,,,
 Ticking,,,
-Tiger,Y,N,species association
 Tit,,,
 Tit-like,,,
 Toco,,,
 Tody,,,
 Topknot,,,
-Torrent,Y,M,habitat- fast moving stream /water 
 Torresian,,,
 Tourmaline,,,
 Townsend's,,,
 Transvolcanic,,,
-Tree,Y,N,habitat
 Tricolored,,,
 Trilling,,,
 Trinidad,,,
 Tristram's,,,
-Tropical,Y,M,habitat
 Trumpeter,,,
 Tufted,,,
 Tui,,,
 Tumbes,,,
-Tundra,Y,M,habitat
 Turkey,,,
 Turquoise,,,
 Turquoise-browed,,,
 Turquoise-fronted,,,
-Turtle,Y,M,species association
 Tuxtla,,,
 Two-banded,,,
 Two-barred,,,
@@ -1570,7 +1576,6 @@ Undulated,,,
 Unicolored,,,
 Uniform,,,
 Upcher's,,,
-Upland,Y,N,habitat
 Ural,,,
 Urubamba,,,
 Van,,,
@@ -1613,7 +1618,6 @@ Wahlberg's,,,
 Wandering,,,
 Warbling,,,
 Ward's,,,
-Water,Y,M,habitat
 Wattle,,,
 Wattled,,,
 Wedge-billed,,,
@@ -1678,7 +1682,6 @@ Whooper,,,
 Whooping,,,
 Wild,,,
 Williamson's,,,
-Willow,Y,N,habitat or diet
 Wilson's,,,
 Winding,,,
 Wine-throated,,,
@@ -1689,11 +1692,8 @@ Wire-crested,,,
 Wire-tailed,,,
 Wompoo,,,
 Wonga,,,
-Wood,Y,N,habitat 
 Woodchat,,,
 Woodhouse's,,,
-Woodland,Y,N,habitat 
-Worm-eating,Y,M,diet
 Wren,,,
 Wren-like,,,
 Yelkouan,,,

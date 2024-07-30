@@ -131,7 +131,8 @@ hyphennames <- data.frame(species = c(twowordnames$species, threewordnames$speci
   mutate(hyphen = str_count(species, "-")) %>% # identify species with hyphenated names
   filter(hyphen == 1) %>% # keep only species with names that contain a hyphen
   separate_wider_delim(species, delim = "-", names = c("descriptor1", "species") )
-  
+
+  #SARAH - the following line of code has an error - does not recognize the object "name" 
   separate_wider_delim(name, delim = "-", names = c("descriptor2", "species"))
 
 # put all the descriptive words from common names together into a single data frame and remove duplicates
@@ -152,6 +153,7 @@ write.csv(alldescriptors, here("Notes", "descriptors.csv"))
 # use column coastal_Y.N.M to sort
 descriptors_marked <- read.csv(here("Notes", "descriptors_marked.csv"), header=T)
 head(descriptors_marked)
+View(descriptors_marked)
 
 noncoastal_terms <- descriptors_marked %>% 
   filter(coastal_Y.N.M =="N") %>% # keep all terms that are clearly non-coastal

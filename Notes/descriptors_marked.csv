@@ -67,7 +67,7 @@ Azure-shouldered,,,
 Azure-winged,,,
 Bachman's,,,
 Baglafecht,,,
-Bahama,,,
+Bahama,Y,M,island habitat
 Baillon's,,,
 Baird's,,,
 Bald,,,
@@ -695,7 +695,7 @@ Hartert's,,,
 Hartlaub's,,,
 Hasselt's,,,
 Hauxwell's,,,
-Hawaiian,,,
+Hawaiian,Y,M,island habitat
 Hawk,,,
 Hazel,,,
 Heart-spotted,,,
@@ -710,7 +710,7 @@ Heuglin's,,,
 Highland,Y,N,habitat
 Hildebrandt's,,,
 Hill,Y,N,habitat
-Himalayan,,,
+Himalayan,Y,N,"habitat, mountain range "
 Hispaniolan,,,
 Hoary,,,
 Hoary-headed,,,
@@ -997,7 +997,7 @@ Ovambo,,,
 Owlet,,,
 Pacific,Y,M,ocean
 Pacific-slope,Y,M,ocean
-Paddyfield,,,
+Paddyfield,Y,M,flooded farmlands
 Painted,,,
 Palawan,,,
 Pale,,,
@@ -1096,7 +1096,7 @@ Powerful,,,
 Prairie,Y,N,habitat
 Prothonotary,,,
 Puff-throated,,,
-Puna,,,
+Puna,Y,N,high plateau ecosystem in andes 
 Purple,,,
 Purple-backed,,,
 Purple-collared,,,
@@ -1339,7 +1339,7 @@ Sibilant,,,
 Sick's,,,
 Sickle-winged,,,
 Sierra,,,
-Sierran,,,
+Sierran,Y,N,Sierra nevada
 Silky,,,
 Silver,,,
 Silver-backed,,,
@@ -1538,7 +1538,7 @@ Tit-like,,,
 Toco,,,
 Tody,,,
 Topknot,,,
-Torrent,,,
+Torrent,Y,M,habitat- fast moving stream /water 
 Torresian,,,
 Tourmaline,,,
 Townsend's,,,
@@ -1689,10 +1689,10 @@ Wire-crested,,,
 Wire-tailed,,,
 Wompoo,,,
 Wonga,,,
-Wood,,,
+Wood,Y,N,habitat 
 Woodchat,,,
 Woodhouse's,,,
-Woodland,,,
+Woodland,Y,N,habitat 
 Worm-eating,Y,M,diet
 Wren,,,
 Wren-like,,,

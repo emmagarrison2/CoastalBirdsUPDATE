@@ -324,7 +324,7 @@ nrow(Coastal_Round_3)
 
 
 ###### FINAL ROUND TO FIND ANY REMAINING COASTAL SPECIES #######
-###### Before proceeding, do one last pass to identify any additional coastal species ######
+###### Before proceeding, do one last pass to identify any additional coastal species or species that are not actually coastal ######
 # to do this, we will use the diet info columns that came from Wilman et al. 2014 (Elton traits) 
 
 head(AllBirds)

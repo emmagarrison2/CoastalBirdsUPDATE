@@ -401,7 +401,7 @@ UAI_MUTI_UN_families %>% filter(is.na(Family_eBird))
 # does this species have a match in the eBird taxonomy using its common name (Yellow-throated scrubwren)
 ebird_tax %>% filter(PRIMARY_COM_NAME =="Yellow-throated Scrubwren")
 # it belongs in family Acanthizidae (Thornbills and Allies)
-# manually make thes fixes
+# manually make this fix
 UAI_MUTI_UN_families$Family_eBird[UAI_MUTI_UN_families$Species_eBird == "Sericornis citreogularis"] <- "Acanthizidae (Thornbills and Allies)"
 
 # confirm this worked by checking again that all species have a family and a common name

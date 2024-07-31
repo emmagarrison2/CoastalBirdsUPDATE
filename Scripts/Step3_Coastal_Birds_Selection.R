@@ -253,18 +253,18 @@ commname_vec_2 <- as.vector(Round_1_no[,5]) # common names are in 5th column
 #search through common names for coastal-identifier words stored in CTerms_vec (i.e. "Coastal", "Sea", "Tide", "Beach", "Mangrove", etc.) 
 #for all flagged species, look on Birds of the World (2022) species page for mentions of coastal habitat/resource use. 
 
-R3_coastal <- map(C.terms_vec, str_detect, string = commname_vec_2) %>%
+R1_coastal <- map(C.terms_vec, str_detect, string = commname_vec_2) %>%
   reduce(`|`) %>% 
   magrittr::extract(commname_vec_2, .) %>%
   tibble()
 
-R3_coastal
-nrow(R3_coastal) # 221
+R1_coastal
+nrow(R1_coastal) # 221
 
-View(R3_coastal)
+View(R1_coastal)
 # export data frame, look up species and mark ones to keep and remove
-# CONSIDER NAMING THIS CSV FILE TO BE CONSISTENT WITH THE NAMING SCHEME USED IN THE PREVIOUS ROUND
-write.csv(R3_coastal, here("Notes", "Coastal_Names_Investigate.csv"))
+
+write.csv(R1_coastal, here("Notes", "Round_1_Coastal.csv"))
 
 # # # # # # # # # # # # # # # # # # 
 

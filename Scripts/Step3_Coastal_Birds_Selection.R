@@ -275,50 +275,45 @@ write.csv(R1_coastal, here("Notes", "Round_1_Coastal.csv"))
 # YOU'LL WANT TO MAKE THE JOIN TO Coastal_Round_2
 
 
-edits_for_round_3 <- read.csv(here("Notes", "Round_1_no_edited.csv"))
+R1_coastal_edited <- read.csv(here("Notes", "Round_1_Coastal_edited.csv"))
 
 #View to visually check 
-View(edits_for_round_3)
-colnames(edits_for_round_3)
-
-#join round 3 with round 2 
-
-p_Coastal_Round_3 <- Coastal_Round_2 %>%
-  left_join(edits_for_round_3, by = "Species_eBird", suffix = c("", ".r2")) %>%
-  mutate(
-    Coastal = ifelse(!is.na(Coastal.r2), Coastal.r2, Coastal), 
-    Notes = ifelse(!is.na(Notes.r2), Notes.r2, Notes)
-  ) %>%
-  select(-ends_with(".r2"), -"X", -"X.1")
+View(R1_coastal_edited)
+colnames(R1_coastal_edited)
+nrow(R1_coastal_edited)
 
 
-nrow(p_Coastal_Round_3)
-#4438.... it should be 4433, there are a few duplicate rows 
 
-#lets identify these duplicates 
-duplicates_round_3 <- p_Coastal_Round_3 %>%
-  group_by(Species_eBird) %>%
-  filter(n() > 1)
+# combine with Coastal_Round_2 to make the updates
+# this takes a few steps
 
-View(duplicates_round_3)
+# remind ourselves how many species are in the data
+nrow(Coastal_Round_2) # 4433
 
-#duplicates look exactly the same, all columns... let's just manually remove duplicates 
+# get all the species that were not modified in any way in the past step (any species not in R1_coastal_edited)
+Coastal_Round_2_edit1 <- anti_join(Coastal_Round_2, R1_coastal_edited, by="CommonName_eBird")
+# note: you need to specify to use CommonName_eBird for this join for it to work correctly
 
-Coastal_Round_3 <- p_Coastal_Round_3 %>%
-  distinct(Species_eBird, .keep_all = TRUE)
+# does the number of rows in edit1 equal the number of rows in Round_2 minus the number of rows in coastal_edited?
+# this should be "TRUE"
+nrow(Coastal_Round_2_edit1) == nrow(Coastal_Round_2) - nrow(R1_coastal_edited)
+#TRUE
+nrow(R1_coastal_edited)
 
+# update the coastal classification for all species in R1_coastal_edited
+Coastal_Round_2_edit2 <- left_join(R1_coastal_edited, Coastal_Round_2)
+nrow(Coastal_Round_2_edit2) # should be the same number as in R1_coastal_edited
+
+# bind everything back together
+Coastal_Round_3 <- bind_rows(Coastal_Round_2_edit1, Coastal_Round_2_edit2)  
+
+# make sure all the species are still present
+nrow(Coastal_Round_3) == nrow(Coastal_Round_2)
+
+# View Coastal_Round_2 for double-checking 
 View(Coastal_Round_3)
-nrow(Coastal_Round_3)
-#4431 - after I've removed all duplicates, we lost 2 more species... which seems to be fine. 
 
-
-
-
-
-
-
-
-
+#looks good! 
 
 
 

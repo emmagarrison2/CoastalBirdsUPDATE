@@ -353,9 +353,13 @@ R3_No <- Coastal_Round_3 %>%
   filter(Coastal == "No")
 R3_noncoastal <- inner_join(R3_No, coastaldiet)
 
+nrow(R3_noncoastal)
+#58 species --> these are species tht have been marked as "No" over the past 3 rounds, but their diet traits suggest a coastal association. 
+
 # Export this list, look up all species and check whether they should be coastal
 write.csv(R3_noncoastal, here("Notes", "Round_3_noncoastal.csv"))
 
+#######################################
 
 # Are any birds that are marked as coastal that don't have a diet with fish or forage in/around water?
 # NOTE: species can still be coastal and not eat fish or foraging in/around water
@@ -367,15 +371,27 @@ R3_Yes <- Coastal_Round_3 %>%
 R3_coastal <- anti_join(R3_Yes, coastaldiet) %>%
   filter(Notes=="") %>% # only keep species where there is no Note. Any species with a Note has already been investigated
   arrange(Family_eBird)
+
+nrow(R3_coastal)
+#170
 # many of these appear to be coastal
 # we will export the list, double check their classification as coastal and reimport the list with any needed changes
 
 # Export
 write.csv(R3_coastal, here("Notes", "Round_3_coastal.csv"))
 
+
+
+
+
+
+#EMMA - CONTINUE THIS ONCE YOU ARE DONE EDITING Round_3_noncoastal.csv AND Round_3_coastal.csv 
+
 # Import edited files
-R3_coastal_edited <- read.csv(here("Notes", "Round_3_coastal_edited.csv"), header = T) %>% select(-X)
-R3_noncoastal_edited <- read.csv(here("Notes", "Round_3_noncoastal_edited.csv"), header = T) %>% select(-X)
+R3_coastal_edited <- read.csv(here("Notes", "Round_3_coastal_edited2.csv"), header = T) %>% select(-X)
+
+R3_noncoastal_edited <- read.csv(here("Notes", "Round_3_noncoastal_edited2.csv"), header = T) %>% select(-X)
+
 
 # combine them into one object that contains all possible changes
 R3_edits <- bind_rows(R3_coastal_edited, R3_noncoastal_edited)
@@ -389,17 +405,48 @@ Coastal_Round_4_edit1 <- anti_join(Coastal_Round_3, R3_edits, by="CommonName_eBi
 nrow(Coastal_Round_4_edit1) == nrow(Coastal_Round_3) - nrow(R3_edits)
 #TRUE
 
+colnames(R3_edits)
+colnames(Coastal_Round_3)
 # update the coastal classification for all species in R3_edits
 Coastal_Round_4_edit2 <- Coastal_Round_3 %>% 
   select(-Coastal, -Notes) %>% # removes these columns because they will be updated with new versions in the next step
   left_join(R3_edits, ., by="CommonName_eBird")
-nrow(Coastal_Round_4_edit2) # should be the same number as in R3_edits
+
+nrow(Coastal_Round_4_edit2) # 227 - should be the same number as in R3_edits
+nrow(R3_edits) #227!
+
 
 # bind everything back together
 Coastal_Final <- bind_rows(Coastal_Round_4_edit1, Coastal_Round_4_edit2)  
 
 # make sure all the species are still present
 nrow(Coastal_Round_3) == nrow(Coastal_Final)
+#TRUE 
 
 # View Coastal_Final for double-checking 
 View(Coastal_Final)
+
+#looks good! 
+
+#how many coastal species do we have? 
+
+nrow(Coastal_Final)
+colnames(Coastal_Final)
+#4433, just like it should be 
+
+Coastal_Birds <- Coastal_Final %>% 
+  filter(Coastal == "Yes")
+
+nrow(Coastal_Birds)
+#826 birds! Wow! 
+
+
+#View to confirm  
+
+View(Coastal_Birds)
+
+
+#save as csv and rds in data folder! 
+
+write.csv(Coastal_Birds, here("Data", "Coastal_Birds_List.csv"))
+saveRDS(Coastal_Birds, here("Data", "Coastal_Birds_list.rds"))

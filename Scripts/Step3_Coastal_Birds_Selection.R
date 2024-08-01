@@ -34,7 +34,7 @@ View(unique_family_names)
 
 write.csv(unique_family_names, here("Notes", "families_all.csv"))
 
-##############Round 1###################
+########################## Round 1 ###############################################
 
 ### Using Birds of the World (Cornell Lab or Ornithology), we classified each family represented by AllBirds dataframe as either 
 #"Coastal" or "Not-Coastal", based on whether the family habitat page mentioned coastal areas. 
@@ -48,30 +48,12 @@ write.csv(unique_family_names, here("Notes", "families_all.csv"))
 #as "Yes" (coastal). If the Birds of the World family page did not mention use of coastal habitats or resources, then the all representative species of 
 #said family were marked as "No" (not-coastal).
 
-##################################################################
-#################################################################
-# EVERYTHING IN THIS SECTION CAN EVENTUALLY BE REMOVED
-# SARAH'S SUGGESTION - ARCHIVE THIS SCRIPT (under a different file name) AND ALL THE FAMILY LIST CSV FILES THAT WE NO LONGER NEED
-# I RECOMMEND YOU PUT ALL OF THEM IN A FOLDER OUTSIDE OF YOUR R PROJECT
-# THAT WAY WE CAN ACCESS THEM IF WE NEED TO REVISIT THIS FOR SOME REASON 
-# OTHERWISE THE STEPS SHOULD BE TO EXPORT families_all.csv AS SHOWN IN LINE 35
-# ADD DESCRIPTION OF SEARCH PROCESS USING BIRDS OF THE WORLD
-# AND THEN IMPORT THE CSV FILE CALLED families_all_coastal.csv
-# FINALLY, JOIN THE COASTAL CLASSIFICATIONS TO AllBirds
-
-
-
-##################################################################
-#################################################################
-
-
 ####### For all species from a "Coastal" (Yes) family, mark them as a coastal species. 
 #For AllBirds --> column = Family_eBird
  
 #For List_of_Families --> column = Family_Sci
 
 #read in the csv that contains all families and their coastal status, as determined via investigation on Birds of the World (2022). 
-
 List_of_Families <- read.csv(here("Notes", "families_all_coastal.csv")) %>% select(-X)
 View(List_of_Families)
 colnames(List_of_Families) 
@@ -94,7 +76,7 @@ nrow(Coastal_Round_1) #4433 - correct number of rows in AllBirds, which was the 
 saveRDS(Coastal_Round_1, here("Outputs", "Coastal_Round_1.rds"))
 
 
-####################################Round 2###################################
+#################################### Round 2 ############################################
 ####
 ##
 #in this round, we will sort through the common names of species that were marked as "Yes" for Coastal 
@@ -206,7 +188,9 @@ Coastal_Round_1_edit1 <- anti_join(Coastal_Round_1, R1_noncoastal_edited, by="Co
 nrow(Coastal_Round_1_edit1) == nrow(Coastal_Round_1) - nrow(R1_noncoastal_edited)
 
 # update the coastal classification for all species in R1_noncoastal_edited
-Coastal_Round_1_edit2 <- left_join(R1_noncoastal_edited, Coastal_Round_1)
+Coastal_Round_1_edit2 <- Coastal_Round_1 %>% 
+  select(-Coastal, -Notes) %>% # removes these columns because they will be updated with new versions in the next step
+  left_join(R1_noncoastal_edited, ., by="CommonName_eBird")
 nrow(Coastal_Round_1_edit2) # should be the same number as in R1_noncoastal_edited
 
 # bind everything back together
@@ -235,7 +219,7 @@ nrow(Round_1_no)
 
 # # # # # # # # # # # # # # # # # # 
 
-#now, develop list of species with coastal descriptor terms in their Common Names 
+# now, develop list of coastal descriptor terms to search the Common Names of species marked as not coastal
 
 coastal_terms <- descriptors_marked %>% 
   filter(coastal_Y.N.M %in% c("M", "Y")) %>% # keep all terms that are clearly coastal (Y) and possibly coastal (M)
@@ -275,7 +259,7 @@ write.csv(R1_coastal, here("Notes", "Round_1_Coastal.csv"))
 # YOU'LL WANT TO MAKE THE JOIN TO Coastal_Round_2
 
 
-R1_coastal_edited <- read.csv(here("Notes", "Round_1_Coastal_edited.csv"))
+R1_coastal_edited <- read.csv(here("Notes", "Round_1_Coastal_edited.csv")) %>% select(-X, -X.1)
 
 #View to visually check 
 View(R1_coastal_edited)
@@ -301,7 +285,9 @@ nrow(Coastal_Round_2_edit1) == nrow(Coastal_Round_2) - nrow(R1_coastal_edited)
 nrow(R1_coastal_edited)
 
 # update the coastal classification for all species in R1_coastal_edited
-Coastal_Round_2_edit2 <- left_join(R1_coastal_edited, Coastal_Round_2)
+Coastal_Round_2_edit2 <- Coastal_Round_2 %>% 
+  select(-Coastal, -Notes) %>% # removes these columns because they will be updated with new versions in the next step
+  left_join(R1_coastal_edited, ., by="CommonName_eBird")
 nrow(Coastal_Round_2_edit2) # should be the same number as in R1_coastal_edited
 
 # bind everything back together
@@ -317,10 +303,9 @@ View(Coastal_Round_3)
 
 
 
-
-###### FINAL ROUND TO FIND ANY REMAINING COASTAL SPECIES #######
-###### Before proceeding, do one last pass to identify any additional coastal species or species that are not actually coastal ######
-# to do this, we will use the diet info columns that came from Wilman et al. 2014 (Elton traits) 
+########################### Final Step ###########################################################
+# one last pass to identify any additional coastal species or species that are not actually coastal 
+# we will use the diet info columns that came from Wilman et al. 2014 (Elton traits) 
 
 head(AllBirds)
 # we need to search the original species list of 4433 species
@@ -332,7 +317,6 @@ colnames(elton) # look at column names of join 8 to identify columns that could 
 
 # these ones seem useful:
 unique(elton$Diet.Vfish) # percentage of diet that is fish. Filter to retain any species with > 0
-unique(elton$Diet.5Cat) # Omnivore, VertFishScav, Invertebrate all seem potentially relevant
 unique(elton$ForStrat.watbelowsurf) # percentage of time spent foraging below surf. Filter to retain any species with >0
 unique(elton$ForStrat.wataroundsurf) # percentage of time spent foraging around surf. Filter to retain any species with >0
 unique(elton$PelagicSpecialist) # Pelagic seabirds. Has values 0 or 1. Filter to retain species listed as 1
@@ -346,26 +330,76 @@ AllBirds_elton <- elton %>%
   left_join(AllBirds, ., by = "Species_Jetz")
 
 
-# the diet category (Diet.5Cat) is the most vague and will likely pull many birds that are not coastal
-# so, will implement an initial filter that the species must be one of the 3 diet categories AND...
-# they must also fit one of the other criteria in the second filtering step
-# note that the second set of filter requirements are OR statements 
-# this means a bird should be retained if they have Diet.Vfish > 0 OR if they do any of their foraging below surf etc
+# note that the filter requirements are OR statements 
+# this means a bird should be retained if they have Diet.Vfish > 0 OR 
+# if they do any of their foraging below surf OR
+# if they forage around water OR
+# if they are a pelagic specialist
 # finally, we use a third filter to find all birds that meet the above requirements BUT are NOT currently classified as coastal
 # we will want to investigate these species to see if they warrant inclusion 
 
 coastaldiet <- AllBirds_elton %>% 
-  filter(Diet.5Cat %in% c("Omnivore", "VertFishScav", "Invertebrate")) %>% # the first pass is to keep species with diet classifications of Omnivore, Invertebrate or VertFishScav 
-  filter(Diet.Vfish > 0 |   # Now apply a second series of filtering requirements. First, keep any species with some fish in diet OR
+  filter(Diet.Vfish > 0 |   # Now apply a of filtering requirements. First, keep any species with some fish in diet OR
            ForStrat.watbelowsurf > 0 | # keep any species that do any of their foraging below surf OR
            ForStrat.wataroundsurf >0 | # keep any species that do any of their foraging around surf OR
            PelagicSpecialist == 1)  # keep any species that are classified as Pelagic Specialists
 
-nrow(coastaldiet) # 569 species
+nrow(coastaldiet) # 688 species
 View(coastaldiet)
 
-#### EMMA - 
-# for the next step, you will want to take the data frame that contains all the coastal species you identified in all the previous steps
-# you will need to use anti_join with the coastaldiet object to find which species were found by the diet classification method that are new
-# eventually (after checking that all the species look reasonable) you'll want to drop all the elton trait columns and then use bind_rows to add these new species to the existing coastal list
-coastal_new <- 
+# Are any birds in the coastaldiet list currently marked as non-coastal?
+head(Coastal_Round_3)
+R3_No <- Coastal_Round_3 %>% 
+  filter(Coastal == "No")
+R3_noncoastal <- inner_join(R3_No, coastaldiet)
+
+# Export this list, look up all species and check whether they should be coastal
+write.csv(R3_noncoastal, here("Notes", "Round_3_noncoastal.csv"))
+
+
+# Are any birds that are marked as coastal that don't have a diet with fish or forage in/around water?
+# NOTE: species can still be coastal and not eat fish or foraging in/around water
+# so this step may not result in the removal of any species from the coastal list
+# we are using this as a final check to flag any species that may need a second look
+R3_Yes <- Coastal_Round_3 %>% 
+  filter(Coastal == "Yes") 
+
+R3_coastal <- anti_join(R3_Yes, coastaldiet) %>%
+  filter(Notes=="") %>% # only keep species where there is no Note. Any species with a Note has already been investigated
+  arrange(Family_eBird)
+# many of these appear to be coastal
+# we will export the list, double check their classification as coastal and reimport the list with any needed changes
+
+# Export
+write.csv(R3_coastal, here("Notes", "Round_3_coastal.csv"))
+
+# Import edited files
+R3_coastal_edited <- read.csv(here("Notes", "Round_3_coastal_edited.csv"), header = T) %>% select(-X)
+R3_noncoastal_edited <- read.csv(here("Notes", "Round_3_noncoastal_edited.csv"), header = T) %>% select(-X)
+
+# combine them into one object that contains all possible changes
+R3_edits <- bind_rows(R3_coastal_edited, R3_noncoastal_edited)
+
+# get all the species that were not modified in any way in the past step 
+Coastal_Round_4_edit1 <- anti_join(Coastal_Round_3, R3_edits, by="CommonName_eBird")
+# note: you need to specify to use CommonName_eBird for this join for it to work correctly
+
+# does the number of rows in edit1 equal the number of rows in Round_3 minus the number of rows in R3_edits ?
+# this should be "TRUE"
+nrow(Coastal_Round_4_edit1) == nrow(Coastal_Round_3) - nrow(R3_edits)
+#TRUE
+
+# update the coastal classification for all species in R3_edits
+Coastal_Round_4_edit2 <- Coastal_Round_3 %>% 
+  select(-Coastal, -Notes) %>% # removes these columns because they will be updated with new versions in the next step
+  left_join(R3_edits, ., by="CommonName_eBird")
+nrow(Coastal_Round_4_edit2) # should be the same number as in R3_edits
+
+# bind everything back together
+Coastal_Final <- bind_rows(Coastal_Round_4_edit1, Coastal_Round_4_edit2)  
+
+# make sure all the species are still present
+nrow(Coastal_Round_3) == nrow(Coastal_Final)
+
+# View Coastal_Final for double-checking 
+View(Coastal_Final)

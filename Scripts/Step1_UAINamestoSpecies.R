@@ -6,6 +6,10 @@
 # Load packages
 library(here)
 library(tidyverse)
+if(!require(fuzzyjoin)){
+  install.packages("fuzzyjoin")
+  require(fuzzyjoin)
+}
 library(fuzzyjoin)
 library(stringi)
 

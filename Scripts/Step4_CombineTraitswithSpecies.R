@@ -451,22 +451,52 @@ nrow(dichrom_test)
 #208 coastal species have a value for sexual dichromatism of plumage brightness (Dichrom_bright) from Dunn et al. 2015
 
 
-#save joined Nest traits and Coastal Species as an .rds file 
+#save joined Sexual selection traits and Coastal Species as an .rds file 
 
 saveRDS(Coastal_SS_Traits.2, here("Outputs", "Coastal_Species_SSelect.rds"))
 
 
 
 
-
-
-
-
-
 ######################### JOIN SOCIAL TRAITS #######################
+# social traits: territoriality, cooperative breeding 
+
+# these traits are from Delhey et al. (2014), and are compiled from other original sources. 
+# # # # #Original source for Territoriality - Tobias et al. (2016)
+# # # # #Original source for Cooperative Breeding _ Cockburn (2006)
 
 
+#read in Coastal_Bodymass  
+
+Coastal_Bodymass <- readRDS(here("Outputs", "Coastal_Species_w_Mass.rds"))
 
 
+# import Delhey et al (2023) traits - includes territoriality and cooperative breeding.
+#Previously edited due to use of this data source for other trait categories. 
 
+DELHEY_social <- readRDS(here("Outputs", "Delhey_refined_traits.rds"))
+
+head(DELHEY_social)
+
+
+# Since Delhey et. al (2023) uses BirdTree/Jetz taxonomy, let's join by Species_Jetz 
+
+Coastal_Social_Traits <- left_join(Coastal_Bodymass, DELHEY_social)
+
+#view to check in on it 
+View(Coastal_Social_Traits)
+nrow(Coastal_Social_Traits) #826, as it should be 
+
+
+#check to see if we have NAs for sexual selection intensity (test using sex.sel.m)
+
+coop_test <- Coastal_Social_Traits %>% 
+  filter(!is.na(cooperative))
+nrow(coop_test)
+#794 coastal species have a value for territoriality from Delhey et al. (2023) 
+
+
+#save joined Social traits and Coastal Species as an .rds file 
+
+saveRDS(Coastal_Social_Traits, here("Outputs", "Coastal_Species_Social.rds"))
 

@@ -4,6 +4,7 @@
 ######DIET TRAITS 
 ######NESTING TRAITS 
 ######LIFE HISTORY TRAITS 
+######SEXUAL SELECTION TRAITS 
 ######SOCIAL TRAITS 
 
 
@@ -47,7 +48,14 @@ nrow(Coastal_birds_UN)
 ################# JOIN BODY MASS #################
 # body mass from avonet (Tobias et al. 2022 Ecol Letters)
 
-# this join will be used as the starting df to add other predictor traits 
+######
+#####
+## SARAH --- 
+## WE USED ELTON.CSV FOR BODYMASS.VALUE LAST TIME WE DID THE JOINS... WHY ARE WE USING AVONET // AND IS AVONET BODY MASS (MASS) BETTER? 
+######
+######
+
+# this join between coastal species and body mass will be used as the starting df to add other predictor traits 
 
 AVONET <- read.csv(here("Data", "avonet.csv"))
 head(AVONET)
@@ -102,25 +110,46 @@ Coastal_Bodymass <- readRDS(here("Outputs", "Coastal_Species_w_Mass.rds"))
 
 # import elton traits
 
-elton_diet <- read.csv(here("Data", "elton.csv"))
+ELTON_DIET <- read.csv(here("Data", "elton.csv"))
 
-View(elton_diet)
+head(ELTON_DIET)
+
 
 # Since Elton Traits use BirdTree/Jetz taxonomy, let's join by Species_Jetz 
 
+#change name of Species column in ELTON_DIET to Species_Jetz 
+
+ELTON_DIET2 <- ELTON_DIET %>% 
+  rename(Species_Jetz = Scientific)
+
+ELTON_DIET3 <- ELTON_DIET2 %>% 
+  select(Species_Jetz, Diet.Inv, Diet.Vend, Diet.Vect, Diet.Vfish, Diet.Vunk, Diet.Scav, Diet.Fruit, Diet.Nect, Diet.Seed, Diet.PlantO)
+
+colnames(ELTON_DIET3)
+head(ELTON_DIET3)
+
+Coastal_Diet_Traits <- left_join(Coastal_Bodymass, ELTON_DIET3)
+
+#view to check in on it 
+View(Coastal_Diet_Traits)
+nrow(Coastal_Diet_Traits) #826, as it should be 
+
+
+#check to see if we have NAs for Diet traits (Mass)
+
+Mass_test <- Coastal_Bodymass %>% 
+  filter(!is.na(Mass))
+nrow(Mass_test)
+#all 826 species have a body mass value from Avonet 
+
+#save Coastal_Bodymass as .rds for easy retrieval 
+
+saveRDS(Coastal_Bodymass, here("Outputs", "Coastal_Species_w_Mass.rds"))
 
 
 
-######
-#####
-## SARAH --- 
-## WE USED ELTON.CSV FOR BODYMASS.VALUE LAST TIME WE DID THE JOINS... WHY ARE WE USING AVONET // AND IS AVONET BODY MASS (MASS) BETTER? 
-######
-######
 
-
-
-########## JOIN LIFE HISTORY TRAITS ##########
+######################### JOIN LIFE HISTORY TRAITS #######################
 # life history traits include: clutch size, longevity, brood value, developmental mode
 
 ####### Clutch Size #######
@@ -142,7 +171,7 @@ View(elton_diet)
 # which taxonomy?
 
 
-########## JOIN NEST TRAITS ##########
+######################### JOIN NEST TRAITS #######################
 # nest traits include: nest site (low, high), nest structure (open or enclosed), nest safety
 
 # import nest site and structure info from Chia et al 2023
@@ -161,5 +190,8 @@ UAI_nests <- left_join(UAI_eBirdJetzBirdLife_final, nests_names)
 
 
 
-########## JOIN SEXUAL SELECTION TRAITS ##########
+######################### JOIN SEXUAL SELECTION TRAITS #######################
 # sexual selection traits include: plumage brightness and hue, intensity of sexual selection on Males and Females
+
+
+######################### JOIN SOCIAL TRAITS #######################

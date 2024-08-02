@@ -290,6 +290,14 @@ Coastal_Nest_Traits2 <- Coastal_Nest_Traits %>%
 
 colnames(Coastal_Nest_Traits2)
 
+
+######Nest Safety from Delhey et al. (2023)
+
+
+
+
+
+
 #save joined Nest traits and Coastal Species as an .rds file 
 
 saveRDS(Coastal_Nest_Traits2, here("Outputs", "Coastal_Species_Nest.rds"))

@@ -207,6 +207,8 @@ colnames(Coastal_Diet_Traits4)
 saveRDS(Coastal_Diet_Traits4, here("Outputs", "Coastal_Species_Diet.rds"))
 
 
+
+
 ######################### JOIN LIFE HISTORY TRAITS #######################
 # life history traits include: clutch size, longevity, brood value, developmental mode
 
@@ -229,8 +231,10 @@ saveRDS(Coastal_Diet_Traits4, here("Outputs", "Coastal_Species_Diet.rds"))
 # which taxonomy?
 
 
+
+
 ######################### JOIN NEST TRAITS #######################
-# nest traits include: nest site (low, high), nest structure (open or enclosed), nest safety
+# nest traits include: nest site (low, high), nest structure (open or enclosed), and nest safety
 
 #read in Coastal_Bodymass  
 
@@ -290,22 +294,103 @@ Coastal_Nest_Traits2 <- Coastal_Nest_Traits %>%
 
 colnames(Coastal_Nest_Traits2)
 
-
+######
 ######Nest Safety from Delhey et al. (2023)
 
+DELHEY <- read.csv(here("Data", "Delhey_2023_DS7.csv"))
+
+head(DELHEY)
+
+#rename the column ph
+DELHEY.2 <- DELHEY %>%
+  rename(Species_Jetz = phylo)
+
+#reformat the DELHEY.2$Species_Jetz column 
+
+DELHEY.3 <- DELHEY.2 %>% 
+  mutate(Species_Jetz = str_replace_all(Species_Jetz, "_", " "),  
+         Species_Jetz = str_to_sentence(Species_Jetz))
+head(DELHEY.3)
+
+#reduce the columns down to only relevant ones 
+colnames(DELHEY.3)
+
+#INCLUDED COOPERATIVE BREEDING AND TERRITORIALITY FOR NOW 
+DELHEY.4 <- DELHEY.3 %>% 
+  dplyr::select(Species_Jetz, sex.sel.m, sex.sel.f, nest.safety, developmental_mode, cooperative, territoriality) %>% 
+  distinct(Species_Jetz, .keep_all = TRUE)
+
+View(DELHEY.4)
+
+saveRDS(DELHEY.4, here("OUtputs", "Delhey_refined_traits.rds"))
+
+#GUIDE
+#SSTraits2 <- SSTraits %>% 
+ # dplyr::select(Species, sex.sel.m, sex.sel.f, territoriality, cooperative, nest.safety, developmental_mode) %>% 
+ # distinct(Species, .keep_all = TRUE)
 
 
+Coastal_Nest_Traits3 <- left_join(Coastal_Nest_Traits2, DELHEY.4)
 
+View(Coastal_Nest_Traits3)
+nrow(Coastal_Nest_Traits3) #826, as it should be 
 
+#let's check to see how many Coastal species have some of these categorical variables... such as Developmental mode! 
+Delhey_test <- Coastal_Nest_Traits3 %>% 
+  filter(!is.na(developmental_mode))
+nrow(Delhey_test)
+#794
 
 #save joined Nest traits and Coastal Species as an .rds file 
 
-saveRDS(Coastal_Nest_Traits2, here("Outputs", "Coastal_Species_Nest.rds"))
+saveRDS(Coastal_Nest_Traits3, here("Outputs", "Coastal_Species_Nest.rds"))
 
 
 
 ######################### JOIN SEXUAL SELECTION TRAITS #######################
-# sexual selection traits include: plumage brightness and hue, intensity of sexual selection on Males and Females
+# sexual selection traits: sexual dimorphism of plumage brightness, sexual dimorphism of plumage hue, 
+# intensity of sexual selection Males (SSM), and Intensity of sexual selection on Females (SSF)
+
+# SSM and SSM from - Delhey et al. (2014)
+# Plumage sexual dimorphism (brightness and hue) from - Dunn et al. 2015
+
+
+#read in Coastal_Bodymass  
+
+Coastal_Bodymass <- readRDS(here("Outputs", "Coastal_Species_w_Mass.rds"))
+
+############## SSM and SSF
+
+# import Delhey et al (2023) traits - includes SSM and SSF. Previously edited due to use of this data source for other trait categories. 
+
+DELHEY_ss <- readRDS(here("Outputs", "Delhey_refined_traits.rds"))
+
+head(DELHEY_ss)
+
+
+# Since Delhey et. al (2023) uses BirdTree/Jetz taxonomy, let's join by Species_Jetz 
+
+Coastal_SS_Traits <- left_join(Coastal_Bodymass, DELHEY_ss)
+
+#view to check in on it 
+View(Coastal_SS_Traits)
+nrow(Coastal_SS_Traits) #826, as it should be 
+
+
+#check to see if we have NAs for Diet traits (test using Diet.Inv)
+
+SSM_test <- Coastal_SS_Traits %>% 
+  filter(!is.na(sex.sel.m))
+nrow(SSM_test)
+#794 coastal species have a value for sexual selection intensity on males (SSM) from Delhey et al. 2023 
+
+
+############## SSM and SSF
+
+
+
+
+
 
 
 

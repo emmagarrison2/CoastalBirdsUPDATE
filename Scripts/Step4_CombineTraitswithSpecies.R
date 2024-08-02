@@ -347,6 +347,9 @@ saveRDS(Coastal_Nest_Traits3, here("Outputs", "Coastal_Species_Nest.rds"))
 
 
 
+
+
+
 ######################### JOIN SEXUAL SELECTION TRAITS #######################
 # sexual selection traits: sexual dimorphism of plumage brightness, sexual dimorphism of plumage hue, 
 # intensity of sexual selection Males (SSM), and Intensity of sexual selection on Females (SSF)
@@ -377,7 +380,7 @@ View(Coastal_SS_Traits)
 nrow(Coastal_SS_Traits) #826, as it should be 
 
 
-#check to see if we have NAs for Diet traits (test using Diet.Inv)
+#check to see if we have NAs for sexual selection intensity (test using sex.sel.m)
 
 SSM_test <- Coastal_SS_Traits %>% 
   filter(!is.na(sex.sel.m))
@@ -385,9 +388,72 @@ nrow(SSM_test)
 #794 coastal species have a value for sexual selection intensity on males (SSM) from Delhey et al. 2023 
 
 
-############## SSM and SSF
+############## Dichromatism HUE and BRIGHTNESS 
+
+# import Dunn et. al (2015) traits 
+
+DUNN <- read.csv(here("Data", "2015DunnDichromatism.csv"))
+
+head(DUNN)
+
+# SumDiffPC1 = difference between M and F in plumage  brightness 
+# SumDiffPC2 = difference between M and F in plumage hue
+
+colnames(DUNN)
+
+#Dunn et al. 2015 uses JETZ taxonomy, so we will join by Species_BirdLife
+
+#Change 
+
+DUNN.2 <- DUNN %>%
+  rename(Species_Jetz = Species) 
+
+# reformat Species_BirdLife so that it will join with Coastal_Bodymass 
+
+DUNN.3 <- DUNN.2 %>% 
+  mutate(Species_Jetz = str_replace_all(Species_Jetz, "_", " "),  
+         Species_Jetz = str_to_sentence(Species_Jetz))
+
+head(DUNN.3)
+
+# Change SummDiffPC1 to Dichrom_bright 
+
+DUNN.4 <- DUNN.3 %>% 
+  rename(Dichrom_bright = sumDiffPC1)
+
+# Change SUmmDiffPC2 to Dichrom_hue
+
+DUNN.5 <- DUNN.4 %>% 
+  rename(Dichrom_hue = sumDiffPC2)
+
+colnames(DUNN.5)
+
+#select and keep only relevant columns 
+
+DUNN.6 <- DUNN.5 %>%
+  select (Species_Jetz, Dichrom_bright, Dichrom_hue)
+colnames(DUNN.6)
+
+#time to join the edited DUNN.6 with Coastal_SS_Traits 
+
+Coastal_SS_Traits.2 <- left_join(Coastal_SS_Traits, DUNN.6)
+
+#view to check in on it 
+View(Coastal_SS_Traits.2)
+nrow(Coastal_SS_Traits.2) #826, as it should be 
 
 
+#check to see if we have NAs for sexual dichromatism (test using Dichrom_bright)
+
+dichrom_test <- Coastal_SS_Traits.2 %>% 
+  filter(!is.na(Dichrom_bright))
+nrow(dichrom_test)
+#208 coastal species have a value for sexual dichromatism of plumage brightness (Dichrom_bright) from Dunn et al. 2015
+
+
+#save joined Nest traits and Coastal Species as an .rds file 
+
+saveRDS(Coastal_SS_Traits.2, here("Outputs", "Coastal_Species_SSelect.rds"))
 
 
 

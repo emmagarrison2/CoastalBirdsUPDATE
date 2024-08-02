@@ -26,7 +26,7 @@ library(stringi)
 Coastal_Birds_list <- readRDS (here("Data", "Coastal_Birds_list.rds"))
 View(Coastal_Birds_list)
 nrow(Coastal_Birds_list)
-#826 total coastal species 
+#827 total coastal species 
 
 #let's see how many birds have UAI scores, MUTI scores, and UN scores 
 
@@ -38,7 +38,7 @@ nrow(Coastal_birds_UAI)
 Coastal_birds_MUTI <- Coastal_Birds_list %>% 
   filter(!is.na(MUTIscore))
 nrow(Coastal_birds_MUTI)
-#132 species 
+#133 species 
 
 Coastal_birds_UN <- Coastal_Birds_list %>% 
   filter(!is.na(Urban))
@@ -76,14 +76,14 @@ head(AVONET.3)
 
 Coastal_Bodymass <- left_join(Coastal_Birds_list, AVONET.3)
 head(Coastal_Bodymass)
-nrow(Coastal_Bodymass) #826, looks good. 
+nrow(Coastal_Bodymass) #827, looks good. 
 
 #check to see if we have NAs for body mass (Mass)
 
 Mass_test <- Coastal_Bodymass %>% 
   filter(!is.na(Mass))
 nrow(Mass_test)
-#all 826 species have a body mass value from Avonet 
+#all 827 species have a body mass value from Avonet 
 
 #save Coastal_Bodymass as .rds for easy retrieval 
 
@@ -134,7 +134,7 @@ Coastal_Diet_Traits <- left_join(Coastal_Bodymass, ELTON_DIET3)
 
 #view to check in on it 
 View(Coastal_Diet_Traits)
-nrow(Coastal_Diet_Traits) #826, as it should be 
+nrow(Coastal_Diet_Traits) #827, as it should be 
 
 
 #check to see if we have NAs for Diet traits (test using Diet.Inv)
@@ -142,7 +142,7 @@ nrow(Coastal_Diet_Traits) #826, as it should be
 Diet_test <- Coastal_Diet_Traits %>% 
   filter(!is.na(Diet.Inv))
 nrow(Diet_test)
-#all 826 species have diet traits from Wilman et al. 2014 (elton traits)
+#all 827 species have diet traits from Wilman et al. 2014 (elton traits)
 
 #Simplify the Diet Traits 
 
@@ -324,22 +324,17 @@ View(DELHEY.4)
 
 saveRDS(DELHEY.4, here("OUtputs", "Delhey_refined_traits.rds"))
 
-#GUIDE
-#SSTraits2 <- SSTraits %>% 
- # dplyr::select(Species, sex.sel.m, sex.sel.f, territoriality, cooperative, nest.safety, developmental_mode) %>% 
- # distinct(Species, .keep_all = TRUE)
-
 
 Coastal_Nest_Traits3 <- left_join(Coastal_Nest_Traits2, DELHEY.4)
 
 View(Coastal_Nest_Traits3)
-nrow(Coastal_Nest_Traits3) #826, as it should be 
+nrow(Coastal_Nest_Traits3) #827, as it should be 
 
 #let's check to see how many Coastal species have some of these categorical variables... such as Developmental mode! 
 Delhey_test <- Coastal_Nest_Traits3 %>% 
   filter(!is.na(developmental_mode))
 nrow(Delhey_test)
-#794
+#795
 
 #save joined Nest traits and Coastal Species as an .rds file 
 
@@ -377,7 +372,7 @@ Coastal_SS_Traits <- left_join(Coastal_Bodymass, DELHEY_ss)
 
 #view to check in on it 
 View(Coastal_SS_Traits)
-nrow(Coastal_SS_Traits) #826, as it should be 
+nrow(Coastal_SS_Traits) #827, as it should be 
 
 
 #check to see if we have NAs for sexual selection intensity (test using sex.sel.m)
@@ -385,7 +380,7 @@ nrow(Coastal_SS_Traits) #826, as it should be
 SSM_test <- Coastal_SS_Traits %>% 
   filter(!is.na(sex.sel.m))
 nrow(SSM_test)
-#794 coastal species have a value for sexual selection intensity on males (SSM) from Delhey et al. 2023 
+#795 coastal species have a value for sexual selection intensity on males (SSM) from Delhey et al. 2023 
 
 
 ############## Dichromatism HUE and BRIGHTNESS 
@@ -440,7 +435,7 @@ Coastal_SS_Traits.2 <- left_join(Coastal_SS_Traits, DUNN.6)
 
 #view to check in on it 
 View(Coastal_SS_Traits.2)
-nrow(Coastal_SS_Traits.2) #826, as it should be 
+nrow(Coastal_SS_Traits.2) #827, as it should be 
 
 
 #check to see if we have NAs for sexual dichromatism (test using Dichrom_bright)
@@ -485,7 +480,7 @@ Coastal_Social_Traits <- left_join(Coastal_Bodymass, DELHEY_social)
 
 #view to check in on it 
 View(Coastal_Social_Traits)
-nrow(Coastal_Social_Traits) #826, as it should be 
+nrow(Coastal_Social_Traits) #827, as it should be 
 
 
 #check to see if we have NAs for sexual selection intensity (test using sex.sel.m)
@@ -493,7 +488,7 @@ nrow(Coastal_Social_Traits) #826, as it should be
 coop_test <- Coastal_Social_Traits %>% 
   filter(!is.na(cooperative))
 nrow(coop_test)
-#794 coastal species have a value for territoriality from Delhey et al. (2023) 
+#795 coastal species have a value for territoriality from Delhey et al. (2023) 
 
 
 #save joined Social traits and Coastal Species as an .rds file 

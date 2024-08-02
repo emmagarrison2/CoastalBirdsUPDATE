@@ -89,6 +89,8 @@ nrow(Mass_test)
 
 saveRDS(Coastal_Bodymass, here("Outputs", "Coastal_Species_w_Mass.rds"))
 
+
+
 ######################### JOIN SENSORY TRAITS ####################### 
 # sensory traits: dim light vision and dominant vocal frequency
 ## Why ARE WE USING HU & CARDOSO 2009 FOR VOCAL FREQUENCY?
@@ -135,18 +137,74 @@ View(Coastal_Diet_Traits)
 nrow(Coastal_Diet_Traits) #826, as it should be 
 
 
-#check to see if we have NAs for Diet traits (Mass)
+#check to see if we have NAs for Diet traits (test using Diet.Inv)
 
-Mass_test <- Coastal_Bodymass %>% 
-  filter(!is.na(Mass))
-nrow(Mass_test)
-#all 826 species have a body mass value from Avonet 
+Diet_test <- Coastal_Diet_Traits %>% 
+  filter(!is.na(Diet.Inv))
+nrow(Diet_test)
+#all 826 species have diet traits from Wilman et al. 2014 (elton traits)
 
-#save Coastal_Bodymass as .rds for easy retrieval 
+#Simplify the Diet Traits 
 
-saveRDS(Coastal_Bodymass, here("Outputs", "Coastal_Species_w_Mass.rds"))
+######################################################################################
+######################################################################################
+#####################time start binning our categories for diet! 4 new bins --> vert, invert, plant/seed, and fruit/nectar (which we will test, but may have to drop)
+#First let's combine diet of vertebrate endotherms, vertbrate ectotherms, vertebrate unknown, vertebrate fish, and scavenging together to make a genreal "Diet Vertebrate" bin 
+
+Coastal_Diet_Traits$Diet.Vend <- as.numeric(Coastal_Diet_Traits$Diet.Vend)
+Coastal_Diet_Traits$Diet.Vect <- as.numeric(Coastal_Diet_Traits$Diet.Vect)
+Coastal_Diet_Traits$Diet.Vunk <- as.numeric(Coastal_Diet_Traits$Diet.Vunk)
+Coastal_Diet_Traits$Diet.Vfish <- as.numeric(Coastal_Diet_Traits$Diet.Vfish)
+Coastal_Diet_Traits$Diet.Scav <- as.numeric(Coastal_Diet_Traits$Diet.Scav)
+
+Coastal_Diet_Traits$Diet.Vert <- Coastal_Diet_Traits$Diet.Vend + Coastal_Diet_Traits$Diet.Vect + Coastal_Diet_Traits$Diet.Vunk + Coastal_Diet_Traits$Diet.Vfish + Coastal_Diet_Traits$Diet.Scav
+head(Coastal_Diet_Traits)
+
+#remove columns that we used to make Diet.Vert
+
+Coastal_Diet_Traits2 <- Coastal_Diet_Traits %>% select (-Diet.Vend, -Diet.Vect, -Diet.Vunk, -Diet.Vfish, - Diet.Scav)
+colnames(Coastal_Diet_Traits2)
+
+#
+#same thing for combining fruit and nectar combined to "Diet Fruit / Nectar"
+# 
+
+Coastal_Diet_Traits2$Diet.Fruit <- as.numeric(Coastal_Diet_Traits2$Diet.Fruit)
+Coastal_Diet_Traits2$Diet.Nect <- as.numeric(Coastal_Diet_Traits2$Diet.Nect)
+
+Coastal_Diet_Traits2$Diet.FN <- Coastal_Diet_Traits2$Diet.Fruit + Coastal_Diet_Traits2$Diet.Nect 
+head(Coastal_Diet_Traits2$Diet.Fruit)
+head(Coastal_Diet_Traits2$Diet.Nect)
+head(Coastal_Diet_Traits2$Diet.FN)
 
 
+#remove columns that we used to make Diet.FN
+
+Coastal_Diet_Traits3 <- Coastal_Diet_Traits2 %>% select (-Diet.Fruit, -Diet.Nect)
+colnames(Coastal_Diet_Traits3)
+
+#
+#same thing for combining fruit and nectar combined to "Diet Fruit / Nectar"
+#
+
+Coastal_Diet_Traits3$Diet.PlantO <- as.numeric(Coastal_Diet_Traits3$Diet.PlantO)
+Coastal_Diet_Traits3$Diet.Seed <- as.numeric(Coastal_Diet_Traits3$Diet.Seed)
+
+Coastal_Diet_Traits3$Diet.PS <- Coastal_Diet_Traits3$Diet.PlantO + Coastal_Diet_Traits3$Diet.Seed 
+head(Coastal_Diet_Traits3$Diet.PlantO)
+head(Coastal_Diet_Traits3$Diet.Seed)
+head(Coastal_Diet_Traits3$Diet.PS)
+
+
+#remove columns that we used to make Diet.FN
+
+Coastal_Diet_Traits4 <- Coastal_Diet_Traits3 %>% select (-Diet.PlantO, -Diet.Seed)
+colnames(Coastal_Diet_Traits4)
+
+
+#save Coastal_Diet_Traits as .rds for easy retrieval 
+
+saveRDS(Coastal_Diet_Traits4, here("Outputs", "Coastal_Species_Diet.rds"))
 
 
 ######################### JOIN LIFE HISTORY TRAITS #######################
@@ -174,15 +232,21 @@ saveRDS(Coastal_Bodymass, here("Outputs", "Coastal_Species_w_Mass.rds"))
 ######################### JOIN NEST TRAITS #######################
 # nest traits include: nest site (low, high), nest structure (open or enclosed), nest safety
 
+#read in Coastal_Bodymass  
+
+Coastal_Bodymass <- readRDS(here("Outputs", "Coastal_Species_w_Mass.rds"))
+
 # import nest site and structure info from Chia et al 2023
 # uses the BirdLife taxonomy
-nests_chia <- read.csv("~/Desktop/MAPS Project/Trait Files/nest.csv", header=T)
-head(nests_chia)
 
-nests_names <- nests_chia %>%
+CHIA_NEST <- read.csv(here("Data", "nests.csv"))
+
+head(CHIA_NEST)
+
+nests_names <- CHIA_NEST %>%
   rename(Species_BirdLife = Scientific_name)
 
-UAI_nests <- left_join(UAI_eBirdJetzBirdLife_final, nests_names)
+Coastal_Nest_Traits <- left_join(Coastal_Bodymass, nests_names)
 
 
 ## simplify the nest traits
@@ -194,4 +258,14 @@ UAI_nests <- left_join(UAI_eBirdJetzBirdLife_final, nests_names)
 # sexual selection traits include: plumage brightness and hue, intensity of sexual selection on Males and Females
 
 
+
+
+
+
 ######################### JOIN SOCIAL TRAITS #######################
+
+
+
+
+
+

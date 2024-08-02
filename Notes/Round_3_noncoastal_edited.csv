@@ -28,6 +28,7 @@
 27,Dicrurus adsimilis,Dicrurus adsimilis,Dicrurus adsimilis,Dicruridae (Drongos),Fork-tailed Drongo,1.19915575,NA,NA,NA,NA,Dicruridae,(Drongos),No,coastal woodlands,10,Invertebrate,0,0,0
 28,Lanius bucephalus,Lanius bucephalus,Lanius bucephalus,Laniidae (Shrikes),Bull-headed Shrike,2.420135948,NA,NA,NA,NA,Laniidae,(Shrikes),No,,10,Omnivore,0,0,0
 29,Corvus brachyrhynchos,Corvus brachyrhynchos,Corvus brachyrhynchos,"Corvidae (Crows, Jays, and Magpies)",American Crow,2.111014794,Corvus brachyrhynchos,1.683106507,NA,NA,Corvidae,"(Crows, Jays, and Magpies)",Yes,coastal bays and river deltas,10,Omnivore,0,0,0
+30,Corvus caurinus,Corvus brachyrhynchos,Corvus caurinus,"Corvidae (Crows, Jays, and Magpies)",Northwestern Crow,NA,Corvus caurinus,3.151504418,NA,NA,Corvidae,"(Crows, Jays, and Magpies)",Yes,forage along shorelines,10,Omnivore,0,0,0
 31,Corvus cryptoleucus,Corvus cryptoleucus,Corvus cryptoleucus,"Corvidae (Crows, Jays, and Magpies)",Chihuahuan Raven,0.675951929,Corvus cryptoleucus,-0.740597643,NA,NA,Corvidae,"(Crows, Jays, and Magpies)",No,,10,Omnivore,0,0,0
 32,Corvus coronoides,Corvus coronoides,Corvus coronoides,"Corvidae (Crows, Jays, and Magpies)",Australian Raven,1.266339654,NA,NA,NA,NA,Corvidae,"(Crows, Jays, and Magpies)",No,,10,Omnivore,0,0,0
 33,Corvus albus,Corvus albus,Corvus albus,"Corvidae (Crows, Jays, and Magpies)",Pied Crow,1.892529521,NA,NA,NA,NA,Corvidae,"(Crows, Jays, and Magpies)",Yes,coastal habitats,10,VertFishScav,0,0,0

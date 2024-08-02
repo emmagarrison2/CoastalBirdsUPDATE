@@ -385,7 +385,9 @@ write.csv(R3_coastal, here("Notes", "Round_3_coastal.csv"))
 
 
 
-#EMMA - CONTINUE THIS ONCE YOU ARE DONE EDITING Round_3_noncoastal.csv AND Round_3_coastal.csv 
+#edit files Round_3_coastal.csv and Round_3_noncoastal.csv by checking all species on BOTW 
+
+
 
 # Import edited files
 R3_coastal_edited <- read.csv(here("Notes", "Round_3_coastal_edited2.csv"), header = T) %>% select(-X)
@@ -412,8 +414,8 @@ Coastal_Round_4_edit2 <- Coastal_Round_3 %>%
   select(-Coastal, -Notes) %>% # removes these columns because they will be updated with new versions in the next step
   left_join(R3_edits, ., by="CommonName_eBird")
 
-nrow(Coastal_Round_4_edit2) # 227 - should be the same number as in R3_edits
-nrow(R3_edits) #227!
+nrow(Coastal_Round_4_edit2) # 228 - should be the same number as in R3_edits
+nrow(R3_edits) #228!
 
 
 # bind everything back together

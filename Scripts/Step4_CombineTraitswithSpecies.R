@@ -1,8 +1,8 @@
 #The objective of this script is to join Coastal_Birds_list.rds to trait data. 
 #We will create a joined dataframe for each category of predictor trait variables, as follows... 
 ######SENSORY TRAITS 
-######DIET TRAITS 
-######NESTING TRAITS 
+######DIET TRAITS - done
+######NESTING TRAITS - done 
 ######LIFE HISTORY TRAITS 
 ######SEXUAL SELECTION TRAITS 
 ######SOCIAL TRAITS 
@@ -249,8 +249,50 @@ nests_names <- CHIA_NEST %>%
 Coastal_Nest_Traits <- left_join(Coastal_Bodymass, nests_names)
 
 
-## simplify the nest traits
+##### simplify the nest traits
 
+# # # # NEST STRATEGY # # # # 
+#ok now lets sort our nest types in the bins "open" and "enclosed" (NestStr = Nest Strategy)
+
+#open 
+Coastal_Nest_Traits <- mutate(Coastal_Nest_Traits, NestStr_Open = ifelse(NestStr_scrape > 0 | NestStr_platform > 0 | NestStr_cup > 0, 1, 0))
+summary(Coastal_Nest_Traits$NestStr_Open)
+colnames(Coastal_Nest_Traits)
+
+#enclosed
+Coastal_Nest_Traits <- mutate(Coastal_Nest_Traits, NestStr_Enclosed = ifelse(NestStr_dome > 0 | NestStr_dome_tunnel > 0 | NestStr_primary_cavity > 0 | NestStr_second_cavity > 0, 1, 0))
+summary(Coastal_Nest_Traits$NestStr_Enclosed)
+colnames(Coastal_Nest_Traits)
+
+
+# # # # NEST SITE # # # #  
+#ok now lets sort our nest sites in the bins "low" (on or underground) and "high" (above the ground)
+
+#low 
+Coastal_Nest_Traits <- mutate(Coastal_Nest_Traits, NestSite_low = ifelse(NestSite_ground > 0 | NestSite_underground > 0 | NestSite_waterbody > 0, 1, 0))
+summary(Coastal_Nest_Traits$NestSite_low)
+colnames(Coastal_Nest_Traits)
+
+#high
+Coastal_Nest_Traits <- mutate(Coastal_Nest_Traits, NestSite_high = ifelse(NestSite_tree > 0 | NestSite_nontree > 0 | NestSite_cliff_bank > 0 | NestSite_termite_ant > 0, 1, 0))
+summary(Coastal_Nest_Traits$NestSite_high)
+colnames(Coastal_Nest_Traits)
+
+
+
+#remove all unnecessary columns 
+
+Coastal_Nest_Traits2 <- Coastal_Nest_Traits %>% 
+  select(-Seq_HBWBLv5, -Order, -Family, -Common_name, -SISRecID, -AvibaseID, -Parasite, -Mound, -NestSite_ground, -NestSite_tree, -NestSite_nontree, 
+         -NestSite_cliff_bank, -NestSite_underground, -NestSite_waterbody, -NestSite_termite_ant, 
+         -NestStr_scrape, -NestStr_platform, -NestStr_cup, -NestStr_dome, -NestStr_dome_tunnel, -NestStr_primary_cavity, -NestStr_second_cavity, -NestAtt_basal, 
+         -NestAtt_forked, -NestAtt_lateral, -NestAtt_pensile, -Ref_site, -Ref_str, -Ref_att, -Identifier, -Retrieval_time)
+
+colnames(Coastal_Nest_Traits2)
+
+#save joined Nest traits and Coastal Species as an .rds file 
+
+saveRDS(Coastal_Nest_Traits2, here("Outputs", "Coastal_Species_Nest.rds"))
 
 
 

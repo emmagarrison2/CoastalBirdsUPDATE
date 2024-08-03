@@ -419,36 +419,153 @@ nrow(R3_edits) #228!
 
 
 # bind everything back together
-Coastal_Final <- bind_rows(Coastal_Round_4_edit1, Coastal_Round_4_edit2)  
+Coastal_All <- bind_rows(Coastal_Round_4_edit1, Coastal_Round_4_edit2)  
 
 # make sure all the species are still present
-nrow(Coastal_Round_3) == nrow(Coastal_Final)
+nrow(Coastal_Round_3) == nrow(Coastal_All)
 #TRUE 
 
-# View Coastal_Final for double-checking 
-View(Coastal_Final)
-
-#looks good! 
+# View Coastal_All for double-checking 
+View(Coastal_All)
 
 #how many coastal species do we have? 
 
-nrow(Coastal_Final)
-colnames(Coastal_Final)
+nrow(Coastal_All)
+colnames(Coastal_All)
 #4433, just like it should be 
 
-Coastal_Birds <- Coastal_Final %>% 
+Coastal_Only <- Coastal_All %>% 
   filter(Coastal == "Yes")
 
-nrow(Coastal_Birds)
-#826 birds! Wow! 
+nrow(Coastal_Only)
+#827 birds
 
+# Are the names unique for the different taxonomies? NO!
+length(unique(Coastal_Only$Species_Jetz))
+length(unique(Coastal_Only$Species_eBird))
 
-#View to confirm  
+# look at duplicates for Jetz
+# these are the most problematic because we will use Jetz phylogeny for the models
+# these need to be resolved because we can only have one entry per name in the models
+duplicates_Jetz <- Coastal_Only %>% count(Species_Jetz) %>%
+  filter(n>1) %>%
+  left_join(., Coastal_Only)
+View(duplicates_Jetz)
+nrow(duplicates_Jetz) # 38
 
+# how many of these have UAI?
+duplicates_Jetz %>% filter(!is.na(aveUAI)) %>% nrow() # all of them
+
+# for duplicated species that only have UAI and no other urban index
+# we will just keep one entry
+
+# pull out the UN species
+UN_dups <- duplicates_Jetz %>% 
+  select(Species_Jetz, Urban) %>% 
+  filter(!is.na(Urban))  %>%
+  select(Species_Jetz) %>%
+  distinct() %>%
+  mutate(UN = "Yes")
+
+# pull out MUTI species
+MUTI_dups <- duplicates_Jetz %>% 
+  select(Species_Jetz, MUTIscore) %>% 
+  filter(!is.na(MUTIscore))  %>%
+  select(Species_Jetz) %>%
+  distinct() %>%
+  mutate(MUTI = "Yes")
+
+# find duplicates that only have UAI and not UN or MUTI
+UAIonly <- duplicates_Jetz %>% select(Species_Jetz) %>% distinct() %>%
+  left_join(.,MUTI_dups) %>% left_join(., UN_dups) %>%
+  filter(is.na(MUTI)) %>% filter(is.na(UN))
+
+# for these species, keep the entry where Jetz, BirdLife and eBird names are the same
+duplicates_Jetz_UAIonly <- UAIonly %>%
+  select(-UN, -MUTI) %>%
+  left_join(., duplicates_Jetz)
+
+fix1 <- duplicates_Jetz_UAIonly %>%
+  mutate(match = 
+    if_else(Species_BirdLife == Species_Jetz & Species_BirdLife == Species_eBird, "1", "0")) %>%
+  filter(match == 1) %>%
+  select(-n, -match)
+# fix 1 is the first set of "resolved" duplicates. 
+
+# now look at species that have UAI and UN
+UAI_UN <- duplicates_Jetz %>% select(Species_Jetz) %>% distinct() %>%
+  left_join(.,MUTI_dups) %>% left_join(., UN_dups) %>%
+  filter(!is.na(UN)) %>% filter(is.na(MUTI))
+nrow(UAI_UN)
+
+# for these species, keep the entry that has UN and UAI
+duplicates_Jetz_UAI_UN <- UAI_UN %>%
+  select(-UN, -MUTI) %>%
+  left_join(., duplicates_Jetz)
+
+fix2 <- duplicates_Jetz_UAI_UN %>%
+  filter(!is.na(Urban)) %>%
+  select(-n)
+# still has a single duplicated species, so we will keep the entry with shared species name across 3 naming schemes
+fix2 <- fix2 %>%
+  filter(Species_eBird != "Curruca cantillans")
+
+# now look at species that have UAI and MUTI
+UAI_MUTI <- duplicates_Jetz %>% select(Species_Jetz) %>% distinct() %>%
+  left_join(.,MUTI_dups) %>% left_join(., UN_dups) %>%
+  filter(!is.na(MUTI)) %>% filter(is.na(UN))
+nrow(UAI_MUTI)
+
+# for these species, keep the entry that has UN and MUTI
+duplicates_Jetz_UAI_MUTI <- UAI_MUTI %>%
+  select(-UN, -MUTI) %>%
+  left_join(., duplicates_Jetz)
+
+fix3 <- duplicates_Jetz_UAI_MUTI %>%
+  filter(!is.na(MUTIscore)) %>%
+  select(-n)
+# there is still one species that is duplicated because it has two MUTI scores
+# look both species up in Birds of the World
+# keeping Pacific Wren as its distribution is more coastal whereas Winter Wren occurs inland too
+fix3 <- fix3 %>%
+  filter(Species_eBird != "Troglodytes hiemalis")
+
+# put the already fixed species together
+# this will allow identification of all remaining duplicated Jetz names
+fix123 <- bind_rows(fix1, fix2, fix3)
+
+# who is left? Use anti_join to find out
+remaining_dups <- fix123 %>% select(Species_Jetz) %>%
+  anti_join(duplicates_Jetz, .)
+
+# making some decisions based on looking up the species on Birds of the World to resolve these final few
+# the criteria used to decide which species to keep is described here:
+# keep Clapper Rail and drop Ridgeway's Rail because Clapper rail overlaps more urban areas and has a larger range
+# keep Eurasian moorhen and drop Common gaillnule because Eurasian moorhen has a wider distribution and occurs outside North America/Europe in areas less well represented in ornitholigical research
+# keep Snowy plover and drop Kentish plover as it appears to use coastal habitats more based on range map
+# keep Gray-cowled Wood-rail and drop Russet-napped Wood-rail. These were on species until recently. Gray-cowled has a large range with potential to overlap more urban areas
+
+fix4 <- remaining_dups %>% 
+  filter(CommonName_eBird %in% c("Clapper Rail", "Eurasian Moorhen", "Snowy Plover", "Gray-cowled Wood-Rail")) %>%
+  select(-n)
+
+allfixes <- bind_rows(fix123, fix4) # put all resolved duplicates together
+nrow(allfixes) # 18
+
+# get all the coastal species that did not have duplicate issues
+Coastal_Only_nondups <- allfixes %>% select(Species_Jetz) %>%
+  anti_join(Coastal_Only, .)
+nrow(Coastal_Only_nondups)
+
+# put together allfixes and Coastal_Only_nodups to get final and clean Coastal birds list
+Coastal_Birds <- bind_rows(Coastal_Only_nondups, allfixes)
+
+nrow(Coastal_Birds)# should be equal to the number of unique Jetz species names
+length(unique(Coastal_Birds$Species_Jetz))
+
+# View to confirm  
 View(Coastal_Birds)
 
-
-#save as csv and rds in data folder! 
-
+# save as csv and rds in data folder! 
 write.csv(Coastal_Birds, here("Data", "Coastal_Birds_List.csv"))
 saveRDS(Coastal_Birds, here("Data", "Coastal_Birds_list.rds"))

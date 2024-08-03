@@ -19,24 +19,24 @@ library(stringi)
 Coastal_Birds_list <- readRDS (here("Data", "Coastal_Birds_list.rds"))
 View(Coastal_Birds_list)
 nrow(Coastal_Birds_list)
-#827 total coastal species 
+#807 total coastal species 
 
 #let's see how many birds have UAI scores, MUTI scores, and UN scores 
 
 Coastal_birds_UAI <- Coastal_Birds_list %>% 
   filter(!is.na(aveUAI))
 nrow(Coastal_birds_UAI)
-#818 species 
+#798 species 
 
 Coastal_birds_MUTI <- Coastal_Birds_list %>% 
   filter(!is.na(MUTIscore))
 nrow(Coastal_birds_MUTI)
-#133 species 
+#130 species 
 
 Coastal_birds_UN <- Coastal_Birds_list %>% 
   filter(!is.na(Urban))
 nrow(Coastal_birds_UN)
-#132 species 
+#129 species 
 
 ################# JOIN BODY MASS #################
 # body mass from avonet (Tobias et al. 2022 Ecol Letters)
@@ -61,7 +61,7 @@ head(AVONET.3)
 
 Coastal_Bodymass <- left_join(Coastal_Birds_list, AVONET.3, by="Species_BirdLife")
 head(Coastal_Bodymass)
-nrow(Coastal_Bodymass) #827, looks good. 
+nrow(Coastal_Bodymass) #807, looks good. 
 
 # Body mass in birds is typically very skewed. Check that for coastal birds
 hist(Coastal_Bodymass$Mass)
@@ -77,7 +77,7 @@ Coastal_Bodymass <- Coastal_Bodymass %>%
 Mass_test <- Coastal_Bodymass %>% 
   filter(!is.na(Mass))
 nrow(Mass_test)
-#all 827 species have a body mass value from Avonet 
+#all 807 species have a body mass value from Avonet 
 
 #save Coastal_Bodymass as .rds for easy retrieval 
 saveRDS(Coastal_Bodymass, here("Outputs", "Coastal_Species_w_Mass.rds"))
@@ -196,7 +196,7 @@ Coastal_Diet_Traits <- left_join(Coastal_Bodymass, ELTON_DIET3)
 
 # view to check in on it 
 View(Coastal_Diet_Traits)
-nrow(Coastal_Diet_Traits) #827, as it should be 
+nrow(Coastal_Diet_Traits) #807, as it should be 
 
 
 #check to see if we have NAs for Diet traits (test using Diet.Inv)
@@ -204,7 +204,7 @@ nrow(Coastal_Diet_Traits) #827, as it should be
 Diet_test <- Coastal_Diet_Traits %>% 
   filter(!is.na(Diet.Inv))
 nrow(Diet_test)
-#all 827 species have diet traits from Wilman et al. 2014 (elton traits)
+#all 807 species have diet traits from Wilman et al. 2014 (elton traits)
 
 # Next, we will simplify the Diet Traits into fewer categories
 
@@ -484,6 +484,7 @@ Coastal_Nest_OpEnc <- Coastal_Nest_Chia %>%
 
 # which species and how many were assigned to both Open and Enclosed groups?
 Coastal_Nest_StrBoth <- Coastal_Nest_OpEnc %>% filter(OpenAndEnclosed == "both")
+nrow(Coastal_Nest_StrBoth)
 
 # we will resolve these into a single category based on the nest type they predominantly use
 # any that can't be resolved will be marked as NA
@@ -649,7 +650,7 @@ Coastal_SS_Traits <- left_join(Coastal_Bodymass, DELHEY_ss, by="Species_Jetz")
 
 #view to check in on it 
 View(Coastal_SS_Traits)
-nrow(Coastal_SS_Traits) #827, as it should be 
+nrow(Coastal_SS_Traits) #807, as it should be 
 
 #check to see if we have NAs for sexual selection intensity
 Coastal_SS_Traits %>% filter(is.na(sex.sel.m)) %>% nrow()
@@ -705,7 +706,7 @@ Coastal_SS_Traits.2 <- left_join(Coastal_SS_Traits, DUNN.4)
 
 #view to check in on it 
 View(Coastal_SS_Traits.2)
-nrow(Coastal_SS_Traits.2) #827, as it should be 
+nrow(Coastal_SS_Traits.2) #807, as it should be 
 
 #check to see if we have NAs for sexual dichromatism and hue 
 Coastal_SS_Traits.2 %>% filter(is.na(Dichrom_bright)) %>% nrow()
@@ -757,7 +758,7 @@ Coastal_Social_Traits <- left_join(Coastal_Bodymass, DELHEY_social)
 
 # view to check in on it 
 View(Coastal_Social_Traits)
-nrow(Coastal_Social_Traits) #827, as it should be 
+nrow(Coastal_Social_Traits) #807, as it should be 
 
 
 # check to see if we have NAs for cooperative breeding and territoriality

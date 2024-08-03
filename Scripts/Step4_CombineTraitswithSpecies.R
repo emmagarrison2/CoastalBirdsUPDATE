@@ -1,12 +1,11 @@
 #The objective of this script is to join Coastal_Birds_list.rds to trait data. 
 #We will create a joined dataframe for each category of predictor trait variables, as follows... 
-######SENSORY TRAITS 
-######DIET TRAITS - done
-######NESTING TRAITS - done 
-######LIFE HISTORY TRAITS 
-######SEXUAL SELECTION TRAITS 
-######SOCIAL TRAITS 
-
+###### SENSORY TRAITS 
+###### DIET TRAITS 
+###### NESTING TRAITS
+###### LIFE HISTORY TRAITS 
+###### SEXUAL SELECTION TRAITS 
+###### SOCIAL TRAITS 
 
 
 # Load packages
@@ -15,8 +14,7 @@ library(tidyverse)
 library(stringi)
 
 
-
-#read in Coastal Bird List 
+# read in Coastal Bird List 
 
 Coastal_Birds_list <- readRDS (here("Data", "Coastal_Birds_list.rds"))
 View(Coastal_Birds_list)
@@ -65,8 +63,17 @@ Coastal_Bodymass <- left_join(Coastal_Birds_list, AVONET.3, by="Species_BirdLife
 head(Coastal_Bodymass)
 nrow(Coastal_Bodymass) #827, looks good. 
 
-#check to see if we have NAs for body mass (Mass)
+# Body mass in birds is typically very skewed. Check that for coastal birds
+hist(Coastal_Bodymass$Mass)
 
+# look at distribution of log transformed body mass
+hist(log(Coastal_Bodymass$Mass)) # much better
+
+# add column for log transformed body mass
+Coastal_Bodymass <- Coastal_Bodymass %>%
+  mutate(Mass_log = log(Mass))
+
+#check to see if we have NAs for body mass (Mass)
 Mass_test <- Coastal_Bodymass %>% 
   filter(!is.na(Mass))
 nrow(Mass_test)
@@ -74,7 +81,6 @@ nrow(Mass_test)
 
 #save Coastal_Bodymass as .rds for easy retrieval 
 saveRDS(Coastal_Bodymass, here("Outputs", "Coastal_Species_w_Mass.rds"))
-
 
 ##################################################################
 ################## JOIN SENSORY TRAITS ###########################

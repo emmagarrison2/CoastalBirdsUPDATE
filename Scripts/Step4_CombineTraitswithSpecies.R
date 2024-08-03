@@ -397,9 +397,30 @@ Coastal_Clutch %>% filter(!is.na(clutch_size)) %>% filter(!is.na(Urban)) %>% nro
 
 #  calculate brood value using longevity from Bird et al. and clutches_per_y from Mryhvold et al
 
+# check the variables (clutches per year and longevity) that will be used for the calculation
+clutch.yr <- Coastal_Clutch %>% filter(!is.na(clutches_per_y)) %>% select(clutches_per_y)
+range(clutch.yr$clutches_per_y) # 21 seems high. Will inspect
+hist(clutch.yr$clutches_per_y, breaks=50)
+# clutches per yr for Australian Brushturkey and Killdeer seem inaccurate. Check values on Birds of the World
+
+# Australian Brushturkey: a female lays 15-27 eggs in a season
+# the eggs are often can be spread out over separate nests that are tended by different males (they are polyandrous) 
+# If each nest where she lays is considered a separate brood then this high value is accurate
+# leaving as is for now
+
+# Killdeer: clutch size is typically 4 eggs. Birds of the world mentions one brood reared per season
+# value in data frame needs to be changed
+
+Coastal_Clutch$clutches_per_y[Coastal_Clutch$CommonName_eBird == "Killdeer"] <- "1.00"
+
+max.longevity <- Coastal_Clutch %>% filter(!is.na(longevity)) %>% select(longevity)
+range(max.longevity$longevity) # seems reasonable as there are long-lived seabirds in the data
+hist(max.longevity$longevity)
+
 # perform calculation to get brood value
 # building off of Coastal_Clutch to do this
 Coastal_BroodValue <- Coastal_Clutch %>%
+  mutate_at(vars(longevity, clutches_per_y), as.numeric) %>%
   rowwise() %>%
   mutate(brood_value = log(1/(longevity*clutches_per_y)))
 

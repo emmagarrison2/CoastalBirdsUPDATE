@@ -65,6 +65,7 @@ nrow(Coastal_Bodymass) #807, looks good.
 
 # Body mass in birds is typically very skewed. Check that for coastal birds
 hist(Coastal_Bodymass$Mass)
+#indeed looks skewed 
 
 # look at distribution of log transformed body mass
 hist(log(Coastal_Bodymass$Mass)) # much better
@@ -451,6 +452,18 @@ Coastal_LifeHistory <- left_join(Coastal_BroodValue, DELHEY_developmental, by = 
 nrow(Coastal_LifeHistory) == nrow(Coastal_Bodymass)
 
 # how many species have developmental mode?
+
+#general (0 and 1)
+# how many species have clutch size values?
+# for UAI?
+Coastal_LifeHistory %>% filter(!is.na(developmental_mode)) %>% filter(!is.na(aveUAI)) %>% nrow()
+# for MUTI?
+Coastal_LifeHistory %>% filter(!is.na(developmental_mode)) %>% filter(!is.na(MUTIscore)) %>% nrow()
+# for UN?
+Coastal_LifeHistory %>% filter(!is.na(developmental_mode)) %>% filter(!is.na(Urban)) %>% nrow()
+
+#distribution of 0 and 1 
+
 # for UAI? 
 # Print numbers for Precocial = 0 and Altricial = 1
 Coastal_LifeHistory %>% filter(!is.na(developmental_mode)) %>% filter(!is.na(aveUAI)) %>% group_by(developmental_mode) %>% count()

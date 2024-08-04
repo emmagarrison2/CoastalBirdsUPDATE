@@ -2,17 +2,29 @@ library(nlme)
 library(tidyverse)
 library(here)
 library(broom)
+if(!require(broom.mixed)){
+  install.packages("broom.mixed")
+  require(broom.mixed)
+}
 library(broom.mixed)
+if(!require(flextable)){
+  install.packages("flextable")
+  require(flextable)
+}
 library(flextable)
 library(phytools)
 library(ape)
 library(geiger)
 library(ggeffects)
+if(!require(easystats)){
+  install.packages("easystats")
+  require(easystats)
+}
 library(easystats)
 
 # read in trait and species data
 Coastal_Sensory <- readRDS(here("Outputs", "Coastal_Species_Sensory.rds"))
-
+View(Coastal_Sensory)
 # confirm there are 807 species and 807 unique Jetz species names
 nrow(Coastal_Sensory)
 length(unique(Coastal_Sensory$Species_Jetz))
@@ -29,7 +41,7 @@ tree$tip.label # look at species name formatting for tree tips to confirm it mat
 is.ultrametric(tree)
 
 
-## EMMA - Making an example model. Please re-format this to match your method/appracj
+## EMMA - Making an example model. Please re-format this to match your method/approach
 # look at dim light vision for UAI as an example model
 # drop all rows/species that are missing C.T values
 CT_UAI <- sensory_jetz %>% filter(!is.na(C.T)) %>% filter(!is.na(aveUAI))

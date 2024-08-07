@@ -71,6 +71,7 @@ CT_UAI_mod_tidy <- broom.mixed::tidy(CT_UAI_mod) %>%
   mutate_if(is.numeric, round, 4) # round all the columns that are numeric to have 4 digits after the decimal
 CT_UAI_mod_tidy
 
+
 # at this stage you could write the tidy data frame from above as a csv file 
 # write.csv(CT_UAI_mod_tidy, here("Results", "CT_UAI_model.csv")) 
 # I would add a folder called Results to the R Project as a place to save these

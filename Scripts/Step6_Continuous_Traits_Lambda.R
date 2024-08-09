@@ -89,13 +89,13 @@ plot.phylosig(CT_lambda2) # plot the likelihood surface for lambda
 # look at distribution
 hist(Sensoryspp$peak_freq) # not skewed. no transformation needed
 
-# get vector of C.T values with species names as rownames
+# get vector of peak frequency values with species names as rownames
 pf_vect <- setNames(Sensoryspp$peak_freq, rownames(Sensoryspp))
 
 # drop species with NA values
 pf_vect[!is.na(pf_vect)]
 
-# get measure of lambda for CT
+# get measure of lambda for peak frequency 
 # will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
 pf_lambda2 <-phylosig(tree = jetztree_sensory, pf_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
 pf_lambda2 # lambda = 0.936 , p << 0.001
@@ -104,14 +104,111 @@ plot.phylosig(pf_lambda2) # plot the likelihood surface for lambda
 
 ######################## Phylogenetic Signal (lambda) for DIET TRAITS ######################## 
 
+
+#import Coastal_Species_Sensory.rds 
+
+Diet_Traits <- readRDS(here("Outputs", "Coastal_Species_Diet.rds"))
+head(Diet_Traits)
+colnames(Diet_Traits)
+
+#should I be going off of... Species_Jetz, Species_BirdLife, or Species_eBird???? prob Jetz because I join it to Jetz tree.... 
+
+#do some reformatting and re-naming... 
+Diet_Traits <- Diet_Traits %>%
+  rename(Species = Species_Jetz)
+colnames(Diet_Traits)
+#nice 
+
+#now, reformat Species column so that it is in Aaaa_aaaa format! 
+Diet_Traits <- Diet_Traits %>%
+  mutate(Species = str_replace(Species, " ", "_"))
+View(Diet_Traits)
+
+### we need to trim Jetz tree that we imported above to get a tree that only contains coastal species
+
+# create data frame with traits and species as the rownames
+Dietspp <- Diet_Traits %>%
+  column_to_rownames(var="Species")
+
+### load phylogenetic tree
+jetztree <- read.tree(here("Data", "Jetz_ConsensusPhy.tre")) 
+jetztree$tip.label # look at species name formatting for tree tips to confirm it matches formatting we are using - yes!
+
+# check that the tree is ultrametric (do all the tree tips line up?)
+is.ultrametric(jetztree)
+#true! 
+
+
+# check that all the species in our data are also present in the tree
+check_diet <- name.check(jetztree, Dietspp) # there should be many more species in the tree than our data
+check_diet
+
+# trim the tree to match the data by dropping all the extra species identified in the previous step
+jetztree_diet <-drop.tip(jetztree, check_diet$tree_not_data)
+
+# check again whether tree has same species as data. Should say "OK"
+name.check(jetztree_diet, Sensoryspp)
+#OK 
+
+##########
+colnames(Dietspp)
+
+     # % Diet Invert 
+
+# look at distribution
+hist(Dietspp$Diet.Inv) # not skewed. definitely not normal, but no log transformation needed
+
+# get vector of C.T values with species names as rownames
+invert_vect <- setNames(Dietspp$Diet.Inv, rownames(Dietspp))
+
+# drop species with NA values
+invert_vect[!is.na(invert_vect)]
+
+# get measure of lambda for CT
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+invert_lambda2 <-phylosig(tree = jetztree_diet, invert_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+invert_lambda2 # lambda = 0.53 , p << 0.001
+plot.phylosig(invert_lambda2) # plot the likelihood surface for lambda
+
+
+     # % Diet Vert 
+
+     # % Diet Fruit/Nectar 
+
+     # % Diet Plant/Seed
+
 ######################## Phylogenetic Signal (lambda) for NESTING TRAITS ######################## 
+
+     # nest structure (open/enclosed) and site (high/low) not continuous 
+
+     # Nest safety (may be considered ordinal...)
 
 ######################## Phylogenetic Signal (lambda) for LIFE HISTORY TRAITS ########################
 
+     # Brood Value 
+
+     # Clutch size 
+
+     # Longevity 
+
+     # Developmental mode = NOT continuous 
+
 ######################## Phylogenetic Signal (lambda) for SEXUAL SELECTION TRAITS ########################
+
+     # Brightness Dimorphism 
+
+     # Hue Dimorphism 
+
+     # Sex selection intensity MALES 
+
+     # Sex selection intensity FEMALES
 
 ######################## Phylogenetic Signal (lambda) for SOCIAL TRAITS ######################## 
 
+     # no continuous traits 
+
 ######################## Phylogenetic Signal (lambda) for BODY MASS ######################## 
+
+     # Log Body Mass 
 
 #import Coastal_Species_w_Mass.rds

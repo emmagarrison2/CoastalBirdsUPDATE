@@ -147,7 +147,7 @@ check_diet
 jetztree_diet <-drop.tip(jetztree, check_diet$tree_not_data)
 
 # check again whether tree has same species as data. Should say "OK"
-name.check(jetztree_diet, Sensoryspp)
+name.check(jetztree_diet, Dietspp)
 #OK 
 
 ##########
@@ -167,15 +167,66 @@ invert_vect[!is.na(invert_vect)]
 # get measure of lambda for CT
 # will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
 invert_lambda2 <-phylosig(tree = jetztree_diet, invert_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
-invert_lambda2 # lambda = 0.53 , p << 0.001
+invert_lambda2 # lambda = 0.845 , p << 0.001
 plot.phylosig(invert_lambda2) # plot the likelihood surface for lambda
 
 
      # % Diet Vert 
 
+# look at distribution
+hist(Dietspp$Diet.Vert) # not skewed. definitely not normal, but no log transformation needed
+
+# get vector of C.T values with species names as rownames
+vert_vect <- setNames(Dietspp$Diet.Vert, rownames(Dietspp))
+
+# drop species with NA values
+vert_vect[!is.na(vert_vect)]
+
+# get measure of lambda for CT
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+vert_lambda2 <-phylosig(tree = jetztree_diet, vert_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+vert_lambda2 # lambda = 0.860 , p << 0.001
+plot.phylosig(vert_lambda2) # plot the likelihood surface for lambda
+
+
+
      # % Diet Fruit/Nectar 
 
+
+# look at distribution
+hist(Dietspp$Diet.FN) # not skewed. definitely not normal, but no log transformation needed
+
+# get vector of C.T values with species names as rownames
+FN_vect <- setNames(Dietspp$Diet.FN, rownames(Dietspp))
+
+# drop species with NA values
+FN_vect[!is.na(FN_vect)]
+
+# get measure of lambda for CT
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+FN_lambda2 <-phylosig(tree = jetztree_diet, FN_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+FN_lambda2 # lambda = 0.912 , p << 0.001
+plot.phylosig(FN_lambda2) # plot the likelihood surface for lambda
+
+
      # % Diet Plant/Seed
+
+# look at distribution
+hist(Dietspp$Diet.PS) # not skewed. definitely not normal, but no log transformation needed
+
+# get vector of C.T values with species names as rownames
+PS_vect <- setNames(Dietspp$Diet.PS, rownames(Dietspp))
+
+# drop species with NA values
+PS_vect[!is.na(PS_vect)]
+
+# get measure of lambda for CT
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+PS_lambda2 <-phylosig(tree = jetztree_diet, PS_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+PS_lambda2 # lambda = 0.828 , p << 0.001
+plot.phylosig(PS_lambda2) # plot the likelihood surface for lambda
+
+
 
 ######################## Phylogenetic Signal (lambda) for NESTING TRAITS ######################## 
 

@@ -22,282 +22,418 @@ library(phylolm)
 ###################### Prep
 
 
-# read in Sensory trait and species data
+#load in "CoastalUT_dat30April24.rds" - since this contains coastal species and all trait variables :) 
 
-Coastal_Sensory <- readRDS(here("Outputs", "Coastal_Species_Sensory.rds"))
+C_Sensory_dat <- readRDS(here("Outputs", "Coastal_Species_Sensory.rds"))
+str(C_Sensory_dat)
 
-# confirm there are 807 species and 807 unique Jetz species names
-nrow(Coastal_Sensory)
-length(unique(Coastal_Sensory$Species_Jetz))
+C_Sensory_dat2 <- C_Sensory_dat %>%
+  mutate(Species_Jetz  = str_replace(Species_Jetz, " ", "_"))
+str(C_Sensory_dat2)
 
-# add underscore to Jetz species names and move them to rownames
-sensory_jetz <- Coastal_Sensory %>%
-  mutate(phy_names = str_replace(Species_Jetz, " ", "_")) %>%
-  column_to_rownames(., var = "phy_names")
+C_Sensory_dat2$Urban <- ifelse(C_Sensory_dat2$Urban == "U", 1, 0)
+View(C_Sensory_dat2)
+colnames(C_Sensory_dat2)
 
-# import tree
-tree <- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
-tree$tip.label # look at species name formatting for tree tips to confirm it matches formatting we are using - yes!
-# check that the tree is ultrametric (do all the tree tips line up?)
-is.ultrametric(tree)
 
-#For Urban (UN), we need to change Urban (U) = 1, and nonurban (N) = 0.
+#############################################################
+###########
+#C.T and UAI YAYAYAY!
 
-sensory_jetz$Urban <- ifelse(sensory_jetz$Urban == "U", 1, 0)
-View(sensory_jetz)
+# lets first simplify a NEW database by removing records where we don't have an UAI value from Neate-Clegg
+NeateTraitDataUT <- C_Sensory_dat2 %>% filter(!is.na(aveUAI)) 
+NeateTraitData1 <- NeateTraitDataUT %>% filter(!is.na(C.T)) 
+length(NeateTraitData1$C.T)
+#237 species with UAI and CT
 
-################################### C.T. ################################### 
+###### add and pair tree
 
+# add rownames to data
+row.names(NeateTraitData1) <- NeateTraitData1$Species_Jetz
 
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
 
+Neatephydat1 <- treedata(tree_out,NeateTraitData1, sort=T)
 
-########## C.T. and UAI ###########
+Neatephy1 <- Neatephydat1$phy
+NeateTraitDat1 <- as.data.frame(Neatephydat1$data)
 
-# look at dim light vision for UAI as an example model
-# drop all rows/species that are missing C.T values
-CT_UAI <- sensory_jetz %>% filter(!is.na(C.T)) %>% filter(!is.na(aveUAI))
+str(NeateTraitDat1)
+length(NeateTraitDat1$C.T)
+#237
 
-# join tree with data
-CT_UAI_tree  <- treedata(tree, CT_UAI, sort=T)
-CT_UAI_phy <- CT_UAI_tree$phy # rename pruned phylogeny
+### convert traits of interest to numeric
 
-# rename sorted data and change columns to numeric
-CT_UAI_dat <- data.frame(CT_UAI_tree$data) %>% 
-  mutate_at(c("aveUAI", "Mass_log", "C.T"), as.numeric) # make columns for model into numeric
+NeateTraitDat1$aveUAI <- as.numeric(NeateTraitDat1$aveUAI)
+NeateTraitDat1$Mass_log <- as.numeric(NeateTraitDat1$Mass_log)
+NeateTraitDat1$C.T <- as.numeric(NeateTraitDat1$C.T)
 
-# look at distribution of variables we will use in the model
-hist(CT_UAI_dat$aveUAI) # UAI scores
-hist(CT_UAI_dat$Mass_log) # log transformed body mass
-hist(CT_UAI_dat$C.T) # C.T ratio
+########### since model not working as corPagel starting point = 0.5 and fixed = F... 
+# let's find a
+# lambda value to fix in the model 
 
-# run a phylogenetic gls model
-CT_UAI_mod <- gls(aveUAI ~ C.T + Mass_log, data = CT_UAI_dat, 
-                  correlation = corPagel(0, phy=CT_UAI_phy, fixed=T), method = "ML") 
 
-summary(CT_UAI_mod)
-confint(CT_UAI_mod)
+# Create an empty vector to store AIC values
+AIC_values <- numeric()
 
-# make model summary into a tidy output
-# use broom.mixed package to do this
-CT_UAI_mod_tidy <- broom.mixed::tidy(CT_UAI_mod) %>%  
-  mutate_if(is.numeric, round, 4) # round all the columns that are numeric to have 4 digits after the decimal
-CT_UAI_mod_tidy
+# Loop through different values of the parameter for corPagel
+for (i in seq(0, 1, by = 0.1)) {
+  # Fit the gls model with the current value of i
+  model <- gls(aveUAI ~ C.T + Mass_log, 
+               data = NeateTraitDat1,
+               correlation = corPagel(i, phy = Neatephy1, fixed = TRUE, form = ~Species_Jetz), 
+               method = "ML")
+  # Extract AIC value and store it in the vector
+  AIC_values <- c(AIC_values, AIC(model))
+}
 
+# Print AIC values
+print(AIC_values)
+#0 = best AIC score 
 
-# we will combine this CT_UAI_mod_tidy tidy output with the other results... and this will become our sensory traits results table! 
 
 
-########## C.T. and MUTI ###########
-colnames(sensory_jetz)
 
-# look at dim light vision for UAI as an example model
-# drop all rows/species that are missing C.T values
-CT_MUTI <- sensory_jetz %>% filter(!is.na(C.T)) %>% filter(!is.na(MUTIscore))
+#lets run the model!
 
-# join tree with data
-CT_MUTI_tree  <- treedata(tree, CT_MUTI, sort=T)
-CT_MUTI_phy <- CT_MUTI_tree$phy # rename pruned phylogeny
 
-# rename sorted data (TREE) and change columns to numeric (DAT)
-CT_MUTI_dat <- data.frame(CT_MUTI_tree$data) %>% 
-  mutate_at(c("MUTIscore", "Mass_log", "C.T"), as.numeric) # make columns for model into numeric
+UAI_GLS_C.T <- gls(aveUAI~ C.T + Mass_log, data = NeateTraitDat1, 
+                   correlation = corPagel(0, phy=Neatephy1,fixed=T, form = ~Species_Jetz), 
+                   method = "ML") 
+#check out the model
+check_model(UAI_GLS_C.T) ## low collinearity - which is good! - normality of residuals line does not fall on line, but is in a straight line 
+qqnorm(resid(UAI_GLS_C.T)) 
+qqline(resid(UAI_GLS_C.T)) #most points fall on the line 
+hist(resid(UAI_GLS_C.T)) #roughly normal dist of residuals
 
-# look at distribution of variables we will use in the model
-hist(CT_MUTI_dat$MUTIscore) # MUTI scores - skewed right
-hist(CT_MUTI_dat$Mass_log) # log transformed body mass - looks good 
-hist(CT_MUTI_dat$C.T) # C.T ratio - looks good 
 
-# run a phylogenetic gls model
-CT_MUTI_mod <- gls(MUTIscore ~ C.T + Mass_log, data = CT_MUTI_dat, 
-                  correlation = corPagel(0, phy=CT_MUTI_phy, fixed=T), method = "ML") 
+summary(UAI_GLS_C.T) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
+confint(UAI_GLS_C.T)
 
-summary(CT_MUTI_mod)
-confint(CT_MUTI_mod)
 
-# make model summary into a tidy output
-# use broom.mixed package to do this
-CT_MUTI_mod_tidy <- broom.mixed::tidy(CT_MUTI_mod) %>%  
-  mutate_if(is.numeric, round, 3) # round all the columns that are numeric to have 4 digits after the decimal
-CT_MUTI_mod_tidy
+########################### C.T and MUTI #############################
 
+# lets first simplify a NEW database by removing records where we don't have an UAI value from Neate-Clegg
+TraitDataUTSensory <- C_Sensory_dat2 %>% filter(!is.na(MUTIscore)) 
+SensoryTraitData1 <- TraitDataUTSensory %>% filter(!is.na(C.T)) 
+length(SensoryTraitData1$C.T)
+#69 species with UAI and CT
 
-########## C.T. and UN ###########
+###### add and pair tree
 
-colnames(sensory_jetz)
+# add rownames to data
+row.names(SensoryTraitData1) <- SensoryTraitData1$Species_Jetz
 
-# look at dim light vision for UAI as an example model
-# drop all rows/species that are missing C.T values
-CT_UN <- sensory_jetz %>% filter(!is.na(C.T)) %>% filter(!is.na(Urban))
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
 
-# join tree with data
-CT_UN_tree  <- treedata(tree, CT_UN, sort=T)
-CT_UN_phy <- CT_UN_tree$phy # rename pruned phylogeny
+Sensoryphydat1 <- treedata(tree_out,SensoryTraitData1, sort=T)
 
-# rename sorted data (TREE) and change columns to numeric (DAT)
-CT_UN_dat <- data.frame(CT_UN_tree$data) %>% 
-  mutate_at(c("Urban", "Mass_log", "C.T"), as.numeric) # make columns for model into numeric
+Sensoryphy1 <- Sensoryphydat1$phy
+SensoryTraitDat1 <- as.data.frame(Sensoryphydat1$data)
 
-# look at distribution of variables we will use in the model
-hist(CT_UN_dat$Urban) # MUTI scores - slightly skewed left
-hist(CT_UN_dat$Mass_log) # log transformed body mass - looks okay 
-hist(CT_UN_dat$C.T) # C.T ratio - looks okay 
+str(SensoryTraitDat1)
+length(SensoryTraitDat1$C.T)
+#69
 
-# run a phylogenetic gls model
-#CT_MUTI_mod <- gls(MUTIscore ~ C.T + Mass_log, data = CT_UN_dat, 
-                  # correlation = corPagel(0, phy=CT_UN_phy, fixed=T), method = "ML") 
+### convert traits of interest to numeric
 
-CT_UN_mod <- phylolm(Urban~ C.T + Mass_log, data= CT_UN_dat, phy= CT_UN_phy, model="lambda") 
+SensoryTraitDat1$MUTIscore <- as.numeric(SensoryTraitDat1$MUTIscore)
+SensoryTraitDat1$Mass_log <- as.numeric(SensoryTraitDat1$Mass_log)
+SensoryTraitDat1$C.T <- as.numeric(SensoryTraitDat1$C.T)
 
+########### since model not working as corPagel starting point = 0.5 and fixed = F... 
+# let's find a
+# lambda value to fix in the model 
 
-summary(CT_UN_mod)
-confint(CT_UN_mod)
 
-#is this worth all the work when I can just hand-copy it in? 
+# Create an empty vector to store AIC values
+AIC_values <- numeric()
 
-# make model summary into a tidy outputs
+# Loop through different values of the parameter for corPagel
+for (i in seq(0, 1, by = 0.1)) {
+  # Fit the gls model with the current value of i
+  model <- gls(MUTIscore ~ C.T + Mass_log, 
+               data = SensoryTraitDat1, 
+               correlation = corPagel(i, phy = Sensoryphy1, fixed = TRUE, form = ~Species_Jetz), 
+               method = "ML")
+  # Extract AIC value and store it in the vector
+  AIC_values <- c(AIC_values, AIC(model))
+}
 
-# use broom.mixed package to do this
+# Print AIC values
+print(AIC_values)
+#0.1 = best AIC score 
 
-#have to make custom tidy function for phylolm 
-#tidy_phylolm <- function(model) {
- # summary_model <- summary(model)
-#  coefficients <- as.data.frame(summary_model$coefficients)
- # rownames_to_column(coefficients, var = "term") %>%
-  #  rename(estimate = Estimate,
-   #        std.error = `Std. Error`,
-    #       statistic = `t value`,
-     #      p.value = `Pr(>|t|)`)
-#}
 
-#CT_UN_mod_tidy <- tidy_phylolm(CT_UN_mod) %>%  
- # mutate_if(is.numeric, round, 4) # round all the columns that are numeric to have 4 digits after the decimal
-#CT_UN_mod_tidy
+#lets run the model!
 
 
+MUTI_GLS_C.T <- gls(MUTIscore~ C.T + Mass_log, data = SensoryTraitDat1, 
+                   correlation = corPagel(0.1, phy=Sensoryphy1,fixed=T, form = ~Species_Jetz), 
+                   method = "ML") 
+#check out the model
+check_model(MUTI_GLS_C.T) ## low collinearity - which is good! - normality of residuals line does not fall on line, but is in a straight line 
+qqnorm(resid(MUTI_GLS_C.T)) 
+qqline(resid(MUTI_GLS_C.T)) #most points fall on the line 
+hist(resid(MUTI_GLS_C.T)) #roughly normal dist of residuals
 
 
-################################### Peak Frequency ################################### 
+summary(MUTI_GLS_C.T) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
+confint(MUTI_GLS_C.T)
 
+############################## C.T. and UN ####################################
 
+# lets first simplify a NEW database by removing records where we don't have an UAI value from Neate-Clegg
+URBANSensory <- C_Sensory_dat2 %>% filter(!is.na(Urban)) 
+SensoryTraitData2 <- URBANSensory %>% filter(!is.na(C.T)) 
+length(SensoryTraitData2$C.T)
+#38 species with UAI and CT
 
-########## Peak Frequency and UAI ###########
-colnames(sensory_jetz)
+###### add and pair tree
 
-# look at dim light vision for UAI as an example model
-# drop all rows/species that are missing peak_freq values
-pf_UAI <- sensory_jetz %>% filter(!is.na(peak_freq)) %>% filter(!is.na(aveUAI))
+# add rownames to data
+row.names(SensoryTraitData2) <- SensoryTraitData2$Species_Jetz
 
-# join tree with data
-pf_UAI_tree  <- treedata(tree, pf_UAI, sort=T)
-pf_UAI_phy <- pf_UAI_tree$phy # rename pruned phylogeny
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
 
-# rename sorted data and change columns to numeric
-pf_UAI_dat <- data.frame(pf_UAI_tree$data) %>% 
-  mutate_at(c("aveUAI", "Mass_log", "peak_freq"), as.numeric) # make columns for model into numeric
+Sensoryphydat2 <- treedata(tree_out,SensoryTraitData2, sort=T)
 
-# look at distribution of variables we will use in the model
-hist(pf_UAI_dat$aveUAI) # UAI scores - looks fine 
-hist(pf_UAI_dat$Mass_log) # log transformed body mass
-hist(pf_UAI_dat$peak_freq) # peak_freq ratio - bit skewed to the right, but looks fine 
+Sensoryphy2 <- Sensoryphydat2$phy
+SensoryTraitDat2 <- as.data.frame(Sensoryphydat2$data)
 
-# run a phylogenetic gls model
-pf_UAI_mod <- gls(aveUAI ~ peak_freq + Mass_log, data = pf_UAI_dat, 
-                  correlation = corPagel(0, phy=pf_UAI_phy, fixed=T), method = "ML") 
+str(SensoryTraitDat2)
+length(SensoryTraitDat2$C.T)
+#38
 
-summary(pf_UAI_mod)
-confint(pf_UAI_mod)
+### convert traits of interest to numeric
 
-# make model summary into a tidy output
-# use broom.mixed package to do this
-pf_UAI_mod_tidy <- broom.mixed::tidy(pf_UAI_mod) %>%  
-  mutate_if(is.numeric, round, 3) # round all the columns that are numeric to have 4 digits after the decimal
-pf_UAI_mod_tidy
+SensoryTraitDat2$Urban <- as.numeric(SensoryTraitDat2$Urban)
+SensoryTraitDat2$Mass_log <- as.numeric(SensoryTraitDat2$Mass_log)
+SensoryTraitDat2$C.T <- as.numeric(SensoryTraitDat2$C.T)
 
+########### since model not working as corPagel starting point = 0.5 and fixed = F... 
+# let's find a
+# lambda value to fix in the model 
 
 
+# Create an empty vector to store AIC values
+AIC_values <- numeric()
 
-########## Peak Frequency and MUTI ###########
+# Print AIC values
+print(AIC_values)
+#0.1 = best AIC score 
 
-colnames(sensory_jetz)
 
-# look at dim light vision for UAI as an example model
-# drop all rows/species that are missing peak_freq values
-pf_MUTI <- sensory_jetz %>% filter(!is.na(peak_freq)) %>% filter(!is.na(MUTIscore))
+#lets run the model!(have to use lambda, until we figure out a way to make GLS work with binomial linear regression)
+UN_M_C.T <- phylolm(Urban~ C.T + Mass_log, data=SensoryTraitDat2,
+                    phy=Sensoryphy2, model="lambda") 
 
-# join tree with data
-pf_MUTI_tree  <- treedata(tree, pf_MUTI, sort=T)
-pf_MUTI_phy <- pf_MUTI_tree$phy # rename pruned phylogeny
+# time to check out the model 
+qqnorm(UN_M_C.T$residuals)
+qqline(UN_M_C.T$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
+#the two lines do not have overlap... maybe this is good? 
+hist(UN_M_C.T$residuals, breaks = 12) 
 
-# rename sorted data and change columns to numeric
-pf_MUTI_dat <- data.frame(pf_MUTI_tree$data) %>% 
-  mutate_at(c("MUTIscore", "Mass_log", "peak_freq"), as.numeric) # make columns for model into numeric
+#lets get those values for our results table 
+summary(UN_M_C.T)
+confint(UN_M_C.T)
 
-# look at distribution of variables we will use in the model
-hist(pf_MUTI_dat$MUTIscore) # MUTIscore scores - skewed right
-hist(pf_MUTI_dat$Mass_log) # log transformed body mass - not necessarily normal but looks ok 
-hist(pf_MUTI_dat$peak_freq) # peak_freq ratio - skewed right
 
 
 
-# run a phylogenetic gls model
-pf_MUTI_mod <- gls(MUTIscore ~ peak_freq + Mass_log, data = pf_MUTI_dat, 
-                  correlation = corPagel(0, phy=pf_MUTI_phy, fixed=T), method = "ML") 
 
-summary(pf_MUTI_mod)
-confint(pf_MUTI_mod)
 
-# make model summary into a tidy output
-# use broom.mixed package to do this
-pf_MUTI_mod_tidy <- broom.mixed::tidy(pf_MUTI_mod) %>%  
-  mutate_if(is.numeric, round, 3) # round all the columns that are numeric to have 4 digits after the decimal
-pf_MUTI_mod_tidy
+############################# Peak Frequency and UAI #################################
 
+# lets first simplify a NEW database by removing records where we don't have an UAI value from Neate-Clegg
+UAISensory <- C_Sensory_dat2 %>% filter(!is.na(aveUAI)) 
+SensoryTraitData3 <- UAISensory %>% filter(!is.na(peak_freq)) 
+length(SensoryTraitData3$peak_freq)
+#202 species with UAI and CT
 
+###### add and pair tree
 
+# add rownames to data
+row.names(SensoryTraitData3) <- SensoryTraitData3$Species_Jetz
 
-########## Peak Frequency and UN ###########
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
 
+Sensoryphydat3 <- treedata(tree_out,SensoryTraitData3, sort=T)
 
-colnames(sensory_jetz)
+Sensoryphy3 <- Sensoryphydat3$phy
+SensoryTraitDat3 <- as.data.frame(Sensoryphydat3$data)
 
-# look at dim light vision for UAI as an example model
-# drop all rows/species that are missing C.T values
-pf_UN <- sensory_jetz %>% filter(!is.na(peak_freq)) %>% filter(!is.na(Urban))
+str(SensoryTraitDat3)
+length(SensoryTraitDat3$peak_freq)
+#202
 
-# join tree with data
-pf_UN_tree  <- treedata(tree, pf_UN, sort=T)
-pf_UN_phy <- pf_UN_tree$phy # rename pruned phylogeny
+### convert traits of interest to numeric
 
-# rename sorted data (TREE) and change columns to numeric (DAT)
-pf_UN_dat <- data.frame(pf_UN_tree$data) %>% 
-  mutate_at(c("Urban", "Mass_log", "peak_freq"), as.numeric) # make columns for model into numeric
+SensoryTraitDat3$aveUAI <- as.numeric(SensoryTraitDat3$aveUAI)
+SensoryTraitDat3$Mass_log <- as.numeric(SensoryTraitDat3$Mass_log)
+SensoryTraitDat3$peak_freq <- as.numeric(SensoryTraitDat3$peak_freq)
 
-# look at distribution of variables we will use in the model
-hist(pf_UN_dat$Urban) # MUTI scores - slightly skewed left
-hist(pf_UN_dat$Mass_log) # log transformed body mass - looks okay 
-hist(pf_UN_dat$peak_freq) # peak_freq ratio - looks okay 
+########### since model not working as corPagel starting point = 0.5 and fixed = F... 
+# let's find a lambda value to fix in the model 
 
-# run a phylolm model
 
-pf_UN_mod <- phylolm(Urban~ peak_freq + Mass_log, data= pf_UN_dat, phy= pf_UN_phy, model="lambda") 
+# Create an empty vector to store AIC values
+AIC_values <- numeric()
 
+# Loop through different values of the parameter for corPagel
+for (i in seq(0, 1, by = 0.1)) {
+  # Fit the gls model with the current value of i
+  model <- gls(aveUAI ~ peak_freq + Mass_log, 
+               data = SensoryTraitDat3, 
+               correlation = corPagel(i, phy = Sensoryphy3, fixed = TRUE, form = ~Species_Jetz), 
+               method = "ML")
+  # Extract AIC value and store it in the vector
+  AIC_values <- c(AIC_values, AIC(model))
+}
 
-summary(pf_UN_mod)
-confint(pf_UN_mod)
+# Print AIC values
+print(AIC_values)
+#0.7 = best AIC score 
 
 
-############################################## Time to Combine ################
+#lets run the model!using GLS 
 
+UAI_GLS_pf <- gls(aveUAI~ peak_freq + Mass_log, data = SensoryTraitDat3, 
+                    correlation = corPagel(0.5, phy=Sensoryphy3,fixed=F, form = ~Species_Jetz), 
+                    method = "ML") 
 
-#combine TEST 
+#check out the model
+check_model(UAI_GLS_pf) ## low collinearity - which is good! - normality of residuals line does not fall on line, but is in a straight line 
+qqnorm(resid(UAI_GLS_pf)) 
+qqline(resid(UAI_GLS_pf)) #most points fall on the line 
+hist(resid(UAI_GLS_pf)) #roughly normal dist of residuals
 
-combined_tidy_test <- bind_rows(CT_UAI_mod_tidy, pf_UAI_mod_tidy)
-combined_tidy_test
 
-# looks good! will have to combine in order at end (i.e. CT_UAI, CT_MUTI, CT_UN, PF_UAI, PF_MUTI, PF_UN)
+summary(UAI_GLS_pf) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
+confint(UAI_GLS_pf)
 
 
-#combine CT_UAI, CT_MUTI, (no UN), PF_UAI, and PF_MUTI (no UN)
 
-combined_Sensory_results <- bind_rows(CT_UAI_mod_tidy, CT_MUTI_mod_tidy, pf_UAI_mod_tidy, pf_MUTI_mod_tidy)
-combined_Sensory_results
+
+############################# Peak Frequency and MUTI #################################
+
+# lets first simplify a NEW database by removing records where we don't have an UAI value from Neate-Clegg
+MUTISensory <- C_Sensory_dat2 %>% filter(!is.na(MUTIscore)) 
+SensoryTraitData4 <- MUTISensory %>% filter(!is.na(peak_freq)) 
+length(SensoryTraitData4$peak_freq)
+#202 species with UAI and peak frequency
+
+###### add and pair tree
+
+# add rownames to data
+row.names(SensoryTraitData4) <- SensoryTraitData4$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Sensoryphydat4 <- treedata(tree_out,SensoryTraitData4, sort=T)
+
+Sensoryphy4 <- Sensoryphydat4$phy
+SensoryTraitDat4 <- as.data.frame(Sensoryphydat4$data)
+
+str(SensoryTraitDat4)
+length(SensoryTraitDat4$peak_freq)
+#68
+
+### convert traits of interest to numeric
+
+SensoryTraitDat4$MUTIscore <- as.numeric(SensoryTraitDat4$MUTIscore)
+SensoryTraitDat4$Mass_log <- as.numeric(SensoryTraitDat4$Mass_log)
+SensoryTraitDat4$peak_freq <- as.numeric(SensoryTraitDat4$peak_freq)
+
+########### since model not working as corPagel starting point = 0.5 and fixed = F... 
+# let's find a lambda value to fix in the model 
+
+
+# Create an empty vector to store AIC values
+AIC_values <- numeric()
+
+# Loop through different values of the parameter for corPagel
+for (i in seq(0, 1, by = 0.1)) {
+  # Fit the gls model with the current value of i
+  model <- gls(MUTIscore ~ peak_freq + Mass_log, 
+               data = SensoryTraitDat4, 
+               correlation = corPagel(i, phy = Sensoryphy4, fixed = TRUE, form = ~Species_Jetz), 
+               method = "ML")
+  # Extract AIC value and store it in the vector
+  AIC_values <- c(AIC_values, AIC(model))
+}
+
+# Print AIC values
+print(AIC_values)
+#0.1 = best AIC score 
+
+
+#lets run the model!using GLS 
+
+MUTI_GLS_pf <- gls(MUTIscore~ peak_freq + Mass_log, data = SensoryTraitDat4, 
+                  correlation = corPagel(0.1, phy=Sensoryphy4,fixed=T, form = ~Species_Jetz), 
+                  method = "ML") 
+
+#check out the model
+check_model(MUTI_GLS_pf) ## low collinearity - which is good! - normality of residuals line does not fall on line, but is in a straight line 
+qqnorm(resid(MUTI_GLS_pf)) 
+qqline(resid(MUTI_GLS_pf)) #most points fall on the line 
+hist(resid(MUTI_GLS_pf)) #roughly normal dist of residuals
+
+
+summary(MUTI_GLS_pf) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
+confint(MUTI_GLS_pf)
+
+
+
+
+############################# Peak Frequency and MUTI #################################
+
+# lets first simplify a NEW database by removing records where we don't have an UAI value from Neate-Clegg
+UNSensory <- C_Sensory_dat2 %>% filter(!is.na(Urban)) 
+SensoryTraitData5 <- UNSensory %>% filter(!is.na(peak_freq)) 
+length(SensoryTraitData5$peak_freq)
+#129 species with UAI and peak frequency
+
+###### add and pair tree
+
+# add rownames to data
+row.names(SensoryTraitData5) <- SensoryTraitData5$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Sensoryphydat5 <- treedata(tree_out,SensoryTraitData5, sort=T)
+
+Sensoryphy5 <- Sensoryphydat5$phy
+SensoryTraitDat5 <- as.data.frame(Sensoryphydat5$data)
+
+str(SensoryTraitDat5)
+length(SensoryTraitDat5$peak_freq)
+#129
+
+### convert traits of interest to numeric
+
+SensoryTraitDat5$Urban <- as.numeric(SensoryTraitDat5$Urban)
+SensoryTraitDat5$Mass_log <- as.numeric(SensoryTraitDat5$Mass_log)
+SensoryTraitDat5$peak_freq <- as.numeric(SensoryTraitDat5$peak_freq)
+
+########### since model not working as corPagel starting point = 0.5 and fixed = F... 
+# let's find a lambda value to fix in the model 
+
+
+#lets run the model using Phylolm!  
+#(have to use lambda, until we figure out a way to make GLS work with binomial linear regression)
+UN_M_pf <- phylolm(Urban~ peak_freq + Mass_log, data=SensoryTraitDat5,
+                    phy=Sensoryphy5, model="lambda") 
+
+# time to check out the model 
+qqnorm(UN_M_pf$residuals)
+qqline(UN_M_pf$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
+#the two lines do not have overlap... maybe this is good? 
+hist(UN_M_pf$residuals, breaks = 12) 
+
+#lets get those values for our results table 
+summary(UN_M_pf)
+confint(UN_M_pf)
+
+

@@ -404,7 +404,7 @@ plot.phylosig(longev_lambda2) # plot the likelihood surface for lambda
 
 ######################## Phylogenetic Signal (lambda) for SEXUAL SELECTION TRAITS ########################
 
-#import Coastal_Species_Sensory.rds 
+#import Coastal_SSelect_Sensory.rds 
 
 SS_Traits <- readRDS(here("Outputs", "Coastal_Species_SSelect.rds"))
 head(SS_Traits)
@@ -421,7 +421,7 @@ colnames(SS_Traits)
 #now, reformat Species column so that it is in Aaaa_aaaa format! 
 SS_Traits <- SS_Traits %>%
   mutate(Species = str_replace(Species, " ", "_"))
-View(SS_Traits)
+#View(SS_Traits)
 
 ### we need to trim Jetz tree that we imported above to get a tree that only contains coastal species
 
@@ -465,7 +465,7 @@ brightness_vect[!is.na(brightness_vect)]
 # get measure of lambda for nest safety
 # will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
 brightness_lambda2 <-phylosig(tree = jetztree_SSelect, brightness_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
-brightness_lambda2 # lambda = 0.876 , p << 0.001
+brightness_lambda2 # lambda = ~0 , p = 1
 plot.phylosig(brightness_lambda2) # plot the likelihood surface for lambda
 
 
@@ -483,13 +483,46 @@ hue_vect[!is.na(hue_vect)]
 # get measure of lambda for nest safety
 # will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
 hue_lambda2 <-phylosig(tree = jetztree_SSelect, hue_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
-hue_lambda2 # lambda = 0.876 , p << 0.001
+hue_lambda2 # lambda = 0.0412 , p = 0.105
 plot.phylosig(hue_lambda2) # plot the likelihood surface for lambda
 
 
      # Sex selection intensity MALES 
 
+# look at distribution
+hist(SSelectspp$sex.sel.m) #looks pretty normal, no need to transform 
+
+# get vector of nest safety values with species names as rownames
+SSmale_vect <- setNames(SSelectspp$sex.sel.m, rownames(SSelectspp))
+
+# drop species with NA values
+SSmale_vect[!is.na(SSmale_vect)]
+
+# get measure of lambda for nest safety
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+SSmale_lambda2 <-phylosig(tree = jetztree_SSelect, SSmale_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+SSmale_lambda2 # lambda = 0.746 , p << 0.001
+plot.phylosig(SSmale_lambda2) # plot the likelihood surface for lambda
+
+
      # Sex selection intensity FEMALES
+
+
+# look at distribution
+hist(SSelectspp$sex.sel.f) #not normal looking, but no need to transform (most scores are 0)
+
+# get vector of nest safety values with species names as rownames
+SSfemale_vect <- setNames(SSelectspp$sex.sel.f, rownames(SSelectspp))
+
+# drop species with NA values
+SSfemale_vect[!is.na(SSfemale_vect)]
+
+# get measure of lambda for nest safety
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+SSfemale_lambda2 <-phylosig(tree = jetztree_SSelect, SSfemale_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+SSfemale_lambda2 # lambda = 0.938 , p << 0.001
+plot.phylosig(SSfemale_lambda2) # plot the likelihood surface for lambda
+
 
 ######################## Phylogenetic Signal (lambda) for SOCIAL TRAITS ######################## 
 
@@ -499,4 +532,70 @@ plot.phylosig(hue_lambda2) # plot the likelihood surface for lambda
 
      # Log Body Mass 
 
-#import Coastal_Species_w_Mass.rds
+#import Coastal_Species_w_Mass.rds 
+
+Mass_Traits <- readRDS(here("Outputs", "Coastal_Species_w_Mass.rds"))
+head(Mass_Traits)
+colnames(Mass_Traits)
+
+#should I be going off of... Species_Jetz, Species_BirdLife, or Species_eBird???? prob Jetz because I join it to Jetz tree.... 
+
+#do some reformatting and re-naming... 
+Mass_Traits <- Mass_Traits %>%
+  rename(Species = Species_Jetz)
+colnames(Mass_Traits)
+#nice 
+
+#now, reformat Species column so that it is in Aaaa_aaaa format! 
+Mass_Traits <- Mass_Traits %>%
+  mutate(Species = str_replace(Species, " ", "_"))
+head(Mass_Traits)
+
+### we need to trim Jetz tree that we imported above to get a tree that only contains coastal species
+
+# create data frame with traits and species as the rownames
+Mass.spp <- Mass_Traits %>%
+  column_to_rownames(var="Species")
+
+### load phylogenetic tree
+jetztree <- read.tree(here("Data", "Jetz_ConsensusPhy.tre")) 
+jetztree$tip.label # look at species name formatting for tree tips to confirm it matches formatting we are using - yes!
+
+# check that the tree is ultrametric (do all the tree tips line up?)
+is.ultrametric(jetztree)
+#true! 
+
+
+# check that all the species in our data are also present in the tree
+check_Mass <- name.check(jetztree, Mass.spp) # there should be many more species in the tree than our data
+check_Mass
+
+# trim the tree to match the data by dropping all the extra species identified in the previous step
+jetztree_Mass <-drop.tip(jetztree, check_Mass$tree_not_data)
+
+# check again whether tree has same species as data. Should say "OK"
+name.check(jetztree_Mass, Mass.spp)
+colnames(Mass.spp)
+#OK 
+
+
+
+#(Log) Body Mass 
+
+# look at distribution
+hist(Mass.spp$Mass) # need to log transform 
+hist(Mass.spp$Mass_log) # looks good 
+
+# get vector of nest safety values with species names as rownames
+mass_vect <- setNames(Mass.spp$Mass_log, rownames(Mass.spp))
+
+# drop species with NA values
+mass_vect[!is.na(mass_vect)]
+
+# get measure of lambda for nest safety
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+mass_lambda2 <-phylosig(tree = jetztree_Mass, mass_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+mass_lambda2 # lambda = 0.977 , p = 0
+plot.phylosig(mass_lambda2) # plot the likelihood surface for lambda
+
+

@@ -230,25 +230,262 @@ plot.phylosig(PS_lambda2) # plot the likelihood surface for lambda
 
 ######################## Phylogenetic Signal (lambda) for NESTING TRAITS ######################## 
 
+#import Coastal_Species_Sensory.rds 
+
+Nest_Traits <- readRDS(here("Outputs", "Coastal_Species_Nest.rds"))
+head(Nest_Traits)
+colnames(Nest_Traits)
+
+#should I be going off of... Species_Jetz, Species_BirdLife, or Species_eBird???? prob Jetz because I join it to Jetz tree.... 
+
+#do some reformatting and re-naming... 
+Nest_Traits <- Nest_Traits %>%
+  rename(Species = Species_Jetz)
+colnames(Nest_Traits)
+#nice 
+
+#now, reformat Species column so that it is in Aaaa_aaaa format! 
+Nest_Traits <- Nest_Traits %>%
+  mutate(Species = str_replace(Species, " ", "_"))
+View(Nest_Traits)
+
+### we need to trim Jetz tree that we imported above to get a tree that only contains coastal species
+
+# create data frame with traits and species as the rownames
+Nestspp <- Nest_Traits %>%
+  column_to_rownames(var="Species")
+
+### load phylogenetic tree
+jetztree <- read.tree(here("Data", "Jetz_ConsensusPhy.tre")) 
+jetztree$tip.label # look at species name formatting for tree tips to confirm it matches formatting we are using - yes!
+
+# check that the tree is ultrametric (do all the tree tips line up?)
+is.ultrametric(jetztree)
+#true! 
+
+
+# check that all the species in our data are also present in the tree
+check_nest <- name.check(jetztree, Nestspp) # there should be many more species in the tree than our data
+check_nest
+
+# trim the tree to match the data by dropping all the extra species identified in the previous step
+jetztree_nest <-drop.tip(jetztree, check_nest$tree_not_data)
+
+# check again whether tree has same species as data. Should say "OK"
+name.check(jetztree_nest, Nestspp)
+#OK 
+
      # nest structure (open/enclosed) and site (high/low) not continuous 
 
      # Nest safety (may be considered ordinal...)
 
+
+# look at distribution
+hist(Nestspp$nest.safety) # not skewed. definitely not normal, but no log transformation needed
+
+# get vector of nest safety values with species names as rownames
+safety_vect <- setNames(Nestspp$nest.safety, rownames(Nestspp))
+
+# drop species with NA values
+safety_vect[!is.na(safety_vect)]
+
+# get measure of lambda for nest safety
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+safety_lambda2 <-phylosig(tree = jetztree_nest, safety_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+safety_lambda2 # lambda = 0.876 , p << 0.001
+plot.phylosig(safety_lambda2) # plot the likelihood surface for lambda
+
+
+
 ######################## Phylogenetic Signal (lambda) for LIFE HISTORY TRAITS ########################
+
+#import Coastal_Species_Sensory.rds 
+
+LifeHist_Traits <- readRDS(here("Outputs", "Coastal_Species_LifeHistory.rds"))
+head(LifeHist_Traits)
+colnames(LifeHist_Traits)
+
+#should I be going off of... Species_Jetz, Species_BirdLife, or Species_eBird???? prob Jetz because I join it to Jetz tree.... 
+
+#do some reformatting and re-naming... 
+LifeHist_Traits <- LifeHist_Traits %>%
+  rename(Species = Species_Jetz)
+colnames(LifeHist_Traits)
+#nice 
+
+#now, reformat Species column so that it is in Aaaa_aaaa format! 
+LifeHist_Traits <- LifeHist_Traits %>%
+  mutate(Species = str_replace(Species, " ", "_"))
+View(LifeHist_Traits)
+
+### we need to trim Jetz tree that we imported above to get a tree that only contains coastal species
+
+# create data frame with traits and species as the rownames
+LifeHistspp <- LifeHist_Traits %>%
+  column_to_rownames(var="Species")
+
+### load phylogenetic tree
+jetztree <- read.tree(here("Data", "Jetz_ConsensusPhy.tre")) 
+jetztree$tip.label # look at species name formatting for tree tips to confirm it matches formatting we are using - yes!
+
+# check that the tree is ultrametric (do all the tree tips line up?)
+is.ultrametric(jetztree)
+#true! 
+
+
+# check that all the species in our data are also present in the tree
+check_LifeHist <- name.check(jetztree, LifeHistspp) # there should be many more species in the tree than our data
+check_LifeHist
+
+# trim the tree to match the data by dropping all the extra species identified in the previous step
+jetztree_LifeHist <-drop.tip(jetztree, check_LifeHist$tree_not_data)
+
+# check again whether tree has same species as data. Should say "OK"
+name.check(jetztree_LifeHist, LifeHistspp)
+#OK 
+
 
      # Brood Value 
 
+# look at distribution
+hist(LifeHistspp$brood_value) # not skewed, looks normal dist. 
+
+# get vector of nest safety values with species names as rownames
+bv_vect <- setNames(LifeHistspp$brood_value, rownames(LifeHistspp))
+
+# drop species with NA values
+bv_vect[!is.na(bv_vect)]
+
+# get measure of lambda for nest safety
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+bv_lambda2 <-phylosig(tree = jetztree_LifeHist, bv_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+bv_lambda2 # lambda = 0.876 , p << 0.001
+plot.phylosig(bv_lambda2) # plot the likelihood surface for lambda
+
+
+
      # Clutch size 
 
+# look at distribution
+hist(LifeHistspp$clutch_size) # not normal, but doesn't seem to need transformation... saving it as output for Sarah to look at with me... 
+
+# get vector of nest safety values with species names as rownames
+clutch_vect <- setNames(LifeHistspp$clutch_size, rownames(LifeHistspp))
+
+# drop species with NA values
+clutch_vect[!is.na(clutch_vect)]
+
+# get measure of lambda for nest safety
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+clutch_lambda2 <-phylosig(tree = jetztree_LifeHist, clutch_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+clutch_lambda2 # lambda = 0.876 , p << 0.001
+plot.phylosig(clutch_lambda2) # plot the likelihood surface for lambda
+
+
      # Longevity 
+
+# look at distribution
+hist(LifeHistspp$longevity) #looks pretty normal, no need to transform 
+
+# get vector of nest safety values with species names as rownames
+longev_vect <- setNames(LifeHistspp$longevity, rownames(LifeHistspp))
+
+# drop species with NA values
+longev_vect[!is.na(longev_vect)]
+
+# get measure of lambda for nest safety
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+longev_lambda2 <-phylosig(tree = jetztree_LifeHist, longev_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+longev_lambda2 # lambda = 0.876 , p << 0.001
+plot.phylosig(longev_lambda2) # plot the likelihood surface for lambda
+
 
      # Developmental mode = NOT continuous 
 
 ######################## Phylogenetic Signal (lambda) for SEXUAL SELECTION TRAITS ########################
 
+#import Coastal_Species_Sensory.rds 
+
+SS_Traits <- readRDS(here("Outputs", "Coastal_Species_SSelect.rds"))
+head(SS_Traits)
+colnames(SS_Traits)
+
+#should I be going off of... Species_Jetz, Species_BirdLife, or Species_eBird???? prob Jetz because I join it to Jetz tree.... 
+
+#do some reformatting and re-naming... 
+SS_Traits <- SS_Traits %>%
+  rename(Species = Species_Jetz)
+colnames(SS_Traits)
+#nice 
+
+#now, reformat Species column so that it is in Aaaa_aaaa format! 
+SS_Traits <- SS_Traits %>%
+  mutate(Species = str_replace(Species, " ", "_"))
+View(SS_Traits)
+
+### we need to trim Jetz tree that we imported above to get a tree that only contains coastal species
+
+# create data frame with traits and species as the rownames
+SSelectspp <- SS_Traits %>%
+  column_to_rownames(var="Species")
+
+### load phylogenetic tree
+jetztree <- read.tree(here("Data", "Jetz_ConsensusPhy.tre")) 
+jetztree$tip.label # look at species name formatting for tree tips to confirm it matches formatting we are using - yes!
+
+# check that the tree is ultrametric (do all the tree tips line up?)
+is.ultrametric(jetztree)
+#true! 
+
+
+# check that all the species in our data are also present in the tree
+check_SSelect <- name.check(jetztree, SSelectspp) # there should be many more species in the tree than our data
+check_SSelect
+
+# trim the tree to match the data by dropping all the extra species identified in the previous step
+jetztree_SSelect <-drop.tip(jetztree, check_SSelect$tree_not_data)
+
+# check again whether tree has same species as data. Should say "OK"
+name.check(jetztree_SSelect, SSelectspp)
+colnames(SSelectspp)
+#OK 
+
+
      # Brightness Dimorphism 
 
+# look at distribution
+hist(SSelectspp$Dichrom_bright) #looks pretty normal, no need to transform 
+
+# get vector of nest safety values with species names as rownames
+brightness_vect <- setNames(SSelectspp$Dichrom_bright, rownames(SSelectspp))
+
+# drop species with NA values
+brightness_vect[!is.na(brightness_vect)]
+
+# get measure of lambda for nest safety
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+brightness_lambda2 <-phylosig(tree = jetztree_SSelect, brightness_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+brightness_lambda2 # lambda = 0.876 , p << 0.001
+plot.phylosig(brightness_lambda2) # plot the likelihood surface for lambda
+
+
      # Hue Dimorphism 
+
+# look at distribution
+hist(SSelectspp$Dichrom_hue) #looks pretty normal, no need to transform 
+
+# get vector of nest safety values with species names as rownames
+hue_vect <- setNames(SSelectspp$Dichrom_hue, rownames(SSelectspp))
+
+# drop species with NA values
+hue_vect[!is.na(hue_vect)]
+
+# get measure of lambda for nest safety
+# will give message about dropping species. This is okay. There are species in our tree that do not have CT values and the function is removing those
+hue_lambda2 <-phylosig(tree = jetztree_SSelect, hue_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
+hue_lambda2 # lambda = 0.876 , p << 0.001
+plot.phylosig(hue_lambda2) # plot the likelihood surface for lambda
+
 
      # Sex selection intensity MALES 
 

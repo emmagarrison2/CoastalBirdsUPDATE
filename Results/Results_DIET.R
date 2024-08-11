@@ -349,3 +349,319 @@ hist(UN_M_vert$residuals, breaks = 20)
 #lets get those values for our results table 
 summary(UN_M_vert)
 confint(UN_M_vert)
+
+
+
+
+######################## UAI and % Diet Plant/Seed ##########################
+
+
+# lets first simplify a NEW database by removing records where we don't have an UAI / %dietinv
+UAIDataUT <- C_Diet_dat2 %>% filter(!is.na(aveUAI)) 
+DietData7 <- UAIDataUT %>% filter(!is.na(Diet.PS)) 
+length(DietData7$Diet.PS)
+#798 species with UAI and CT
+
+###### add and pair tree
+
+DietData7 <- as.data.frame(DietData7)
+# add rownames to data
+row.names(DietData7) <- DietData7$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Dietphydat7 <- treedata(tree_out,DietData7, sort=T)
+
+Dietphy7 <- Dietphydat7$phy
+DietTraitDat7 <- as.data.frame(Dietphydat7$data)
+
+str(DietTraitDat7)
+length(DietTraitDat7$Diet.PS)
+#798
+
+### convert traits of interest to numeric
+
+DietTraitDat7$aveUAI <- as.numeric(DietTraitDat7$aveUAI)
+DietTraitDat7$Mass_log <- as.numeric(DietTraitDat7$Mass_log)
+DietTraitDat7$Diet.PS <- as.numeric(DietTraitDat7$Diet.PS)
+
+
+#lets run the model using GLS!
+
+
+UAI_GLS_PS <- gls(aveUAI ~ Diet.PS + Mass_log, data = DietTraitDat7, 
+                     correlation = corPagel(0.5, phy=Dietphy7,fixed=F, form = ~Species_Jetz), 
+                     method = "ML") 
+#check out the model
+check_model(UAI_GLS_PS) ## low collinearity - which is good! - normality of residuals line does not fall on line, but is in a straight line 
+qqnorm(resid(UAI_GLS_PS)) 
+qqline(resid(UAI_GLS_PS)) #most points fall on the line 
+hist(resid(UAI_GLS_PS)) #roughly normal dist of residuals
+
+
+summary(UAI_GLS_PS) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
+confint(UAI_GLS_PS)
+
+
+
+
+######################## MUTI and % Diet Plant/Seed ##########################
+
+
+# lets first simplify a NEW database by removing records where we don't have an UAI / %dietinv
+MUTIDataUT <- C_Diet_dat2 %>% filter(!is.na(MUTIscore)) 
+DietData8 <- MUTIDataUT %>% filter(!is.na(Diet.PS)) 
+length(DietData8$Diet.PS)
+#798 species with UAI and CT
+
+###### add and pair tree
+
+DietData8 <- as.data.frame(DietData8)
+# add rownames to data
+row.names(DietData8) <- DietData8$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Dietphydat8 <- treedata(tree_out,DietData8, sort=T)
+
+Dietphy8 <- Dietphydat8$phy
+DietTraitDat8 <- as.data.frame(Dietphydat8$data)
+
+str(DietTraitDat8)
+length(DietTraitDat8$Diet.PS)
+#130
+
+### convert traits of interest to numeric
+
+DietTraitDat8$MUTIscore <- as.numeric(DietTraitDat8$MUTIscore)
+DietTraitDat8$Mass_log <- as.numeric(DietTraitDat8$Mass_log)
+DietTraitDat8$Diet.PS <- as.numeric(DietTraitDat8$Diet.PS)
+
+
+#lets run the model using GLS!
+
+
+MUTI_GLS_PS <- gls(MUTIscore ~ Diet.PS + Mass_log, data = DietTraitDat8, 
+                  correlation = corPagel(0.5, phy=Dietphy8,fixed=F, form = ~Species_Jetz), 
+                  method = "ML") 
+#check out the model
+check_model(MUTI_GLS_PS) ## low collinearity - which is good! - normality of residuals line does not fall on line, but is in a straight line 
+qqnorm(resid(MUTI_GLS_PS)) 
+qqline(resid(MUTI_GLS_PS)) #most points fall on the line 
+hist(resid(MUTI_GLS_PS)) #roughly normal dist of residuals
+
+
+summary(MUTI_GLS_PS) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
+confint(MUTI_GLS_PS)
+
+
+
+
+
+######################## UN and % Diet Plant/Seed ##########################
+
+
+# lets first simplify a NEW database by removing records where we don't have an UAI / % diet plant seed 
+UNDataUT <- C_Diet_dat2 %>% filter(!is.na(Urban)) 
+DietData9 <- UNDataUT %>% filter(!is.na(Diet.PS)) 
+length(DietData9$Diet.PS)
+#129 species with UAI and CT
+
+###### add and pair tree
+
+DietData9 <- as.data.frame(DietData9)
+# add rownames to data
+row.names(DietData9) <- DietData9$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Dietphydat9 <- treedata(tree_out,DietData9, sort=T)
+
+Dietphy9 <- Dietphydat9$phy
+DietTraitDat9 <- as.data.frame(Dietphydat9$data)
+
+str(DietTraitDat9)
+length(DietTraitDat9$Diet.PS)
+#129
+
+### convert traits of interest to numeric
+
+DietTraitDat9$Urban <- as.numeric(DietTraitDat9$Urban)
+DietTraitDat9$Mass_log <- as.numeric(DietTraitDat9$Mass_log)
+DietTraitDat9$Diet.PS <- as.numeric(DietTraitDat9$Diet.PS)
+
+
+#lets run the model using Phylolm!  
+
+#(have to use lambda, until we figure out a way to make GLS work with binomial linear regression)
+UN_M_PS <- phylolm(Urban~ Diet.PS + Mass_log, data=DietTraitDat9,
+                     phy=Dietphy9, model="lambda") 
+
+# time to check out the model 
+qqnorm(UN_M_PS$residuals)
+qqline(UN_M_PS$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
+#the two lines do not have overlap... maybe this is good? 
+hist(UN_M_PS$residuals, breaks = 20) 
+
+#lets get those values for our results table 
+summary(UN_M_PS)
+confint(UN_M_PS)
+
+
+
+
+
+
+######################## UAI and % Diet Fruit/Nut ##########################
+
+
+# lets first simplify a NEW database by removing records where we don't have an UAI / % diet plant seed 
+UAIDataUT <- C_Diet_dat2 %>% filter(!is.na(aveUAI)) 
+DietData10 <- UAIDataUT %>% filter(!is.na(Diet.FN)) 
+length(DietData10$Diet.FN)
+#798 species with UAI and CT
+
+###### add and pair tree
+
+DietData10 <- as.data.frame(DietData10)
+# add rownames to data
+row.names(DietData10) <- DietData10$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Dietphydat10 <- treedata(tree_out,DietData10, sort=T)
+
+Dietphy10 <- Dietphydat10$phy
+DietTraitDat10 <- as.data.frame(Dietphydat10$data)
+
+str(DietTraitDat10)
+length(DietTraitDat10$Diet.FN)
+#798
+
+### convert traits of interest to numeric
+
+DietTraitDat10$aveUAI <- as.numeric(DietTraitDat10$aveUAI)
+DietTraitDat10$Mass_log <- as.numeric(DietTraitDat10$Mass_log)
+DietTraitDat10$Diet.FN <- as.numeric(DietTraitDat10$Diet.FN)
+
+
+#lets run the model using GLS!
+
+
+UAI_GLS_FN <- gls(aveUAI ~ Diet.FN + Mass_log, data = DietTraitDat10, 
+                   correlation = corPagel(0.5, phy=Dietphy10,fixed=F, form = ~Species_Jetz), 
+                   method = "ML") 
+#check out the model
+check_model(UAI_GLS_FN) ## low collinearity - which is good! - normality of residuals line does not fall on line, but is in a straight line 
+qqnorm(resid(UAI_GLS_FN)) 
+qqline(resid(UAI_GLS_FN)) #most points fall on the line 
+hist(resid(UAI_GLS_FN)) #roughly normal dist of residuals
+
+
+summary(UAI_GLS_FN) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
+confint(UAI_GLS_FN)
+
+
+
+
+######################## MUTI and % Diet Fruit/Nut ##########################
+
+
+# lets first simplify a NEW database by removing records where we don't have an UAI / % diet plant seed 
+MUTIDataUT <- C_Diet_dat2 %>% filter(!is.na(MUTIscore)) 
+DietData11 <- MUTIDataUT %>% filter(!is.na(Diet.FN)) 
+length(DietData11$Diet.FN)
+#130 species with UAI and CT
+
+###### add and pair tree
+
+DietData11 <- as.data.frame(DietData11)
+# add rownames to data
+row.names(DietData11) <- DietData11$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Dietphydat11 <- treedata(tree_out,DietData11, sort=T)
+
+Dietphy11 <- Dietphydat11$phy
+DietTraitDat11 <- as.data.frame(Dietphydat11$data)
+
+str(DietTraitDat11)
+length(DietTraitDat11$Diet.FN)
+#798
+
+### convert traits of interest to numeric
+
+DietTraitDat11$MUTIscore <- as.numeric(DietTraitDat11$MUTIscore)
+DietTraitDat11$Mass_log <- as.numeric(DietTraitDat11$Mass_log)
+DietTraitDat11$Diet.FN <- as.numeric(DietTraitDat11$Diet.FN)
+
+
+#lets run the model using GLS!
+
+
+MUTI_GLS_FN <- gls(MUTIscore ~ Diet.FN + Mass_log, data = DietTraitDat11, 
+                  correlation = corPagel(0.5, phy=Dietphy11,fixed=F, form = ~Species_Jetz), 
+                  method = "ML") 
+#check out the model
+check_model(MUTI_GLS_FN) ## low collinearity - which is good! - normality of residuals line does not fall on line, but is in a straight line 
+qqnorm(resid(MUTI_GLS_FN)) 
+qqline(resid(MUTI_GLS_FN)) #most points fall on the line 
+hist(resid(MUTI_GLS_FN)) #roughly normal dist of residuals
+
+
+summary(MUTI_GLS_FN) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
+confint(MUTI_GLS_FN)
+
+
+
+
+
+######################## UN and % Diet Fruit/Nut ##########################
+
+
+# lets first simplify a NEW database by removing records where we don't have an UAI / % diet plant seed 
+UNDataUT <- C_Diet_dat2 %>% filter(!is.na(Urban)) 
+DietData12 <- UNDataUT %>% filter(!is.na(Diet.FN)) 
+length(DietData12$Diet.FN)
+#129 species with UAI and CT
+
+###### add and pair tree
+
+DietData12 <- as.data.frame(DietData12)
+# add rownames to data
+row.names(DietData12) <- DietData12$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Dietphydat12 <- treedata(tree_out,DietData12, sort=T)
+
+Dietphy12 <- Dietphydat12$phy
+DietTraitDat12 <- as.data.frame(Dietphydat12$data)
+
+str(DietTraitDat12)
+length(DietTraitDat12$Diet.FN)
+#129
+
+### convert traits of interest to numeric
+
+DietTraitDat12$Urban <- as.numeric(DietTraitDat12$Urban)
+DietTraitDat12$Mass_log <- as.numeric(DietTraitDat12$Mass_log)
+DietTraitDat12$Diet.FN <- as.numeric(DietTraitDat12$Diet.FN)
+
+
+#lets run the model using Phylolm!  
+
+#(have to use lambda, until we figure out a way to make GLS work with binomial linear regression)
+UN_M_FN <- phylolm(Urban~ Diet.FN + Mass_log, data=DietTraitDat12,
+                   phy=Dietphy12, model="lambda") 
+
+# time to check out the model 
+qqnorm(UN_M_FN$residuals)
+qqline(UN_M_FN$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
+#the two lines do not have overlap... maybe this is good? 
+hist(UN_M_FN$residuals, breaks = 20) 
+
+#lets get those values for our results table 
+summary(UN_M_FN)
+confint(UN_M_FN)

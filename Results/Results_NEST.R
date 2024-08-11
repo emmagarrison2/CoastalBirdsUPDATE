@@ -1,3 +1,5 @@
+# The objective of this script is to run phylogenetic linear models for all nesting traits. 
+
 #load required packages 
 
 library(nlme)
@@ -36,7 +38,7 @@ colnames(C_Nest_dat2)
 # 1 = open
 
 # lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
-UAIDataUT <- C_Nest_dat2 %>% filter(!is.na(MUTIscore)) 
+UAIDataUT <- C_Nest_dat2 %>% filter(!is.na(aveUAI)) 
 NestData1 <- UAIDataUT %>% filter(!is.na(NestStr)) 
 length(NestData1$NestStr)
 #833 species with UAI and NestStr
@@ -69,7 +71,7 @@ View(NestTraitDat1)
 
 ### convert traits of interest to numeric
 
-NestTraitDat1$MUTIscore <- as.numeric(NestTraitDat1$MUTIscore)
+NestTraitDat1$aveUAI <- as.numeric(NestTraitDat1$aveUAI)
 NestTraitDat1$Mass_log <- as.numeric(NestTraitDat1$Mass_log)
 NestTraitDat1$NestStr <- as.numeric(NestTraitDat1$NestStr)
 
@@ -77,7 +79,7 @@ NestTraitDat1$NestStr <- as.numeric(NestTraitDat1$NestStr)
 #lets run the model!
 
 
-UAI_GLS_neststr <- gls(MUTIscore~ NestStr + Mass_log, data = NestTraitDat1, 
+UAI_GLS_neststr <- gls(aveUAI~ NestStr + Mass_log, data = NestTraitDat1, 
                   correlation = corPagel(0.5, phy=Nestphy1,fixed=F, form = ~Species_Jetz), 
                   method = "ML") 
 #check out the model

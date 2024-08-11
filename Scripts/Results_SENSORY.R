@@ -417,9 +417,6 @@ SensoryTraitDat5$Urban <- as.numeric(SensoryTraitDat5$Urban)
 SensoryTraitDat5$Mass_log <- as.numeric(SensoryTraitDat5$Mass_log)
 SensoryTraitDat5$peak_freq <- as.numeric(SensoryTraitDat5$peak_freq)
 
-########### since model not working as corPagel starting point = 0.5 and fixed = F... 
-# let's find a lambda value to fix in the model 
-
 
 #lets run the model using Phylolm!  
 #(have to use lambda, until we figure out a way to make GLS work with binomial linear regression)

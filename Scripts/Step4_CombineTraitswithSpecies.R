@@ -812,8 +812,11 @@ Coastal_Social_Traits %>% filter(!is.na(cooperative)) %>% filter(!is.na(Urban)) 
 Coastal_Social_Traits %>% filter(!is.na(territoriality)) %>% filter(!is.na(aveUAI)) %>% group_by(territoriality) %>% count()
 # for MUTI?
 Coastal_Social_Traits %>% filter(!is.na(territoriality)) %>% filter(!is.na(MUTIscore)) %>% group_by(territoriality) %>% count()
+#NOT enough territoriality = 2 (4 sp) - filter in social traits results script
 # for UN?
 Coastal_Social_Traits %>% filter(!is.na(territoriality)) %>% filter(!is.na(Urban)) %>% group_by(territoriality) %>% count()
+#NOT enough territoriality = 2 (7 sp) -  filter in social traits results script
+
 
 
 # save joined Social traits and Coastal Species as an .rds file 

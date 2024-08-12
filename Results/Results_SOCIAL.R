@@ -37,7 +37,7 @@ colnames(C_Social_dat2)
 
 # lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
 UAIDataUT <- C_Social_dat2 %>% filter(!is.na(aveUAI)) 
-SocialData1 <- UAIDataUT %>% filter(!is.na(territoriality)) 
+SocialData1 <- UAIDataUT %>% filter(!is.na(territoriality))
 length(SocialData1$territoriality)
 #766 species with UAI and territoriality
 
@@ -90,9 +90,12 @@ confint(UAI_GLS_territory)
 
 # lets first simplify a NEW database by removing records where we don't have an MUTI / brood_value
 MUTIDataUT <- C_Social_dat2 %>% filter(!is.na(MUTIscore)) 
-SocialData2 <- MUTIDataUT %>% filter(!is.na(territoriality)) 
+SocialData2 <- MUTIDataUT %>% 
+  filter(!is.na(territoriality)) %>% 
+  filter(territoriality != 2)
 length(SocialData2$territoriality)
-#127 species with MUTI and territoriality
+View(SocialData2)
+#123 species with MUTI and territoriality
 
 colnames(SocialData2)
 
@@ -110,7 +113,7 @@ SocialTraitDat2 <- as.data.frame(Socialphydat2$data)
 
 str(SocialTraitDat2)
 length(SocialTraitDat2$territoriality)
-#127
+#123
 
 
 ### convert traits of interest to numeric
@@ -142,9 +145,11 @@ confint(MUTI_GLS_territory)
 
 # lets first simplify a NEW database by removing records where we don't have an UN / brood_value
 UNDataUT <- C_Social_dat2 %>% filter(!is.na(Urban)) 
-SocialData3 <- UNDataUT %>% filter(!is.na(territoriality)) 
+SocialData3 <- UNDataUT %>% 
+  filter(!is.na(territoriality)) %>% 
+  filter(territoriality != 2)
 length(SocialData3$territoriality)
-#129 species with UN and territoriality
+#122 species with UN and territoriality
 
 colnames(SocialData3)
 
@@ -162,7 +167,7 @@ SocialTraitDat3 <- as.data.frame(Socialphydat3$data)
 
 str(SocialTraitDat3)
 length(SocialTraitDat3$territoriality)
-#129
+#122
 
 
 ### convert traits of interest to numeric

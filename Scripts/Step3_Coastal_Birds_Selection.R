@@ -60,7 +60,7 @@ colnames(List_of_Families)
 colnames(AllBirds)
 View(AllBirds)
 
-#reformat AllBirds Family_eBird column so that it is compatable to join with List_of_Families 
+#reformat AllBirds Family_eBird column so that it is compatible to join with List_of_Families 
 
 AllBirds$Family_Sci <- word(AllBirds$Family_eBird, 1)
 head(AllBirds)
@@ -118,7 +118,7 @@ alldescriptors <- data.frame( # make a data frame
   distinct() # remove duplicated descriptors
 
 # export as csv 
-# manually mark all terms that are associated with:
+# two researchers (EMG and SLJ) will individually review list and manually mark all terms that are associated with:
 # a habitat (but not a specific place)
 # a diet
 # an Ocean or Sea (e.g., Pacific)
@@ -171,7 +171,7 @@ R1_noncoastal_edited <- read.csv(here("Notes", "Round_1_noncoastal_edited.csv"),
 
 head(R1_noncoastal_edited)
 colnames(R1_noncoastal_edited)
-nrow(R1_noncoastal_edited)
+nrow(R1_noncoastal_edited) # 39
 
 # combine with Coastal_Round_1 to make the updates
 # this takes a few steps
@@ -191,7 +191,7 @@ nrow(Coastal_Round_1_edit1) == nrow(Coastal_Round_1) - nrow(R1_noncoastal_edited
 Coastal_Round_1_edit2 <- Coastal_Round_1 %>% 
   select(-Coastal, -Notes) %>% # removes these columns because they will be updated with new versions in the next step
   left_join(R1_noncoastal_edited, ., by="CommonName_eBird")
-nrow(Coastal_Round_1_edit2) # should be the same number as in R1_noncoastal_edited
+nrow(Coastal_Round_1_edit2) # should be the same number as in R1_noncoastal_edited (39)
 
 # bind everything back together
 Coastal_Round_2 <- bind_rows(Coastal_Round_1_edit1, Coastal_Round_1_edit2)  
@@ -214,8 +214,7 @@ Round_1_no <- Coastal_Round_1 %>%
   filter(Coastal == "No")
 
 View(Round_1_no)
-nrow(Round_1_no)
-#3610!  
+nrow(Round_1_no) # 3610 
 
 # # # # # # # # # # # # # # # # # # 
 
@@ -254,19 +253,12 @@ write.csv(R1_coastal, here("Notes", "Round_1_Coastal.csv"))
 
 
 # upload edited csv 
-# SEE THE CODE FOR LINES 188 to 220 FOR HOW TO BEST JOIN THE EDITS
-# YOU SHOULD BE ABLE TO MIMIC THAT PROCESS HERE
-# YOU'LL WANT TO MAKE THE JOIN TO Coastal_Round_2
-
-
 R1_coastal_edited <- read.csv(here("Notes", "Round_1_Coastal_edited.csv")) %>% select(-X, -X.1)
 
-#View to visually check 
+# View to visually check 
 View(R1_coastal_edited)
 colnames(R1_coastal_edited)
-nrow(R1_coastal_edited)
-
-
+nrow(R1_coastal_edited) # 221
 
 # combine with Coastal_Round_2 to make the updates
 # this takes a few steps
@@ -282,13 +274,13 @@ Coastal_Round_2_edit1 <- anti_join(Coastal_Round_2, R1_coastal_edited, by="Commo
 # this should be "TRUE"
 nrow(Coastal_Round_2_edit1) == nrow(Coastal_Round_2) - nrow(R1_coastal_edited)
 #TRUE
-nrow(R1_coastal_edited)
+nrow(R1_coastal_edited) # 221
 
 # update the coastal classification for all species in R1_coastal_edited
 Coastal_Round_2_edit2 <- Coastal_Round_2 %>% 
   select(-Coastal, -Notes) %>% # removes these columns because they will be updated with new versions in the next step
   left_join(R1_coastal_edited, ., by="CommonName_eBird")
-nrow(Coastal_Round_2_edit2) # should be the same number as in R1_coastal_edited
+nrow(Coastal_Round_2_edit2) # should be the same number as in R1_coastal_edited (221)
 
 # bind everything back together
 Coastal_Round_3 <- bind_rows(Coastal_Round_2_edit1, Coastal_Round_2_edit2)  
@@ -300,7 +292,6 @@ nrow(Coastal_Round_3) == nrow(Coastal_Round_2)
 View(Coastal_Round_3)
 
 #looks good! 
-
 
 
 ########################### Final Step ###########################################################
@@ -315,7 +306,7 @@ elton <- read.csv(here("Data", "elton.csv"), header=T)
 head(elton)
 colnames(elton) # look at column names of join 8 to identify columns that could be useful
 
-# these ones seem useful:
+# these trait columns seem useful:
 unique(elton$Diet.Vfish) # percentage of diet that is fish. Filter to retain any species with > 0
 unique(elton$ForStrat.watbelowsurf) # percentage of time spent foraging below surf. Filter to retain any species with >0
 unique(elton$ForStrat.wataroundsurf) # percentage of time spent foraging around surf. Filter to retain any species with >0
@@ -354,7 +345,7 @@ R3_No <- Coastal_Round_3 %>%
 R3_noncoastal <- inner_join(R3_No, coastaldiet)
 
 nrow(R3_noncoastal)
-#58 species --> these are species tht have been marked as "No" over the past 3 rounds, but their diet traits suggest a coastal association. 
+#58 species --> these are species that have been marked as "No" over the past 3 rounds, but their diet traits suggest a coastal association. 
 
 # Export this list, look up all species and check whether they should be coastal
 write.csv(R3_noncoastal, here("Notes", "Round_3_noncoastal.csv"))
@@ -381,12 +372,7 @@ nrow(R3_coastal)
 write.csv(R3_coastal, here("Notes", "Round_3_coastal.csv"))
 
 
-
-
-
-
 #edit files Round_3_coastal.csv and Round_3_noncoastal.csv by checking all species on BOTW 
-
 
 
 # Import edited files
@@ -440,12 +426,12 @@ Coastal_Only <- Coastal_All %>%
 nrow(Coastal_Only)
 #827 birds
 
-# Are the names unique for the different taxonomies? NO!
+###########################################################################
+# One last final check: we need all the species to have unique Jetz names as we need to join them to the phylogeny that uses this naming scheme for the models
+# Are the names unique for the Jetz taxonomies? NO!
 length(unique(Coastal_Only$Species_Jetz))
-length(unique(Coastal_Only$Species_eBird))
 
-# look at duplicates for Jetz
-# these are the most problematic because we will use Jetz phylogeny for the models
+# look at the duplicates for Jetz names
 # these need to be resolved because we can only have one entry per name in the models
 duplicates_Jetz <- Coastal_Only %>% count(Species_Jetz) %>%
   filter(n>1) %>%
@@ -492,7 +478,7 @@ fix1 <- duplicates_Jetz_UAIonly %>%
   select(-n, -match)
 # fix 1 is the first set of "resolved" duplicates. 
 
-# now look at species that have UAI and UN
+# now look at species that have both UAI and UN
 UAI_UN <- duplicates_Jetz %>% select(Species_Jetz) %>% distinct() %>%
   left_join(.,MUTI_dups) %>% left_join(., UN_dups) %>%
   filter(!is.na(UN)) %>% filter(is.na(MUTI))
@@ -510,7 +496,7 @@ fix2 <- duplicates_Jetz_UAI_UN %>%
 fix2 <- fix2 %>%
   filter(Species_eBird != "Curruca cantillans")
 
-# now look at species that have UAI and MUTI
+# now look at species that have both UAI and MUTI
 UAI_MUTI <- duplicates_Jetz %>% select(Species_Jetz) %>% distinct() %>%
   left_join(.,MUTI_dups) %>% left_join(., UN_dups) %>%
   filter(!is.na(MUTI)) %>% filter(is.na(UN))
@@ -534,16 +520,18 @@ fix3 <- fix3 %>%
 # this will allow identification of all remaining duplicated Jetz names
 fix123 <- bind_rows(fix1, fix2, fix3)
 
-# who is left? Use anti_join to find out
+# which duplicates are still left? Use anti_join to find out
 remaining_dups <- fix123 %>% select(Species_Jetz) %>%
   anti_join(duplicates_Jetz, .)
+
+print(remaining_dups)
 
 # making some decisions based on looking up the species on Birds of the World to resolve these final few
 # the criteria used to decide which species to keep is described here:
 # keep Clapper Rail and drop Ridgeway's Rail because Clapper rail overlaps more urban areas and has a larger range
-# keep Eurasian moorhen and drop Common gaillnule because Eurasian moorhen has a wider distribution and occurs outside North America/Europe in areas less well represented in ornitholigical research
+# keep Eurasian moorhen and drop Common gaillnule because Eurasian moorhen has a wider distribution and occurs outside North America/Europe in areas less well represented in ornithological research
 # keep Snowy plover and drop Kentish plover as it appears to use coastal habitats more based on range map
-# keep Gray-cowled Wood-rail and drop Russet-napped Wood-rail. These were on species until recently. Gray-cowled has a large range with potential to overlap more urban areas
+# keep Gray-cowled Wood-rail and drop Russet-napped Wood-rail. These were one species until recently. Gray-cowled has a large range with potential to overlap more urban areas
 
 fix4 <- remaining_dups %>% 
   filter(CommonName_eBird %in% c("Clapper Rail", "Eurasian Moorhen", "Snowy Plover", "Gray-cowled Wood-Rail")) %>%
@@ -560,8 +548,8 @@ nrow(Coastal_Only_nondups)
 # put together allfixes and Coastal_Only_nodups to get final and clean Coastal birds list
 Coastal_Birds <- bind_rows(Coastal_Only_nondups, allfixes)
 
-nrow(Coastal_Birds)# should be equal to the number of unique Jetz species names
-length(unique(Coastal_Birds$Species_Jetz))
+nrow(Coastal_Birds)# should be equal to the number of unique Jetz species names (807)
+length(unique(Coastal_Birds$Species_Jetz)) # 807
 
 # View to confirm  
 View(Coastal_Birds)

@@ -185,6 +185,7 @@ UAI_and_MUTI_namefix1b <- UAI_and_MUTI_namefix1 %>% filter(!is.na(Species_eBird)
 UAI_and_MUTI_namefix2b <- UAI_and_MUTI_namefix2 %>% filter(!is.na(Species_BirdLife)) 
 UAI_and_MUTI_namesfixed <-  bind_rows(UAI_and_MUTI_namefix1b, UAI_and_MUTI_namefix2b) %>% 
   distinct()
+UAI_and_MUTI_namesfixed
 # 7 species with fixed names
 
 # we need to bind everything together
@@ -244,7 +245,7 @@ eBird_UN_MUTI_UAI <- UN %>%
   mutate(Species_eBird = Species_UN) %>%
   left_join(UAI_and_MUTI_all, ., by="Species_eBird") 
 
-nrow(eBird_UN_MUTI_UAI) # good. All 4355 rows are present
+nrow(eBird_UN_MUTI_UAI) # good. All 4354 rows are present
 
 # how many species matched?
 eBird_UN_MUTI_UAI_match <- eBird_UN_MUTI_UAI %>% filter(!is.na(Species_UN)) 

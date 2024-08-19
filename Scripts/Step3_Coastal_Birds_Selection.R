@@ -60,6 +60,23 @@ colnames(List_of_Families)
 colnames(AllBirds)
 View(AllBirds)
 
+# how many families were marked as "Coastal"? 
+Families_Yes <- List_of_Families %>% 
+  filter(Coastal == "Yes")
+nrow(Families_Yes) 
+# 37 families marked as Coastal 
+
+
+# how many families were marked as "Non Coastal"? 
+Families_No <- List_of_Families %>% 
+  filter(Coastal == "No")
+nrow(Families_No) 
+# 168 families marked as non-coastal 
+
+168 + 37
+#205, this is correct 
+
+
 #reformat AllBirds Family_eBird column so that it is compatible to join with List_of_Families 
 
 AllBirds$Family_Sci <- word(AllBirds$Family_eBird, 1)
@@ -70,7 +87,7 @@ head(AllBirds)
 Coastal_Round_1 <- left_join(AllBirds, List_of_Families, by = "Family_Sci")
 View(Coastal_Round_1)
 nrow(Coastal_Round_1) #4433 - correct number of rows in AllBirds, which was the left part of left_join 
- 
+
 #save rds of Coastal_Round_1, for quick recall 
 
 saveRDS(Coastal_Round_1, here("Outputs", "Coastal_Round_1.rds"))
@@ -210,8 +227,13 @@ nrow(Coastal_Round_2) == nrow(Coastal_Round_1)
 
 # View Coastal_Round_2 for double-checking 
 View(Coastal_Round_2)
-
 # looks good! 
+
+# let's double check how many species are marked as "Coastal" now! 
+
+Coastal_Round_2_LIST <- Coastal_Round_2 %>% 
+  filter(Coastal == "Yes")
+nrow(Coastal_Round_2_LIST) #823 - 18 = 805! correct 
 
 
 #################################### Round 3 ###################################
@@ -297,7 +319,7 @@ nrow(R1_coastal_edited) # 221
 Coastal_Round_2_edit2 <- Coastal_Round_2 %>% 
   select(-Coastal, -Notes) %>% # removes these columns because they will be updated with new versions in the next step
   left_join(R1_coastal_edited, ., by="CommonName_eBird")
-nrow(Coastal_Round_2_edit2) # should be the same number as in R1_coastal_edited (221)
+nrow(Coastal_Round_2_edit2) # should be the same number as in R1_coastal_edited (221) - yep 
 
 # bind everything back together
 Coastal_Round_3 <- bind_rows(Coastal_Round_2_edit1, Coastal_Round_2_edit2)  
@@ -311,7 +333,13 @@ View(Coastal_Round_3)
 #looks good! 
 
 
-########################### Final Step ###########################################################
+# Let's look at how many species are on our coastal birds list now! 
+
+Coastal_Round_3_LIST <- Coastal_Round_3 %>% 
+  filter(Coastal == "Yes")
+nrow(Coastal_Round_3_LIST) #904 species identified as COASTAL! 
+
+########################### Final Step (rounds 4 and 5) ###########################################################
 # one last pass to identify any additional coastal species or species that are not actually coastal 
 # we will use the diet info columns that came from Wilman et al. 2014 (Elton traits) 
 
@@ -452,8 +480,9 @@ View(Coastal_All)
 #how many coastal species do we have? 
 
 nrow(Coastal_All)
-colnames(Coastal_All)
 #4433, just like it should be 
+colnames(Coastal_All)
+
 
 Coastal_Only <- Coastal_All %>% 
   filter(Coastal == "Yes")

@@ -127,6 +127,12 @@ Coastal_freq <- MIKULA %>%
   )) %>%
   select(-peak_freq_Mik, -peak_freq_HC) # remove these columns as a final step to keep peak_freq as only column with vocal frequency
 
+#let's check (across all indexes) how many species have peak vocal frequency) 
+freq_count <- Coastal_freq %>% 
+  filter(!is.na(peak_freq))
+nrow(freq_count)
+#210 
+
 # how many species have peak freq measurements?
 # for UAI?
 Coastal_freq %>% filter(!is.na(peak_freq)) %>% filter(!is.na(aveUAI)) %>% nrow()
@@ -154,6 +160,14 @@ Coastal_Sensory <- left_join(Coastal_freq, eye_CT, by = "Species_Jetz")
 
 # confirm we still have all the coastal species
 nrow(Coastal_Bodymass) == nrow(Coastal_Sensory) # should be "TRUE"
+
+
+#let's check (across all indexes) how many species have C.T. 
+CT_count <- Coastal_Sensory %>% 
+  filter(!is.na(C.T))
+nrow(CT_count)
+#237 
+
 
 # how many species have dim light vision values?
 # for UAI?
@@ -303,6 +317,14 @@ Coastal_Longevity <- left_join(Coastal_Bodymass, longevity, by = "Species_BirdLi
 # confirm all species are still present
 nrow(Coastal_Bodymass) == nrow(Coastal_Longevity)
 
+
+#check to see how many species have longevity values 
+longev_count <- Coastal_Longevity %>% 
+  filter(!is.na(longevity))
+nrow(longev_count)
+# 805 
+
+
 # how many species have longevity values?
 # for UAI?
 Coastal_Longevity %>% filter(!is.na(longevity)) %>% filter(!is.na(aveUAI)) %>% nrow()
@@ -385,6 +407,13 @@ Coastal_Clutch <- bind_rows(Coastal_clutch_okay, Coastal_clutch_Jetz)
 # check this worked. Should equal "TRUE" if all species are present
 nrow(Coastal_Bodymass) == nrow(Coastal_Clutch)
 
+#now let's check how many species have Coastal_Clutch values (CLUTCH SIZE)
+clutch_count <- Coastal_Clutch %>% 
+  filter(!is.na(clutch_size))
+nrow(clutch_count)
+# 746
+
+
 
 # how many species have clutch size values?
 # for UAI?
@@ -425,6 +454,14 @@ Coastal_BroodValue <- Coastal_Clutch %>%
   rowwise() %>%
   mutate(brood_value = log(1/(longevity*clutches_per_y)))
 
+
+#now let's check how many species (across all indexes) have brood values 
+broodvalue_count <- Coastal_BroodValue %>% 
+  filter(!is.na(brood_value))
+nrow(broodvalue_count)
+# 484
+
+
 # how many species have clutch size values?
 # for UAI?
 Coastal_BroodValue %>% filter(!is.na(brood_value)) %>% filter(!is.na(aveUAI)) %>% nrow()
@@ -450,6 +487,13 @@ Coastal_LifeHistory <- left_join(Coastal_BroodValue, DELHEY_developmental, by = 
 
 # check we still have all the species
 nrow(Coastal_LifeHistory) == nrow(Coastal_Bodymass)
+
+#now let's check how many species (across all indexes) have developmental modes 
+developmental_count <- Coastal_LifeHistory %>% 
+  filter(!is.na(developmental_mode))
+nrow(developmental_count)
+# 775
+
 
 # how many species have developmental mode?
 
@@ -567,17 +611,26 @@ Coastal_Nest_Str_3 <- Coastal_Nest_OpEnc %>%
 Coastal_Nest_Str <- bind_rows(Coastal_Nest_Str_3, Coastal_Nest_Str_2)
 nrow(Coastal_Nest_Str) == nrow(Coastal_Bodymass)
 
+#now let's check how many species (across all indexes) have nest strat. data  
+nest_strat_count <- Coastal_Nest_Str %>% 
+  filter(!is.na(NestStr))
+nrow(nest_strat_count)
+# 741
+
+
 # how many species have nest strategy data ?
 # for UAI? 
 # Print numbers for Open and Enclosed (Open = 1, Enclosed = 0)
 Coastal_Nest_Str %>% filter(!is.na(NestStr)) %>% filter(!is.na(aveUAI)) %>% group_by(NestStr) %>% count()
+118 + 615
 # for MUTI? 
 # Print numbers for Open and Enclosed (Open = 1, Enclosed = 0)
 Coastal_Nest_Str %>% filter(!is.na(NestStr)) %>% filter(!is.na(MUTIscore)) %>% group_by(NestStr) %>% count()
+10 + 107
 # for UN? 
 # Print numbers for Open and Enclosed (Open = 1, Enclosed = 0)
 Coastal_Nest_Str %>% filter(!is.na(NestStr)) %>% filter(!is.na(Urban)) %>% group_by(NestStr) %>% count()
-
+8 + 114
 
 # # # # # # NEST SITE # # # # # # 
 # sort nest sites into the bins "low" (on or underground) and "high" (above the ground)
@@ -601,6 +654,13 @@ Coastal_Nest_StrSite <- Coastal_Nest_Site %>%
   select(Species_Jetz:Mass, NestStr, NestSite_High, NestSite_Low)
 
 colnames(Coastal_Nest_StrSite)
+
+#now let's check how many species (across all indexes) have nest site data (testing with NestSite_Low), but both high and low should be the same count
+nest_site_count <- Coastal_Nest_StrSite %>% 
+  filter(!is.na(NestSite_Low))
+nrow(nest_site_count)
+# 805
+
 
 # how many species have nest site high data ?
 # for UAI? 
@@ -642,6 +702,14 @@ Coastal_Nest_Traits <- left_join(Coastal_Nest_StrSite, DELHEY_safety, by = "Spec
 
 # confirm all the species are still present
 nrow(Coastal_Nest_Traits) == nrow(Coastal_Bodymass)
+
+
+#now let's check how many species (across all indexes) have nest strat. data  
+nest_safety_count <- Coastal_Nest_Traits %>% 
+  filter(!is.na(nest.safety))
+nrow(nest_safety_count)
+# 775
+
 
 # how many species have nest safety values?
 # for UAI?
@@ -687,8 +755,23 @@ View(Coastal_SS_Traits)
 nrow(Coastal_SS_Traits) #807, as it should be 
 
 #check to see if we have NAs for sexual selection intensity
-Coastal_SS_Traits %>% filter(is.na(sex.sel.m)) %>% nrow()
+
+#now let's check how many species (across all indexes) have ssf 
+ssf_count <- Coastal_SS_Traits %>% 
+  filter(!is.na(sex.sel.f))
+nrow(ssf_count)
+# 775
+
+#now let's check how many species (across all indexes) have ssm  
+ssm_count <- Coastal_SS_Traits %>% 
+  filter(!is.na(sex.sel.m))
+nrow(ssm_count)
+# 775
+
 Coastal_SS_Traits %>% filter(is.na(sex.sel.f)) %>% nrow()
+
+807 - 32
+#checks out 
 
 # how many species have values for sex.sel for males ?
 # for UAI?
@@ -742,6 +825,19 @@ Coastal_SS_Traits.2 <- left_join(Coastal_SS_Traits, DUNN.4)
 View(Coastal_SS_Traits.2)
 nrow(Coastal_SS_Traits.2) #807, as it should be 
 
+
+#now let's check how many species (across all indexes) have dichromatism (BRIGHT) 
+brightness_count <- Coastal_SS_Traits.2 %>% 
+  filter(!is.na(Dichrom_bright))
+nrow(brightness_count)
+# 202
+
+#now let's check how many species (across all indexes) have dichromatism (HUE) 
+hue_count <- Coastal_SS_Traits.2 %>% 
+  filter(!is.na(Dichrom_hue))
+nrow(hue_count)
+# 202
+
 #check to see if we have NAs for sexual dichromatism and hue 
 Coastal_SS_Traits.2 %>% filter(is.na(Dichrom_bright)) %>% nrow()
 Coastal_SS_Traits.2 %>% filter(is.na(Dichrom_hue)) %>% nrow()
@@ -794,6 +890,19 @@ Coastal_Social_Traits <- left_join(Coastal_Bodymass, DELHEY_social)
 View(Coastal_Social_Traits)
 nrow(Coastal_Social_Traits) #807, as it should be 
 
+#now let's check how many species (across all indexes) have cooperative breeding scores  
+cooperative_count <- Coastal_Social_Traits %>% 
+  filter(!is.na(cooperative))
+nrow(cooperative_count)
+# 775
+
+
+#now let's check how many species (across all indexes) have territoriality scores  
+territorial_count <- Coastal_Social_Traits %>% 
+  filter(!is.na(territoriality))
+nrow(territorial_count)
+# 775
+
 
 # check to see if we have NAs for cooperative breeding and territoriality
 Coastal_Social_Traits %>% filter(is.na(cooperative)) %>% nrow()
@@ -810,6 +919,7 @@ Coastal_Social_Traits %>% filter(!is.na(cooperative)) %>% filter(!is.na(Urban)) 
 # how many species have territoriality scores?
 # for UAI?
 Coastal_Social_Traits %>% filter(!is.na(territoriality)) %>% filter(!is.na(aveUAI)) %>% group_by(territoriality) %>% count()
+405 + 290 + 71 # = 766
 # for MUTI?
 Coastal_Social_Traits %>% filter(!is.na(territoriality)) %>% filter(!is.na(MUTIscore)) %>% group_by(territoriality) %>% count()
 #NOT enough territoriality = 2 (4 sp) - filter in social traits results script

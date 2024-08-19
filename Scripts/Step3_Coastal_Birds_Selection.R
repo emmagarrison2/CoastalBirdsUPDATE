@@ -17,7 +17,7 @@ library(tidyverse)
 AllBirds <- readRDS(here("Outputs", "UAI_MUTI_UN_final.rds"))
 
 View(AllBirds)
-nrow(AllBirds) #4434, which is correct! 
+nrow(AllBirds) #4433, which is correct! 
 
 # extract a data frame that contains a list of family names
 unique_family_names <- AllBirds %>%
@@ -89,7 +89,7 @@ nrow(Round_1_yes)
 #823!  
 
 ###
-# generate a list of descriptors in the common names of the 4434 species in AllBirds
+# generate a list of descriptors in the common names of the 4433 species in AllBirds
 # we will manually filter this list to identify words in the common names that relate to habitat and/or diet
 
 twowordnames <- AllBirds %>%
@@ -157,7 +157,7 @@ R1_noncoastal <- map(NCterms_vec, str_detect, string = commname_vec) %>%
 colnames(R1_noncoastal) <- "CommonName_eBird"
 
 print(R1_noncoastal, n=Inf)
-
+nrow(R1_noncoastal)
 # export data frame, look up species and mark ones to keep and remove
 write.csv(R1_noncoastal, here("Notes", "Round_1_noncoastal.csv"))
 
@@ -172,12 +172,21 @@ R1_noncoastal_edited <- read.csv(here("Notes", "Round_1_noncoastal_edited.csv"),
 head(R1_noncoastal_edited)
 colnames(R1_noncoastal_edited)
 nrow(R1_noncoastal_edited) # 39
-
+View(R1_noncoastal_edited)
 # combine with Coastal_Round_1 to make the updates
 # this takes a few steps
 
+###DO FILTER STEP NOW 
+
+R1_noncoastal_edited_no <- R1_noncoastal_edited %>% 
+  filter(Coastal == "No")
+nrow(R1_noncoastal_edited_no) #18 species identified as NO from round 1 
+
+
 # remind ourselves how many species are in the data
 nrow(Coastal_Round_1) # 4433
+
+
 
 # get all the species that were not modified in any way in the past step (any species not in R1_noncoastal_edited)
 Coastal_Round_1_edit1 <- anti_join(Coastal_Round_1, R1_noncoastal_edited, by="CommonName_eBird")
@@ -259,6 +268,14 @@ R1_coastal_edited <- read.csv(here("Notes", "Round_1_Coastal_edited.csv")) %>% s
 View(R1_coastal_edited)
 colnames(R1_coastal_edited)
 nrow(R1_coastal_edited) # 221
+
+
+#let's see how many Coastal = Yes species that we added during round 3. 
+
+R1_coastal_edited_yes <- R1_coastal_edited %>% 
+  filter(Coastal == "Yes")
+nrow(R1_coastal_edited_yes) #99 species identified as COASTAL! 
+
 
 # combine with Coastal_Round_2 to make the updates
 # this takes a few steps
@@ -375,10 +392,28 @@ write.csv(R3_coastal, here("Notes", "Round_3_coastal.csv"))
 #edit files Round_3_coastal.csv and Round_3_noncoastal.csv by checking all species on BOTW 
 
 
-# Import edited files
-R3_coastal_edited <- read.csv(here("Notes", "Round_3_coastal_edited2.csv"), header = T) %>% select(-X)
 
+# import edited coastal file
+
+R3_coastal_edited <- read.csv(here("Notes", "Round_3_coastal_edited2.csv"), header = T) %>% select(-X)
+View(R3_coastal_edited)
+
+#lets look at how many "Coastal" species that DIDNT have coastal diet traits aren't actually coastal..... 
+R3_coastal_edited_no <- R3_coastal_edited %>% 
+  filter(Coastal == "No")
+nrow(R3_coastal_edited_no) #94 species re-classified as non-coastal 
+
+
+
+# imported edited noncoastal file 
 R3_noncoastal_edited <- read.csv(here("Notes", "Round_3_noncoastal_edited2.csv"), header = T) %>% select(-X)
+
+#lets look at how many "Coastal" species that DIDNT have coastal diet traits aren't actually coastal..... 
+R3_noncoastal_edited_yes <- R3_noncoastal_edited %>% 
+  filter(Coastal == "Yes")
+nrow(R3_noncoastal_edited_yes) #17 species identified as COASTAL! 
+
+
 
 
 # combine them into one object that contains all possible changes

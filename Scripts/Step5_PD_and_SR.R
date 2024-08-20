@@ -104,6 +104,10 @@ PD
 #interesting that UN is less phylogenetically diverse than MUTI, although they have almost = # of sp 
 
 # trying out other phylogenetic species diversity metrics
+if(!require(phyr)){
+  install.packages("phyr")
+  require(phyr)
+}
 library(phyr) # measures described in Helmus et al. 2007 Am Nat
 # link to paper: https://www.journals.uchicago.edu/doi/10.1086/511334
 
@@ -130,14 +134,18 @@ library(phyr) # measures described in Helmus et al. 2007 Am Nat
 # therefore, higher values therefore reflect greater diversity
 psv(ForPD, coastal_jetz, compute.var=F)
 # we would report the PSVs value for each urban tolerance index
-
+#UAI - 0.8044951 
+#UN - 0.7606829 
+#MUTI - 0.7970667 
 
 # PSR = phylogenetic species richness
 # Can take on any value, but is directly comparable to actual species richness
-# if PSR is much lower than the actual richness, it would indicate a community where species are closely related
+# if PSR is much lower than the actual richness, it would indicate a community where species are closely related (i.e. congenerics)
 psr(ForPD, coastal_jetz, compute.var=F)
 # PSR column gives the phylogenetic species richness and SR gives the actual species richness
-
+#UAI - 641.98712 
+#UN - 98.12809 
+#MUTI - 103.61867 
 
 #### how many bird families are there for each urban index?
 

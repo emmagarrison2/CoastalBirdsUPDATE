@@ -1,4 +1,4 @@
-"","PD","SR","Family"
-"UAI",12352.4171722685,798,81
-"UN",2517.90758108687,129,24
-"MUTI",3127.01159806028,130,33
+Index,PSV - higher values means more diversity,"PSR - if vastly lower than SR, indicates many species are closely related",SR - number of species per each index,Family - number of families per each index
+UAI,0.8044951,641.98712,798,81
+UN,0.7606829,98.12809,129,24
+MUTI,0.7970667,103.61867,130,33

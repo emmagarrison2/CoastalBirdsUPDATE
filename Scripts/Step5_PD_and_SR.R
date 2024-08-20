@@ -85,6 +85,8 @@ ForPD <- Coastal %>% dplyr::select(Species, aveUAI, Urban, MUTIscore) %>%
 
 View(ForPD)
 
+
+
 # prune the jetz phylogeny
 coastal_jetz <- prune.sample(ForPD, jetztree)
 coastal_jetz #807 tips 
@@ -101,7 +103,40 @@ PD
 
 #interesting that UN is less phylogenetically diverse than MUTI, although they have almost = # of sp 
 
+# trying out other phylogenetic species diversity metrics
+library(phyr) # measures described in Helmus et al. 2007 Am Nat
+# link to paper: https://www.journals.uchicago.edu/doi/10.1086/511334
 
+# We can obtain psv and psr for our data (the authors also present an evenness measure that we can't calculate).
+# These measures are explained in the paper as follows:
+
+# The three metrics we present here are derived statistically by considering the 
+# value of some unspecified neutral trait shared by all species in a community. 
+# As this neutral trait evolves up a phylogenetic tree, 
+# speciation occurs, and from this point forward, evolution proceeds independently along each phylogenetic lineage.
+# Our metric of phylogenetic species variability (PSV) quantifies how phylogenetic relatedness 
+# decreases the variance of this hypothetical unselected trait shared by all species in the community. 
+# To calculate PSV, only information about the phylogenetic relatedness of species in a community is needed, 
+# not information about any particular trait. 
+# Nonetheless, framing this measure in the context of a hypothetical neutral trait gives a metric 
+# that has not only an intuitive interpretation but also appealing statistical properties. 
+# The second metric quantifies phylogenetic species richness (PSR) as the number of species in a community 
+# multiplied by the community’s PSV. 
+# This metric is directly comparable to the traditional metric of species richness but includes phylogenetic relatedness. 
+
+# PSV = phylogenetic species variability
+# Bound between zero and one
+# approaches zero as relatedness of the species increases 
+# therefore, higher values therefore reflect greater diversity
+psv(ForPD, coastal_jetz, compute.var=F)
+# we would report the PSVs value for each urban tolerance index
+
+
+# PSR = phylogenetic species richness
+# Can take on any value, but is directly comparable to actual species richness
+# if PSR is much lower than the actual richness, it would indicate a community where species are closely related
+psr(ForPD, coastal_jetz, compute.var=F)
+# PSR column gives the phylogenetic species richness and SR gives the actual species richness
 
 
 #### how many bird families are there for each urban index?

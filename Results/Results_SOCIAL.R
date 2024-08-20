@@ -83,10 +83,34 @@ hist(resid(UAI_GLS_territory))
 summary(UAI_GLS_territory) 
 confint(UAI_GLS_territory)
 
+### make a factor version of territoriality 
+SocialTraitDat1$territoriality_f <- as.factor(SocialTraitDat1$territoriality)
 
 
+#lets run the model!
 
-######################## MUTI and territoriality ##########################
+UAI_GLS_territory_f <- gls(aveUAI~ territoriality_f + Mass_log, data = SocialTraitDat1, 
+                         correlation = corPagel(0.5, phy=Socialphy1,fixed=F, form = ~Species_Jetz), 
+                         method = "ML") 
+
+summary(UAI_GLS_territory_f)
+
+# compare levels of territoriality
+pred.terr <- predict_response(UAI_GLS_territory_f, "territoriality_f", margin = "marginalmeans") # get CIs for different levels of territoriality
+pred.terr # this will show the predicted mean of each level of territoriality and the 95% CI
+
+# run comparison of each pair of levels
+test_predictions(pred.terr) # 0 and 1 are the levels that are significantly different
+# territoriality = 0 has higher UAI scores than territoriality = 1
+# there is a trend that 0 is higher than 2, but it's not significant using alpha = 0.05
+
+# make a plot to visualize the relationship
+territoriality.plot <- plot(pred.terr, show_data=T, jitter=0.5, dot_size = 1.5, line_size= 1.5, colors =  "#21918c", alpha = 0.4) + 
+  theme_classic(base_size = 12, base_family = "") +
+  labs( x = "Territoriality" , y = "UAI Score")
+territoriality.plot
+
+ ######################## MUTI and territoriality ##########################
 
 # lets first simplify a NEW database by removing records where we don't have an MUTI / brood_value
 MUTIDataUT <- C_Social_dat2 %>% filter(!is.na(MUTIscore)) 

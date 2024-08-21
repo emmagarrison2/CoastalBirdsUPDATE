@@ -625,7 +625,7 @@ confint(UN_M_nest_low_only)
 UAIDataUT <- C_Nest_dat2 %>% filter(!is.na(aveUAI)) 
 NestData7 <- UAIDataUT %>% filter(!is.na(NestSite_High)) 
 length(NestData7$NestSite_High)
-#130 species with UAI and NestSite_High
+#796 species with UAI and NestSite_High
 
 #there is no Log_mass column in this .rds ... let's put one in! 
 
@@ -649,7 +649,7 @@ NestTraitDat7 <- as.data.frame(Nestphydat7$data)
 
 str(NestTraitDat7)
 length(NestTraitDat7$NestSite_High)
-#130
+#796
 
 
 ### convert traits of interest to numeric
@@ -674,6 +674,74 @@ hist(resid(UAI_GLS_nest_safety))
 
 summary(UAI_GLS_nest_safety) 
 confint(UAI_GLS_nest_safety)
+
+
+
+
+
+#NOW, let's try filtering out all species that have both HIGH and LOW nesting scores of 1 
+#### idea - are the "non-ambiguous" nesting species the ones driving this significant relationship 
+#### between nesting and UAI index? 
+
+#filter 
+UAIDataUT <- C_Nest_dat2 %>% filter(!is.na(aveUAI)) 
+NestData7_only <- UAIDataUT %>% filter(!is.na(NestSite_High)) %>% 
+  filter(!(NestSite_Low == 1 & NestSite_High == 1))
+length(NestData7_only$NestSite_High)
+#575 species with UAI and ONLY NestSite_High (not also low nesters)
+796-575 # = 221 --> there are 221 species that were both High and Low nesters and had UAI scores 
+
+#there is no Log_mass column in this .rds ... let's put one in! 
+
+# add column for log transformed body mass
+NestData7_only <- NestData7_only %>%
+  mutate(Mass_log = log(Mass))
+
+colnames(NestData7_only)
+
+###### add and pair tree
+
+# add rownames to data
+row.names(NestData7_only) <- NestData7_only$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Nestphydat7_only <- treedata(tree_out,NestData7_only, sort=T)
+
+Nestphy7_only <- Nestphydat7_only$phy
+NestTraitDat7_only <- as.data.frame(Nestphydat7_only$data)
+
+str(NestTraitDat7_only)
+length(NestTraitDat7_only$NestSite_High)
+#575
+
+
+### convert traits of interest to numeric
+
+NestTraitDat7_only$aveUAI <- as.numeric(NestTraitDat7_only$aveUAI)
+NestTraitDat7_only$Mass_log <- as.numeric(NestTraitDat7_only$Mass_log)
+NestTraitDat7_only$NestSite_High <- as.numeric(NestTraitDat7_only$NestSite_High)
+
+
+
+#lets run the model!
+
+
+UAI_GLS_nest_high_only <- gls(aveUAI~ NestSite_High + Mass_log, data = NestTraitDat7_only, 
+                              correlation = corPagel(0.5, phy=Nestphy7_only,fixed=F, form = ~Species_Jetz), 
+                              method = "ML") 
+#check out the model
+check_model(UAI_GLS_nest_high_only) 
+qqnorm(resid(UAI_GLS_nest_high_only)) 
+qqline(resid(UAI_GLS_nest_high_only))
+hist(resid(UAI_GLS_nest_high_only))
+
+
+summary(UAI_GLS_nest_high_only) 
+confint(UAI_GLS_nest_high_only)
+
+
+
 
 
 
@@ -722,18 +790,109 @@ NestTraitDat8$NestSite_High <- as.numeric(NestTraitDat8$NestSite_High)
 #lets run the model!
 
 
-MUTI_GLS_nest_safety <- gls(MUTIscore~ NestSite_High + Mass_log, data = NestTraitDat8, 
+MUTI_GLS_nest_high <- gls(MUTIscore~ NestSite_High + Mass_log, data = NestTraitDat8, 
                           correlation = corPagel(0.5, phy=Nestphy8,fixed=F, form = ~Species_Jetz), 
                           method = "ML") 
 #check out the model
-check_model(MUTI_GLS_nest_safety) 
-qqnorm(resid(MUTI_GLS_nest_safety)) 
-qqline(resid(MUTI_GLS_nest_safety))
-hist(resid(MUTI_GLS_nest_safety))
+check_model(MUTI_GLS_nest_high) 
+qqnorm(resid(MUTI_GLS_nest_high)) 
+qqline(resid(MUTI_GLS_nest_high))
+hist(resid(MUTI_GLS_nest_high))
 
 
-summary(MUTI_GLS_nest_safety) 
-confint(MUTI_GLS_nest_safety)
+summary(MUTI_GLS_nest_high) 
+confint(MUTI_GLS_nest_high)
+
+
+
+
+#NOW, let's try filtering out all species that have both HIGH and LOW nesting scores of 1 
+#### idea - are the "non-ambiguous" nesting species the ones driving this significant relationship 
+#### between nesting and MUTI index? 
+
+#filter 
+MUTIDataUT <- C_Nest_dat2 %>% filter(!is.na(MUTIscore)) 
+NestData8_only <- MUTIDataUT %>% filter(!is.na(NestSite_High)) %>% 
+  filter(!(NestSite_Low == 1 & NestSite_High == 1))
+length(NestData8_only$NestSite_High)
+#91 species with MUTI and ONLY NestSite_High (not also low nesters)
+130-91 # = 39 --> there are 39 species that were both High and Low nesters and had MUTI scores 
+
+#there is no Log_mass column in this .rds ... let's put one in! 
+
+# add column for log transformed body mass
+NestData8_only <- NestData8_only %>%
+  mutate(Mass_log = log(Mass))
+
+colnames(NestData8_only)
+
+###### add and pair tree
+
+# add rownames to data
+row.names(NestData8_only) <- NestData8_only$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Nestphydat8_only <- treedata(tree_out,NestData8_only, sort=T)
+
+Nestphy8_only <- Nestphydat8_only$phy
+NestTraitDat8_only <- as.data.frame(Nestphydat8_only$data)
+
+str(NestTraitDat8_only)
+length(NestTraitDat8_only$NestSite_High)
+#91
+
+
+### convert traits of interest to numeric
+
+NestTraitDat8_only$MUTIscore <- as.numeric(NestTraitDat8_only$MUTIscore)
+NestTraitDat8_only$Mass_log <- as.numeric(NestTraitDat8_only$Mass_log)
+NestTraitDat8_only$NestSite_High <- as.numeric(NestTraitDat8_only$NestSite_High)
+
+
+
+########### since model not working as corPagel starting point = 0.5 and fixed = F... 
+# let's find a
+# lambda value to fix in the model 
+
+
+# Create an empty vector to store AIC values
+AIC_values <- numeric()
+
+# Loop through different values of the parameter for corPagel
+for (i in seq(0, 1, by = 0.1)) {
+  # Fit the gls model with the current value of i
+  model <- gls(MUTIscore ~ NestSite_High + Mass_log, 
+               data = NestTraitDat8_only, 
+               correlation = corPagel(i, phy = Nestphy8_only, fixed = TRUE, form = ~Species_Jetz), 
+               method = "ML")
+  # Extract AIC value and store it in the vector
+  AIC_values <- c(AIC_values, AIC(model))
+}
+
+# Print AIC values
+print(AIC_values)
+#0.3 = best AIC score 
+
+
+
+
+#lets run the model!
+
+
+MUTI_GLS_nest_high_only <- gls(MUTIscore~ NestSite_High + Mass_log, data = NestTraitDat8_only, 
+                              correlation = corPagel(0.3, phy=Nestphy8_only,fixed=T, form = ~Species_Jetz), 
+                              method = "ML") 
+#check out the model
+check_model(MUTI_GLS_nest_high_only) 
+qqnorm(resid(MUTI_GLS_nest_high_only)) 
+qqline(resid(MUTI_GLS_nest_high_only))
+hist(resid(MUTI_GLS_nest_high_only))
+
+
+summary(MUTI_GLS_nest_high_only) 
+confint(MUTI_GLS_nest_high_only)
+
 
 
 
@@ -795,6 +954,74 @@ hist(UN_M_nest_safety$residuals, breaks = 20)
 #lets get those values for our results table 
 summary(UN_M_nest_safety)
 confint(UN_M_nest_safety)
+
+
+
+
+
+
+#NOW, let's try filtering out all species that have both HIGH and LOW nesting scores of 1 
+#### idea - are the "non-ambiguous" nesting species the ones driving this significant relationship 
+#### between nesting and UAI index? 
+
+#filter 
+UNDataUT <- C_Nest_dat2 %>% filter(!is.na(Urban)) 
+NestData9_only <- UNDataUT %>% filter(!is.na(NestSite_High)) %>% 
+  filter(!(NestSite_Low == 1 & NestSite_High == 1))
+length(NestData9_only$NestSite_High)
+#104 species with UAI and ONLY NestSite_High (not also high nesters)
+129-104 # = 25 --> there are 25 species that were both High and Low nesters and had UN scores 
+
+#there is no Log_mass column in this .rds ... let's put one in! 
+
+# add column for log transformed body mass
+NestData9_only <- NestData9_only %>%
+  mutate(Mass_log = log(Mass))
+
+colnames(NestData9_only)
+
+###### add and pair tree
+
+# add rownames to data
+row.names(NestData9_only) <- NestData9_only$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Nestphydat9_only <- treedata(tree_out,NestData9_only, sort=T)
+
+Nestphy9_only <- Nestphydat9_only$phy
+NestTraitDat9_only <- as.data.frame(Nestphydat9_only$data)
+
+str(NestTraitDat9_only)
+length(NestTraitDat9_only$NestSite_High)
+#104
+
+
+### convert traits of interest to numeric
+
+NestTraitDat9_only$Urban <- as.numeric(NestTraitDat9_only$Urban)
+NestTraitDat9_only$Mass_log <- as.numeric(NestTraitDat9_only$Mass_log)
+NestTraitDat9_only$NestSite_High <- as.numeric(NestTraitDat9_only$NestSite_High)
+
+
+
+#lets run the model using Phylolm!  
+
+#(have to use lambda, until we figure out a way to make GLS work with binomial linear regression)
+UN_M_nest_high_only <- phylolm(Urban~ NestSite_High + Mass_log, data=NestTraitDat9_only,
+                              phy=Nestphy9_only, model="lambda") 
+
+# time to check out the model 
+qqnorm(UN_M_nest_high_only$residuals)
+qqline(UN_M_nest_high_only$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
+#the two lines do not have overlap... maybe this is good? 
+hist(UN_M_nest_high_only$residuals, breaks = 20) 
+
+#lets get those values for our results table 
+summary(UN_M_nest_high_only)
+confint(UN_M_nest_high_only)
+
+
 
 
 

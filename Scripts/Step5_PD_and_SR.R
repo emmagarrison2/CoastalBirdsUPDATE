@@ -108,7 +108,10 @@ if(!require(phyr)){
   install.packages("phyr")
   require(phyr)
 }
-library(phyr) # measures described in Helmus et al. 2007 Am Nat
+library(phyr) 
+citation("phyr")
+
+# measures described in Helmus et al. 2007 Am Nat
 # link to paper: https://www.journals.uchicago.edu/doi/10.1086/511334
 
 # We can obtain psv and psr for our data (the authors also present an evenness measure that we can't calculate).

@@ -96,7 +96,7 @@ L5<-ggplot(data=MASS.UAI.DF,aes(x=Mass_log, y=fit)) +
   geom_line(color="indianred3",lwd=1.5) +
   geom_ribbon(aes(ymin=lower, ymax=upper), fill="indianred3",alpha=.2, lwd=.1)+xlim(-1000,1000) +
   
-  geom_point(data=MassTraitDat1,aes(x=jitter(Mass_log, 1), y =aveUAI),color="blue", bg="blue",alpha=.2, size=1,pch=21) +
+  geom_point(data=MassTraitDat1,aes(x=jitter(Mass_log, 1), y =aveUAI),color="blue", bg="blue",alpha=.2, size=2,pch=21) +
   coord_cartesian(ylim = c(-0, 4.2), xlim =c(0,10.5)) + theme_classic() +
   theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
   xlab("log(Body Mass)") + 
@@ -172,7 +172,7 @@ L5<-ggplot(data=MASS.MUTI.DF,aes(x=Mass_log, y=fit)) +
   geom_line(color="indianred3",lwd=1.5) +
   geom_ribbon(aes(ymin=lower, ymax=upper), fill="indianred3",alpha=.2, lwd=.1)+xlim(-1000,1000) +
   
-  geom_point(data= MassTraitDat2, aes(x=jitter(Mass_log, 1), y =MUTIscore),color="blue", bg="blue",alpha=.2, size=1,pch=21) +
+  geom_point(data= MassTraitDat2, aes(x=jitter(Mass_log, 1), y =MUTIscore),color="blue", bg="blue",alpha=.2, size=2,pch=21) +
   coord_cartesian(ylim = c(-4, 4), xlim =c(0,10.5)) + theme_classic() +
   theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
   xlab("log(Body Mass)") + 

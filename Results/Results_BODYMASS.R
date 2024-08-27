@@ -81,6 +81,30 @@ hist(resid(UAI_GLS_mass))
 summary(UAI_GLS_mass) 
 confint(UAI_GLS_mass)
 
+############
+#plot it 
+
+library(effects)
+Mass.UAIdb <- predictorEffect("Mass_log" , UAI_GLS_mass)
+
+
+plot(Mass.UAIdb, ask =FALSE, xlab = "Body Mass", ylab = "UAI", main ="", lines=list(multiline=TRUE, col=c("indianred4")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
+
+MASS.UAI.DF<-data.frame(Mass.UAIdb)
+
+L5<-ggplot(data=MASS.UAI.DF,aes(x=Mass_log, y=fit)) +
+  geom_line(color="indianred3",lwd=1.5) +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="indianred3",alpha=.2, lwd=.1)+xlim(-1000,1000) +
+  
+  geom_point(data=MassTraitDat1,aes(x=jitter(Mass_log, 1), y =aveUAI),color="blue", bg="blue",alpha=.2, size=1,pch=21) +
+  coord_cartesian(ylim = c(-0, 4.2), xlim =c(0,10.5)) + theme_classic() +
+  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  xlab("log(Body Mass)") + 
+  ylab("Average UAI") 
+
+L5
+
+
 
 
 ######################## MUTI and body mass ##########################
@@ -131,6 +155,30 @@ hist(resid(MUTI_GLS_mass))
 
 summary(MUTI_GLS_mass) 
 confint(MUTI_GLS_mass)
+
+
+############
+#plot it 
+
+library(effects)
+Mass.MUTIdb <- predictorEffect("Mass_log" , MUTI_GLS_mass)
+
+
+plot(Mass.MUTIdb, ask =FALSE, xlab = "Body Mass", ylab = "MUTI", main ="", lines=list(multiline=TRUE, col=c("indianred4")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
+
+MASS.MUTI.DF<-data.frame(Mass.MUTIdb)
+
+L5<-ggplot(data=MASS.MUTI.DF,aes(x=Mass_log, y=fit)) +
+  geom_line(color="indianred3",lwd=1.5) +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="indianred3",alpha=.2, lwd=.1)+xlim(-1000,1000) +
+  
+  geom_point(data= MassTraitDat2, aes(x=jitter(Mass_log, 1), y =MUTIscore),color="blue", bg="blue",alpha=.2, size=1,pch=21) +
+  coord_cartesian(ylim = c(-4, 4), xlim =c(0,10.5)) + theme_classic() +
+  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  xlab("log(Body Mass)") + 
+  ylab("MUTI") 
+
+L5
 
 
 

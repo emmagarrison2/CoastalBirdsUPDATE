@@ -606,29 +606,6 @@ confint(MUTI_GLS_develop)
 
 
 
-############
-#plot it 
-
-library(effects)
-develop.MUTIdb <- predictorEffect("developmental_mode" , MUTI_GLS_develop)
-
-
-plot(develop.MUTIdb, ask =FALSE, xlab = "Developmental Mode", ylab = "MUTI", main ="", lines=list(multiline=TRUE, col=c("indianred4")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
-
-
-DEVELOP.MUTI.DF<-data.frame(develop.MUTIdb)
-
-L5<-ggplot(data=DEVELOP.MUTI.DF,aes(x=developmental_mode, y=fit)) +
-  geom_line(color="indianred3",lwd=1.5) +
-  geom_ribbon(aes(ymin=lower, ymax=upper), fill="indianred3",alpha=.2, lwd=.1)+xlim(-1000,1000) +
-  
-  geom_point(data= LifehistTraitDat11, aes(x=jitter(developmental_mode, 1), y =MUTIscore),color="blue", bg="blue",alpha=.2, size=2,pch=21) +
-  coord_cartesian(ylim = c(-3, 4), xlim =c(-0.2, 1.2)) + theme_classic() +
-  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
-  xlab("Developmental Mode (0=precocial, 1 = altricial)") + 
-  ylab("MUTI") 
-
-L5
 
 
 ######################## UN and % developmental mode ##########################
@@ -681,40 +658,5 @@ hist(UN_M_develop$residuals, breaks = 20)
 #lets get those values for our results table 
 summary(UN_M_develop)
 confint(UN_M_develop)
-
-
-
-############
-#plot it 
-
-
-library(effects)
-develop.UNdb <- predictorEffect("developmental_mode" , UN_M_develop)
-
-
-plot(develop.UNdb, ask =FALSE, xlab = "Developmental Mode", ylab = "UN", main ="", lines=list(multiline=TRUE, col=c("indianred4")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
-
-develop.UNdb<-data.frame(develop.UNdb)
-
-DEVELOP.UN.plot <- ggplot(data=develop.UNdb, aes(x=developmental_mode, y=fit)) +
-  geom_line(color="indianred3", lwd=1.5) +
-  geom_ribbon(aes(ymin=lower, ymax=upper), fill="indianred3", alpha=0.2, lwd=0.1) +
-  geom_point(data=LifehistTraitDat12, aes(x=jitter(developmental_mode, 1), y=Urban), color="blue", bg="blue", alpha=0.2, size=2, pch=21) +
-  coord_cartesian(ylim=c(0, 1), xlim=c(-0.2, 1.2)) +
-  theme_classic() +
-  theme(
-    axis.text.x = element_text(color="black", size=13),
-    axis.text.y = element_text(color="black", size=13),
-    axis.title.x = element_text(size=14),
-    axis.title.y = element_text(size=14)
-  ) +
-  xlab("Developmental Mode") + 
-  ylab("UN")
-
-print(DEVELOP.UN.plot)
-
-DEVELOP.UN.plot
-
-saveRDS(DEVELOP.UN.plot, here("Results", "develop_model_UN.rds"))
 
 

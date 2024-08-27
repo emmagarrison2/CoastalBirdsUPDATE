@@ -421,7 +421,7 @@ colnames(SS_Traits)
 #now, reformat Species column so that it is in Aaaa_aaaa format! 
 SS_Traits <- SS_Traits %>%
   mutate(Species = str_replace(Species, " ", "_"))
-#View(SS_Traits)
+View(SS_Traits)
 
 ### we need to trim Jetz tree that we imported above to get a tree that only contains coastal species
 

@@ -13,7 +13,7 @@ library(tidyverse)
 library(ape)
 library(geiger)
 library(picante)
-library(phytools)
+library(phytools)(including ambiguous nesters)
 
 ######################## Phylogenetic Signal (lambda) for SENSORY TRAITS ######################## 
 

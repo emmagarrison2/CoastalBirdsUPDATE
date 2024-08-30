@@ -1118,35 +1118,52 @@ summary(UAI_GLS_territory)
 confint(UAI_GLS_territory)
 
 
+#let's plot the UAI & Territoriality model
 
-############
+###############This is the correct code for boxplot 
+
+
+if(!require(crayon)){
+  install.packages("crayon")
+  require(crayon)
+}
+library(crayon)
 #plot it 
 
-library(effects)
-territorial.UAIdb <- predictorEffect("territoriality" , UAI_GLS_territory)
 
 
-plot(territorial.UAIdb, ask =FALSE, xlab = "Territoriality", ylab = "UAI", main ="", lines=list(multiline=TRUE, col=c("indianred4")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
+# Filter data for category 0 and category 1
+category0_data <- subset(SocialTraitDat1, territoriality == 0)
+#0 = not high
+category1_data <- subset(SocialTraitDat1, territoriality == 1)
+#1 = high
+category2_data <- subset(SocialTraitDat1, territoriality == 2)
 
-TERRITORIAL.UAI.DF<-data.frame(territorial.UAIdb)
+# Plotting boxplots side by side
 
-territorial_UAI_plot<-ggplot(data=TERRITORIAL.UAI.DF,aes(x=territoriality, y=fit)) +
-  geom_line(color="indianred3",lwd=1.5) +
-  geom_ribbon(aes(ymin=lower, ymax=upper), fill="indianred3",alpha=.2, lwd=.1)+xlim(-1000,1000) +
-  
-  geom_point(data=SocialTraitDat1,aes(x=jitter(territoriality, 1), y =aveUAI),color="blue", bg="blue",alpha=.2, size=2,pch=21) +
-  coord_cartesian(ylim = c(-0, 4.2), xlim =c(0,10.5)) + theme_classic() +
-  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
-  xlab("log(Body Mass)") + 
-  ylab("Average UAI") 
+SocialTraitDat1$territoriality <- as.numeric(as.character(SocialTraitDat1$territoriality))
 
-territorial_UAI_plot
+# now, plot! 
 
-saveRDS(territorial_UAI_plot, here("Results", "BodyMass_UAI.rds"))
+correct_territorial_UAI_plot <- ggplot() +
+  geom_boxplot(data = category0_data, aes(x = factor(0, labels = "Non-Territorial"), y = aveUAI), fill = "lightblue") +
+  geom_boxplot(data = category1_data, aes(x = factor(1, labels = "Sesonally territorial"), y = aveUAI), fill = "lightgreen") +
+  geom_boxplot(data = category2_data, aes(x = factor(2, labels = "Year-Round territorial"), y = aveUAI), fill = "orange") +
+  geom_point(data = SocialTraitDat1, aes(x = factor(territoriality, levels = c(0, 1, 2), labels = c("Non-Territorial", "Sesonally territorial", "Year-Round territorial")), y = aveUAI), 
+             color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
+  theme_classic() +
+  xlab("Territoriality") +
+  ylab("aveUAI") +
+  scale_x_discrete(labels = c("Non-Territorial", "Sesonally territorial", "Year-Round territorial"))
 
-### need to create category0, category1, and category2 traits --> then boxplot
-### these for UAI & territoriality model. 
+print(correct_territorial_UAI_plot)
 
-# (for MUTI and territoriality model,it should work to just have category0 and 
-# category1, as territoriality = 2 has too small of a sample size)
+
+saveRDS(correct_territorial_UAI_plot, here("Results", "UAI_territorial.rds"))
+
+
+
+
+
+
 

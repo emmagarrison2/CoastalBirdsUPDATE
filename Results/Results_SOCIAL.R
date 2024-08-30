@@ -83,6 +83,9 @@ hist(resid(UAI_GLS_territory))
 summary(UAI_GLS_territory) 
 confint(UAI_GLS_territory)
 
+
+#to do with territoriality = 0, 1, AND 2 
+
 ### make a factor version of territoriality 
 SocialTraitDat1$territoriality_f <- as.factor(SocialTraitDat1$territoriality)
 
@@ -95,9 +98,11 @@ UAI_GLS_territory_f <- gls(aveUAI~ territoriality_f + Mass_log, data = SocialTra
 
 summary(UAI_GLS_territory_f)
 
+
 # compare levels of territoriality
 pred.terr <- predict_response(UAI_GLS_territory_f, "territoriality_f", margin = "marginalmeans") # get CIs for different levels of territoriality
 pred.terr # this will show the predicted mean of each level of territoriality and the 95% CI
+ 
 
 # run comparison of each pair of levels
 test_predictions(pred.terr) # 0 and 1 are the levels that are significantly different

@@ -133,9 +133,11 @@ hist(resid(MUTI_GLS_invert)) #roughly normal dist of residuals
 summary(MUTI_GLS_invert) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
 confint(MUTI_GLS_invert)
 
+#because 0.05 < p value < 0.20 , let's check the 85% CI to see if this relationship is still notable 
+Confidence_Interval_85 <- confint(MUTI_GLS_invert, level = 0.85)
+Confidence_Interval_85
 
-
-
+#does not cross 0 ! let's write this model down as notable 
 
 
 
@@ -295,9 +297,11 @@ hist(resid(MUTI_GLS_vert)) #roughly normal dist of residuals
 summary(MUTI_GLS_vert) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
 confint(MUTI_GLS_vert)
 
+#because 0.05 < p value < 0.20 , let's check the 85% CI to see if this relationship is still notable 
+Confidence_Interval_85 <- confint(MUTI_GLS_vert, level = 0.85)
+Confidence_Interval_85
 
-
-
+#does not cross 0 ! let's mark it down as notable 
 
 
 
@@ -506,6 +510,13 @@ hist(UN_M_PS$residuals, breaks = 20)
 #lets get those values for our results table 
 summary(UN_M_PS)
 confint(UN_M_PS)
+
+
+#because 0.05 < p value < 0.20 , let's check the 85% CI to see if this relationship is still notable 
+Confidence_Interval_85 <- confint(UN_M_PS, level = 0.85)
+Confidence_Interval_85
+
+#does not cross 0 ! let's mark it down as notable 
 
 
 

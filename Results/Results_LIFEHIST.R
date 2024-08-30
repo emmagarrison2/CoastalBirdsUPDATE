@@ -393,6 +393,13 @@ confint(UAI_GLS_long)
 
 
 
+#because 0.05 < p value < 0.20 , let's check the 85% CI to see if this relationship is still notable 
+Confidence_Interval_85 <- confint(UAI_GLS_long, level = 0.85)
+Confidence_Interval_85
+
+#crosses 0... let's not consider this model as "notable" in our results 
+
+
 ######################## MUTI and % longevity ##########################
 
 
@@ -658,5 +665,12 @@ hist(UN_M_develop$residuals, breaks = 20)
 #lets get those values for our results table 
 summary(UN_M_develop)
 confint(UN_M_develop)
+
+
+#because 0.05 < p value < 0.20 , let's check the 85% CI to see if this relationship is still notable 
+Confidence_Interval_85 <- confint(UN_M_develop, level = 0.85)
+Confidence_Interval_85
+
+#does not cross 0 - let's mark this model down as "notable" ! 
 
 

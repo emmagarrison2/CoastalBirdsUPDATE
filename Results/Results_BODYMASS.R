@@ -81,9 +81,9 @@ hist(resid(UAI_GLS_mass))
 summary(UAI_GLS_mass) 
 confint(UAI_GLS_mass)
 
+Confidence_Interval_85 <- confint(UAI_GLS_mass, level = 0.85)
 
-
-
+Confidence_Interval_85
 
 ######################## MUTI and body mass ##########################
 
@@ -134,6 +134,11 @@ hist(resid(MUTI_GLS_mass))
 summary(MUTI_GLS_mass) 
 confint(MUTI_GLS_mass)
 
+#because 0.05 < p value < 0.20 , let's check the 85% CI to see if this relationship is still notable 
+Confidence_Interval_85 <- confint(MUTI_GLS_mass, level = 0.85)
+
+Confidence_Interval_85
+#crosses 0... this will not make the cutoff. 
 
 ######################## UN and body mass ##########################
 

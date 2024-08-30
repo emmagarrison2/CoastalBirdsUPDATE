@@ -400,6 +400,14 @@ confint(MUTI_GLS_nest_low)
 
 
 
+#because 0.05 < p value < 0.20 , let's check the 85% CI to see if this relationship is still notable 
+Confidence_Interval_85 <- confint(MUTI_GLS_nest_low, level = 0.85)
+Confidence_Interval_85
+
+#does not cross 0 - let's mark this model down as "notable" ! 
+
+
+
 
 #NOW, let's try filtering out all species that have both HIGH and LOW nesting scores of 1 
 #### idea - are the "non-ambiguous" nesting species the ones driving this significant relationship 
@@ -802,6 +810,15 @@ hist(resid(MUTI_GLS_nest_high))
 
 summary(MUTI_GLS_nest_high) 
 confint(MUTI_GLS_nest_high)
+
+
+#because 0.05 < p value < 0.20 , let's check the 85% CI to see if this relationship is still notable 
+Confidence_Interval_85 <- confint(MUTI_GLS_nest_high, level = 0.85)
+Confidence_Interval_85
+
+#does not cross 0 - let's mark this model down as "notable" ! 
+
+
 
 
 

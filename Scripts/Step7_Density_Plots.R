@@ -82,6 +82,15 @@ nrow(species_with_all_indexes)
 #49 species that are representatives of all three indexes! 
 unique(species_with_all_indexes$Species_Jetz)
 
+
+#all-birds .rds for comparison against Coastal Birds Index Densities 
+
+AllIndexes_AllBirds <- readRDS(here("Outputs", "UAI_MUTI_UN_final.rds"))
+str(AllIndexes_AllBirds)
+AllIndexes_AllBirds$Urban <- ifelse(AllIndexes_AllBirds$Urban == "U", 1, 0)
+colnames(AllIndexes_AllBirds)
+nrow(AllIndexes_AllBirds)#4433
+
 #######################################################################
 #####density plot for aveUAI 
 
@@ -121,6 +130,10 @@ UAI_density <- UAICoastal %>%
 
 
 print(UAI_density)
+
+#OVERLAY "ALLBIRDS" DENSITY PLOT W/ "COASTALBIRDS" 
+
+
 
 
 

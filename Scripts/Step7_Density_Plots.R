@@ -133,10 +133,86 @@ print(UAI_density)
 
 #OVERLAY "ALLBIRDS" DENSITY PLOT W/ "COASTALBIRDS" 
 
+#setup of UAI with all-birds list 
+
+UAI_all <- AllIndexes_AllBirds %>% 
+  filter(!is.na(aveUAI) & is.finite(aveUAI))
+nrow(UAI_all)#4347
+colnames(UAI_all)
+
+######## ATTEMPT #1 at OVERLAID DENSITY PLOT ######## 
+
+#using original density plot code, try to put all-birds density overlaid 
+
+UAI_density <- UAICoastal %>%
+  ggplot(aes(x=aveUAI, fill=aveUAI)) + 
+  stat_halfeye(
+    adjust=0.5,
+    justification=-0.2,
+    .width= 0,
+    point_colour = NA, 
+    fill ='#FFC107', 
+    alpha = 0.8
+  ) + 
+  geom_boxplot(
+    width = 0.12, 
+    color = 'black',
+    fill= '#FFC107',
+    outlier.colour = '#FFC107',
+    alpha = 0.5
+  ) +  
+  geom_density(data = UAI_all, aes(x = aveUAI), color = "red", fill = "red", alpha = 0.3) + 
+  labs (
+    #title = "Coastal Score Distribution", 
+    x = "Average UAI", 
+    y = ""
+  ) + 
+  theme_classic() + 
+  theme(
+    #plot.title = element_text(hjust = 0.5), # Center the plot title
+    axis.title = element_text(size = 12)    # Adjust axis title size
+    # axis.text.y=element_blank() # Remove y-axis text labels
+    # axis.ticks.y=element_blank()  # Remove y-axis ticks
+  )
+
+print(UAI_density)
+
+
+######## ATTEMPT #2 at OVERLAID DENSITY PLOT ######## 
+
+
+# because I am having difficulty with the y-axus of UAI_all_density and UAI_density, I was thinking to plot WITHOUT a boxplot, and just 
+# do geom_density. let's try this below. 
+
+
+#TEST using geom_density, and not ggplot/stat_halfeye
+
+combined_plot <- ggplot() + 
+  # First density layer for UAICoastal
+  geom_density(data = UAICoastal, aes(x = aveUAI), color = "blue", fill = "blue", alpha = 0.3) +
+  # Second density layer for MUTICoastal
+  geom_density(data = UAI_all, aes(x = aveUAI), color = "red", fill = "red", alpha = 0.3) +
+  labs(x = "aveUAI", y = "Density", title = "Combined Density Plots") +
+  scale_y_continuous(limits = c(0, max(1))) + 
+  theme(legend.position = "bottom") + 
+  scale_colour_manual(values = c('All Birds' = "blue", 
+                                 'Coastal Birds' = "red"), name = 'Legend') 
+
+# Print the combined plot
+print(combined_plot)
+
+
+#cannot get the legend to show up 
+
+# ALSO, it seems like both density plots are being plotted on different scales? It doesn't make sense that the 
+# coastal-bird density would be higher in some areas than the all-birds density, as the coastal 
+# list is a SUBSET of the all-birds list. 
+
+# SARAH and DR. FRANCIS --> do you know how to fix this y-axis scaling issue? 
 
 
 
-
+############################################################
 
 #Raincloud density plot for MUTI 
 
@@ -157,8 +233,8 @@ MUTI_density <- MUTICoastal %>%
   geom_boxplot(
     width = 0.12, 
     color = 'black',
-    fill= '#004D40',
-    outlier.colour = '#004D40',
+    fill= '#004d40',
+    outlier.colour = '#003d40',
     alpha = 0.5
   ) +  
   labs (

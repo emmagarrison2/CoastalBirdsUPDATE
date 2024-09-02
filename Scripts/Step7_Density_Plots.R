@@ -102,7 +102,7 @@ UAI_density <- UAICoastal %>%
   ggplot(aes(x=aveUAI, fill=aveUAI)) + 
   stat_halfeye(
     adjust=0.5,
-    justification=-0.2,
+    justification=-0.0,
     .width= 0,
     point_colour = NA, 
     fill ='#FFC107', 
@@ -113,11 +113,12 @@ UAI_density <- UAICoastal %>%
     color = 'black',
     fill= '#FFC107',
     outlier.colour = '#FFC107',
-    alpha = 0.5
+    alpha = 0.5, 
+    position = position_nudge(y=-0.1)
   ) +  
   labs (
     #title = "Coastal Score Distribution", 
-    x = "Average UAI", 
+    x = "Average UAI Score - Coastal Birds", 
     y = ""
   ) + 
   theme_classic() + 
@@ -131,40 +132,41 @@ UAI_density <- UAICoastal %>%
 
 print(UAI_density)
 
-#OVERLAY "ALLBIRDS" DENSITY PLOT W/ "COASTALBIRDS" 
+#########################################################
+# For comparison purposes, let's OVERLAY "ALLBIRDS" DENSITY PLOT 
+# W/ "COASTALBIRDS" DENSITY PLOT 
 
-#setup of UAI with all-birds list 
+###### FIRSTLY, 
+# setup of UAI with all-birds list 
 
 UAI_all <- AllIndexes_AllBirds %>% 
   filter(!is.na(aveUAI) & is.finite(aveUAI))
 nrow(UAI_all)#4347
 colnames(UAI_all)
 
-######## ATTEMPT #1 at OVERLAID DENSITY PLOT ######## 
 
-#using original density plot code, try to put all-birds density overlaid 
+#NOW, let's investigate what the density plot for ALL BIRDS and UAI scores looks like 
 
-UAI_density <- UAICoastal %>%
+UAI_density_all <- UAI_all %>%
   ggplot(aes(x=aveUAI, fill=aveUAI)) + 
-  stat_halfeye(
-    adjust=0.5,
-    justification=-0.2,
-    .width= 0,
-    point_colour = NA, 
-    fill ='#FFC107', 
-    alpha = 0.8
-  ) + 
   geom_boxplot(
     width = 0.12, 
     color = 'black',
-    fill= '#FFC107',
-    outlier.colour = '#FFC107',
-    alpha = 0.5
-  ) +  
-  geom_density(data = UAI_all, aes(x = aveUAI), color = "red", fill = "red", alpha = 0.3) + 
+    fill= 'red3',
+    outlier.colour = 'red3',
+    alpha = 0.5, 
+    position = position_nudge(y = -0.1)
+  ) + 
+  stat_halfeye(
+    adjust=0.5,
+    justification=-0.0,
+    .width= 0,
+    point_colour = NA, 
+    fill ='red3', 
+    alpha = 0.8
+  ) + 
   labs (
-    #title = "Coastal Score Distribution", 
-    x = "Average UAI", 
+    x = "Average UAI Score - All Birds", 
     y = ""
   ) + 
   theme_classic() + 
@@ -175,7 +177,126 @@ UAI_density <- UAICoastal %>%
     # axis.ticks.y=element_blank()  # Remove y-axis ticks
   )
 
+
+print(UAI_density_all)
+
+######## ATTEMPT #1 at OVERLAID DENSITY PLOT ######## 
+
+#using original density plot code, try to put all-birds density overlaid 
+
+UAICoastal$group <- "Coastal birds"
+colnames(UAICoastal)
+head(UAICoastal)
+UAI_all$group <- "All birds"
+
+UAI_density <- UAICoastal %>%
+  ggplot(aes(x=aveUAI, fill=aveUAI)) + 
+  stat_halfeye(
+    adjust=0.5,
+    justification=-0.0,
+    .width= 0,
+    point_colour = NA, 
+    colour = '#FFC107',
+    fill = group, 
+    alpha = 0.8
+  ) + 
+  geom_boxplot(
+    width = 0.12, 
+    color = 'black',
+    fill= group,
+    colour = '#FFC107',
+    outlier.colour = '#FFC107',
+    alpha = 0.5, 
+    position = position_nudge(y = -0.1)
+  ) +  
+  geom_density(data = UAI_all, aes(x = aveUAI), color = "red", fill = group , alpha = 0.3, adjust = 0.5) + 
+  labs (
+    #title = "Coastal Score Distribution", 
+    x = "Average UAI", 
+    y = ""
+  ) + 
+  scale_fill_manual(
+    values = c("Coastal birds" = "#FFC107", "All birds" = "red"), 
+    labels = c("Coastal birds", "All birds")
+  ) +
+  theme_classic() + 
+  theme(
+    axis.title = element_text(size = 12),    # Adjust axis title size
+    legend.position = "right",
+    legend.title = element_text("Legend")
+  )
+
 print(UAI_density)
+
+
+
+
+
+
+
+
+
+
+
+
+# Create the plot
+UAI_density <- ggplot() + 
+  # Density plot for all birds
+  geom_density(
+    data = UAI_all, 
+    aes(x = aveUAI, fill = group), 
+    alpha = 0.3, 
+    adjust = 0.5, 
+  ) + 
+  # Half-eye plot for coastal birds
+  stat_halfeye(
+    data = UAICoastal,
+    aes(x = aveUAI, fill = group), 
+    adjust = 0.5,
+    justification = -0.0,
+    .width = 0,
+    point_colour = NA, 
+    fill = "#FFC107",       # Fill color for Coastal birds
+    color = "black",        # Outline for the density plot of UAICoastal
+    alpha = 0.8
+  ) + 
+  # Boxplot for coastal birds
+  geom_boxplot(
+    data = UAICoastal,
+    aes(x = aveUAI, fill = group), 
+    width = 0.12, 
+    color = 'black',
+    alpha = 0.5, 
+    position = position_nudge(y = -0.1)
+  ) +  
+  labs(
+    x = "Average UAI", 
+    y = ""
+  ) + 
+  scale_fill_manual(
+    values = c("Coastal birds" = "#FFC107", "All birds" = "red"), 
+    labels = c("All birds", "Coastal birds")
+  ) +
+  theme_classic() + 
+  theme(
+    axis.title = element_text(size = 12),  # Adjust axis title size
+    legend.position = "top",             # Position the legend on the right
+    legend.title = element_blank()         # Remove the legend title
+  )
+
+# Print the plot
+print(UAI_density)
+
+
+
+
+
+
+
+
+
+
+
 
 
 ######## ATTEMPT #2 at OVERLAID DENSITY PLOT ######## 
@@ -187,19 +308,19 @@ print(UAI_density)
 
 #TEST using geom_density, and not ggplot/stat_halfeye
 
-combined_plot <- ggplot() + 
+#combined_plot <- ggplot() + 
   # First density layer for UAICoastal
-  geom_density(data = UAICoastal, aes(x = aveUAI), color = "blue", fill = "blue", alpha = 0.3) +
+#  geom_density(data = UAICoastal, aes(x = aveUAI), color = "blue", fill = "blue", alpha = 0.3, adjust = 0.5) +
   # Second density layer for MUTICoastal
-  geom_density(data = UAI_all, aes(x = aveUAI), color = "red", fill = "red", alpha = 0.3) +
-  labs(x = "aveUAI", y = "Density", title = "Combined Density Plots") +
-  scale_y_continuous(limits = c(0, max(1))) + 
-  theme(legend.position = "bottom") + 
-  scale_colour_manual(values = c('All Birds' = "blue", 
-                                 'Coastal Birds' = "red"), name = 'Legend') 
+#  geom_density(data = UAI_all, aes(x = aveUAI), color = "red", fill = "red", alpha = 0.3, adjust = 0.5) +
+#  labs(x = "aveUAI", y = "Density", title = "Combined Density Plots") +
+#  scale_y_continuous(limits = c(0, max(1))) + 
+#  theme(legend.position = "bottom") + 
+#  scale_colour_manual(values = c('All Birds' = "blue", 
+           #                      'Coastal Birds' = "red"), name = 'Legend') 
 
 # Print the combined plot
-print(combined_plot)
+# print(combined_plot)
 
 
 #cannot get the legend to show up 

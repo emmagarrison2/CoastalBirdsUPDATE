@@ -13,7 +13,8 @@ library(tidyverse)
 library(ape)
 library(geiger)
 library(picante)
-library(phytools)(including ambiguous nesters)
+library(phytools)
+
 
 ######################## Phylogenetic Signal (lambda) for SENSORY TRAITS ######################## 
 
@@ -83,6 +84,8 @@ CT_vect[!is.na(CT_vect)]
 CT_lambda2 <-phylosig(tree = jetztree_sensory, CT_vect, method="lambda", test=T) # inputs are trimmed phylogenetic tree and vector of body mass
 CT_lambda2 # lambda = 0.562 , p << 0.001
 plot.phylosig(CT_lambda2) # plot the likelihood surface for lambda
+
+
 
       #peak_freq
 
@@ -275,10 +278,8 @@ jetztree_nest <-drop.tip(jetztree, check_nest$tree_not_data)
 name.check(jetztree_nest, Nestspp)
 #OK 
 
-     # nest structure (open/enclosed) and site (high/low) not continuous 
 
      # Nest safety (may be considered ordinal...)
-
 
 # look at distribution
 hist(Nestspp$nest.safety) # not skewed. definitely not normal, but no log transformation needed

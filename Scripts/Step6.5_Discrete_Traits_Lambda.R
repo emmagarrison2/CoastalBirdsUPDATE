@@ -111,4 +111,25 @@ print(fit_low)
 
 
 
+#####
+# nest site high - DISCRETE 
+
+Nestspp$NestSite_High <- as.factor(Nestspp$NestSite_High)
+
+# get vector of nest safety values with species names as rownames
+nest_high_vect <- setNames(Nestspp$NestSite_High, rownames(Nestspp))
+is.atomic(nest_high_vect)
+#TRUE
+
+
+# drop species with NA values
+nest_high_vect[!is.na(nest_high_vect)]
+
+# get measure of lambda for nest safety
+lambda_high <- fitDiscrete(phy = jetztree_nest, dat = nest_high_vect, model = "ER", transform = "lambda")
+print(lambda_high)
+#saying that fitted 'lambda' at model parameter is 0.000 
+
+
+
 

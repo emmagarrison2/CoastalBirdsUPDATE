@@ -575,6 +575,7 @@ write.csv(Coastal_Nest_StrBoth, here("Notes", "nest_structure_both.csv"))
 Coastal_Nest_Str_edited <- read.csv(here("Notes", "nest_structure_both_edited.csv"), header=T)
 head(Coastal_Nest_Str_edited)
 nrow(Coastal_Nest_Str_edited)
+View(Coastal_Nest_Str_edited)
 
 # aiming for a single column NestStr where 0 is enclosed and 1 is open
 
@@ -643,7 +644,8 @@ Coastal_Nest_Site <-  Coastal_Nest_Str %>%
 
 # which species and how many were assigned to both Low and High groups?
 Coastal_Nest_SiteBoth <- Coastal_Nest_Site %>% filter(LowAndHigh == "both")
-nrow(Coastal_Nest_SiteBoth) # many! 
+nrow(Coastal_Nest_SiteBoth) # many! --> 222 
+View(Coastal_Nest_SiteBoth)
 # Many coastal species nest on the ground and on cliffs/banks.
 # This phenomenon is likely driving such a high number of species falling into both nest site types
 # This can't easily be resolved

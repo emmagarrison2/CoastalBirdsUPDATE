@@ -988,7 +988,37 @@ confint(UN_M_nest_high)
 
 
 
+
+
+
 #let's plot the UN & Nest site High model that DOESN'T exclude ambiguous-nesting species for now. We can redo [Nest Site Low (ONLY)] plot later 
+
+NestTraitDat9$NestSite_High <- as.character(NestTraitDat9$NestSite_High)
+NestTraitDat9$Urban <- as.character(NestTraitDat9$Urban)
+
+NestTraitDat9$NestSite_High <- ifelse(NestTraitDat9$NestSite_High == 1, "High", "Not High")
+NestTraitDat9$Urban <- ifelse(NestTraitDat9$Urban == 1, "U", "N")
+
+
+str(NestTraitDat9)
+
+
+
+
+# Stacked + percent
+stacked_UN_nest_high <- ggplot(NestTraitDat9, aes(fill=Urban, y= Urban, x=NestSite_High)) + 
+  geom_bar(position="fill", stat="identity")
+
+print(stacked_UN_nest_high)
+
+#NON-STACKED bar chart 
+
+#let's convert Nest Site High = 0 --> Not High, and Nest Site High = 1 --> High 
+#let's convert Urban = 0 --> not urban, and Urban = 1 --> urban 
+
+
+
+
 
 ###############This is the correct code for boxplot 
 

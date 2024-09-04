@@ -348,7 +348,7 @@ library(crayon)
 category0_data <- subset(LifehistTraitDat11, developmental_mode == 0)
 category1_data <- subset(LifehistTraitDat11, developmental_mode == 1)
 
-View(LifehistTraitDat11)
+
 
 # Plotting boxplots side by side
 
@@ -356,19 +356,19 @@ LifehistTraitDat11$developmental_mode <- as.numeric(as.character(LifehistTraitDa
 
 # now, plot! 
 
-correct_developMUTI.plot <- ggplot() +
+
+correct_develop_MUTI_plot <- ggplot() +
   geom_boxplot(data = category0_data, aes(x = "Precocial", y = MUTIscore), fill = "lightblue") +
   geom_boxplot(data = category1_data, aes(x = "Altricial", y = MUTIscore), fill = "lightgreen") +
   geom_point(data = LifehistTraitDat11, aes(x = ifelse(developmental_mode == 0, "Precocial", "Altricial"), y = MUTIscore), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Developmental Mode") +
   ylab("MUTIscore") +
-  scale_x_discrete(labels = c("Precocial", "Altricial"))
+  scale_x_discrete(limits = c("Precocial", "Altricial"), labels = c("Precocial", "Altricial"))  # Specify the order here
 
-print(correct_developMUTI.plot)
+print(correct_develop_MUTI_plot)
 
-saveRDS(correct_developMUTI.plot, here("Results", "MUTI_developmental.rds"))
-
+saveRDS(correct_develop_MUTI_plot, here("Results", "MUTI_developmental.rds"))
 
 
 
@@ -440,36 +440,33 @@ library(crayon)
 
 
 
-# Filter data for category 0 and category 1
-category0_data <- subset(LifehistTraitDat12, developmental_mode == 0)
-category1_data <- subset(LifehistTraitDat12, developmental_mode == 1)
+################# Bar Chart 
 
-# Plotting boxplots side by side
+LifehistTraitDat12$developmental_mode <- factor(LifehistTraitDat12$developmental_mode, levels = c(0, 1), labels = c("Precocial", "Altricial"))
 
-LifehistTraitDat12$developmental_mode <- as.numeric(as.character(LifehistTraitDat12$developmental_mode))
+str(LifehistTraitDat12)
+View(LifehistTraitDat12)
 
-# now, plot! 
 
-correct_develop_UN_plot <- ggplot() +
-  geom_boxplot(data = category0_data, aes(x = "Precocial", y = Urban), fill = "lightblue") +
-  geom_boxplot(data = category1_data, aes(x = "Altricial", y = Urban), fill = "lightgreen") +
-  geom_point(data = LifehistTraitDat12, aes(x = ifelse(developmental_mode == 0, "Precocial", "Altricial"), y = Urban), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
-  theme_classic() +
-  xlab("Developmental Mode") +
-  ylab("Urban") +
-  scale_x_discrete(labels = c("Precocial", "Altricial"))
+#stacked bar chart ---> IT WORKS!! 
 
-print(correct_develop_UN_plot)
+UN_develop_stacked_barchart <- ggplot(LifehistTraitDat12, aes(x =developmental_mode, fill = Urban, group = Urban)) + 
+  geom_bar(position = "fill") + 
+  xlab("Developmental Mode") + 
+  ylab("UN score") + 
+  theme_minimal()
 
-saveRDS(correct_develop_UN_plot, here("Results", "UN_developmental.rds"))
+print(UN_develop_stacked_barchart)
 
+#save and return to this tomorrow 
+saveRDS(UN_develop_stacked_barchart, here("Results", "UN_develop_stacked_barchart.rds"))
 
 
 ##############################################################################
 #arrange all developmental mode plots in a grid
 
 MUTI_develop_plot <- readRDS(here("Results", "MUTI_developmental.rds"))
-UN_develop_plot <- readRDS(here("Results", "UN_developmental.rds"))
+UN_develop_plot <- readRDS(here("Results", "UN_develop_stacked_barchart.rds"))
 
 devepop_mode_plots <- grid.arrange(MUTI_develop_plot, UN_develop_plot, ncol=2, nrow = 1)
 
@@ -578,15 +575,15 @@ if(!require(crayon)){
   require(crayon)
 }
 library(crayon)
+
 #plot it 
 
 
-
 # Filter data for category 0 and category 1
-category0_data <- subset(NestTraitDat4, NestSite_Low == 0)
-#0 = not low
-category1_data <- subset(NestTraitDat4, NestSite_Low == 1)
-#1 = low 
+not_low_data <- subset(NestTraitDat4, NestSite_Low == 0)
+#0 = not high
+low_data <- subset(NestTraitDat4, NestSite_Low == 1)
+#1 = high
 
 # Plotting boxplots side by side
 
@@ -595,17 +592,19 @@ NestTraitDat4$NestSite_Low <- as.numeric(as.character(NestTraitDat4$NestSite_Low
 # now, plot! 
 
 correct_low_UAI_plot <- ggplot() +
-  geom_boxplot(data = category0_data, aes(x = "Not Low", y = aveUAI), fill = "lightblue") +
-  geom_boxplot(data = category1_data, aes(x = "Low", y = aveUAI), fill = "lightgreen") +
+  geom_boxplot(data = not_low_data, aes(x = "Not Low", y = aveUAI), fill = "lightblue") +
+  geom_boxplot(data = low_data, aes(x = "Low", y = aveUAI), fill = "lightgreen") +
   geom_point(data = NestTraitDat4, aes(x = ifelse(NestSite_Low == 0, "Not Low", "Low"), y = aveUAI), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
-  ylab("aveUAI") +
-  scale_x_discrete(labels = c("Not Low", "Low"))
+  ylab("Average UAI score") +
+  scale_x_discrete(limits = c("Not Low", "Low"), labels = c("Not Low", "Low"))  # Specify the order here
 
 print(correct_low_UAI_plot)
 
 saveRDS(correct_low_UAI_plot, here("Results", "UAI_low_nest.rds"))
+
+
 
 
 
@@ -714,6 +713,36 @@ saveRDS(correct_low_MUTI_plot, here("Results", "MUTI_low_nest.rds"))
 
 
 
+
+# Filter data for category 0 and category 1
+not_low_data <- subset(NestTraitDat5, NestSite_Low == 0)
+#0 = not high
+low_data <- subset(NestTraitDat5, NestSite_Low == 1)
+#1 = high
+
+# Plotting boxplots side by side
+
+NestTraitDat5$NestSite_Low <- as.numeric(as.character(NestTraitDat5$NestSite_Low))
+
+# now, plot! 
+
+correct_low_MUTI_plot <- ggplot() +
+  geom_boxplot(data = not_low_data, aes(x = "Not Low", y = MUTIscore), fill = "lightblue") +
+  geom_boxplot(data = low_data, aes(x = "Low", y = MUTIscore), fill = "lightgreen") +
+  geom_point(data = NestTraitDat5, aes(x = ifelse(NestSite_Low == 0, "Not Low", "Low"), y = MUTIscore), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
+  theme_classic() +
+  xlab("Nest Site") +
+  ylab("MUTI score") +
+  scale_x_discrete(limits = c("Not Low", "Low"), labels = c("Not Low", "Low"))  # Specify the order here
+
+print(correct_low_MUTI_plot)
+
+saveRDS(correct_low_MUTI_plot, here("Results", "MUTI_low_nest.rds"))
+
+
+
+
+
 ##############################################################################
 #arrange all nest site low plots in a grid
 
@@ -804,9 +833,9 @@ library(crayon)
 
 
 # Filter data for category 0 and category 1
-category0_data <- subset(NestTraitDat7, NestSite_High == 0)
+not_high_data <- subset(NestTraitDat7, NestSite_High == 0)
 #0 = not high
-category1_data <- subset(NestTraitDat7, NestSite_High == 1)
+high_data <- subset(NestTraitDat7, NestSite_High == 1)
 #1 = high
 
 # Plotting boxplots side by side
@@ -816,13 +845,13 @@ NestTraitDat7$NestSite_High <- as.numeric(as.character(NestTraitDat7$NestSite_Hi
 # now, plot! 
 
 correct_high_UAI_plot <- ggplot() +
-  geom_boxplot(data = category0_data, aes(x = "Not High", y = aveUAI), fill = "lightblue") +
-  geom_boxplot(data = category1_data, aes(x = "High", y = aveUAI), fill = "lightgreen") +
+  geom_boxplot(data = not_high_data, aes(x = "Not High", y = aveUAI), fill = "lightblue") +
+  geom_boxplot(data = high_data, aes(x = "High", y = aveUAI), fill = "lightgreen") +
   geom_point(data = NestTraitDat7, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = aveUAI), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
-  ylab("MUTI score") +
-  scale_x_discrete(labels = c("Not High", "High"))
+  ylab("Average UAI score") +
+  scale_x_discrete(limits = c("Not High", "High"), labels = c("Not High", "High"))  # Specify the order here
 
 print(correct_high_UAI_plot)
 
@@ -904,27 +933,37 @@ library(crayon)
 
 
 # Filter data for category 0 and category 1
-category0_data <- subset(NestTraitDat8, NestSite_High == 0)
+not_high_data <- subset(NestTraitDat8, NestSite_High == 0)
 #0 = not high
-category1_data <- subset(NestTraitDat8, NestSite_High == 1)
+mean(not_high_data$MUTIscore)
+# -0.261
+
+high_data <- subset(NestTraitDat8, NestSite_High == 1)
 #1 = high
+mean(high_data$MUTIscore)
+# 0.170 
+
 
 # Plotting boxplots side by side
 
 NestTraitDat8$NestSite_High <- as.numeric(as.character(NestTraitDat8$NestSite_High))
 
+str(NestTraitDat8)
+#NestSite_high is numeric right now 
+
 # now, plot! 
 
 correct_high_MUTI_plot <- ggplot() +
-  geom_boxplot(data = category0_data, aes(x = "Not High", y = MUTIscore), fill = "lightblue") +
-  geom_boxplot(data = category1_data, aes(x = "High", y = MUTIscore), fill = "lightgreen") +
+  geom_boxplot(data = not_high_data, aes(x = "Not High", y = MUTIscore), fill = "lightblue") +
+  geom_boxplot(data = high_data, aes(x = "High", y = MUTIscore), fill = "lightgreen") +
   geom_point(data = NestTraitDat8, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = MUTIscore), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
   ylab("MUTI score") +
-  scale_x_discrete(labels = c("Not High", "High"))
+  scale_x_discrete(limits = c("Not High", "High"), labels = c("Not High", "High"))  # Specify the order here
 
 print(correct_high_MUTI_plot)
+
 
 saveRDS(correct_high_MUTI_plot, here("Results", "MUTI_high_nest.rds"))
 
@@ -1014,7 +1053,9 @@ View(NestTraitDat9)
 
 UN_nest_high_stacked_barchart <- ggplot(NestTraitDat9, aes(x =NestSite_High, fill = Urban, group = Urban)) + 
   geom_bar(position = "fill") + 
-  xlab("Nest Site High") 
+  xlab("Nest Site High") + 
+  ylab("UN score") + 
+  theme_minimal()
   
 print(UN_nest_high_stacked_barchart)
 
@@ -1022,12 +1063,14 @@ print(UN_nest_high_stacked_barchart)
 saveRDS(UN_nest_high_stacked_barchart, here("Results", "UN_nest_high_stacked_barchart.rds"))
 
 
+
+
 ##############################################################################
 #arrange all nest site low plots in a grid
 
 UAI_high_plot <- readRDS(here("Results", "UAI_high_nest.rds"))
 MUTI_high_plot <- readRDS(here("Results", "MUTI_high_nest.rds"))
-UN_high_plot <- readRDS(here("Results", "UN_high_nest.rds"))
+UN_high_plot <- readRDS(here("Results", "UN_nest_high_stacked_barchart.rds"))
 
 low_nesting_plots <- grid.arrange(UAI_high_plot, MUTI_high_plot, UN_high_plot, ncol=3, nrow = 1)
 

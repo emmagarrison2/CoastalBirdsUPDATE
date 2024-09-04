@@ -59,6 +59,11 @@ if(!require(see)){
   require(see)
 }
 
+if(!require(stringr)){
+  install.packages("stringr")
+  require(stringr)
+}
+library(stringr)
 
 
 ########################## BODY MASS ########################## 
@@ -987,79 +992,35 @@ confint(UN_M_nest_high)
 
 
 
-
+ 
 
 
 
 #let's plot the UN & Nest site High model that DOESN'T exclude ambiguous-nesting species for now. We can redo [Nest Site Low (ONLY)] plot later 
 
-NestTraitDat9$NestSite_High <- as.character(NestTraitDat9$NestSite_High)
-NestTraitDat9$Urban <- as.character(NestTraitDat9$Urban)
 
-NestTraitDat9$NestSite_High <- ifelse(NestTraitDat9$NestSite_High == 1, "High", "Not High")
-NestTraitDat9$Urban <- ifelse(NestTraitDat9$Urban == 1, "U", "N")
+#NestTraitDat9$NestSite_High <- ifelse(NestTraitDat9$NestSite_High == 1, "High", "Not High")
+#NestTraitDat9$Urban <- ifelse(NestTraitDat9$Urban == 1, "U", "N")
 
+
+# Convert NestSite_High to a factor with the desired order
+NestTraitDat9$NestSite_High <- factor(NestTraitDat9$NestSite_High, levels = c(0, 1), labels = c("Not High", "High"))
 
 str(NestTraitDat9)
+View(NestTraitDat9)
 
 
+#stacked bar chart ---> IT WORKS!! 
 
+UN_nest_high_stacked_barchart <- ggplot(NestTraitDat9, aes(x =NestSite_High, fill = Urban, group = Urban)) + 
+  geom_bar(position = "fill") + 
+  xlab("Nest Site High") 
+  
+print(UN_nest_high_stacked_barchart)
 
-# Stacked + percent
-stacked_UN_nest_high <- ggplot(NestTraitDat9, aes(fill=Urban, y= Urban, x=NestSite_High)) + 
-  geom_bar(position="fill", stat="identity")
+#save and return to this tomorrow 
+saveRDS(UN_nest_high_stacked_barchart, here("Results", "UN_nest_high_stacked_barchart.rds"))
 
-print(stacked_UN_nest_high)
-
-#NON-STACKED bar chart 
-
-#let's convert Nest Site High = 0 --> Not High, and Nest Site High = 1 --> High 
-#let's convert Urban = 0 --> not urban, and Urban = 1 --> urban 
-
-
-
-
-
-###############This is the correct code for boxplot 
-
-
-if(!require(crayon)){
-  install.packages("crayon")
-  require(crayon)
-}
-library(crayon)
-#plot it 
-
-
-
-# Filter data for category 0 and category 1
-category0_data <- subset(NestTraitDat9, NestSite_High == 0)
-#0 = not high
-category1_data <- subset(NestTraitDat9, NestSite_High == 1)
-#1 = high
-
-# Plotting boxplots side by side
-
-NestTraitDat9$NestSite_High <- as.numeric(as.character(NestTraitDat9$NestSite_High))
-
-# now, plot! 
-
-correct_high_UN_plot <- ggplot() +
-  geom_boxplot(data = category0_data, aes(x = "Not High", y = Urban), fill = "lightblue") +
-  geom_boxplot(data = category1_data, aes(x = "High", y = Urban), fill = "lightgreen") +
-  geom_point(data = NestTraitDat9, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = Urban), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
-  theme_classic() +
-  xlab("Nest Site") +
-  ylab("Urban") +
-  scale_x_discrete(labels = c("Not High", "High"))
-
-print(correct_high_UN_plot)
-
-saveRDS(correct_high_UN_plot, here("Results", "UN_high_nest.rds"))
-
-#
-
-#
 
 ##############################################################################
 #arrange all nest site low plots in a grid

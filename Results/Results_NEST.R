@@ -207,6 +207,11 @@ NestTraitDat3$NestStr <- as.numeric(NestTraitDat3$NestStr)
 UN_M_neststr <- phylolm(Urban~ NestStr + Mass_log, data=NestTraitDat3,
                    phy=Nestphy3, model="lambda") 
 
+UN_M_neststr <- phyloglm(Urban ~ NestStr + Mass_log, 
+                         data = NestTraitDat3, 
+                         phy = Nestphy3, 
+                         method = "logistic_MPLE")
+
 # time to check out the model 
 qqnorm(UN_M_neststr$residuals)
 qqline(UN_M_neststr$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
@@ -546,6 +551,11 @@ NestTraitDat6$NestSite_Low <- as.numeric(NestTraitDat6$NestSite_Low)
 UN_M_nest_low <- phylolm(Urban~ NestSite_Low + Mass_log, data=NestTraitDat6,
                         phy=Nestphy6, model="lambda") 
 
+UN_M_nest_low <- phyloglm(Urban ~ NestSite_Low + Mass_log, 
+                         data = NestTraitDat6, 
+                         phy = Nestphy6, 
+                         method = "logistic_MPLE")
+
 # time to check out the model 
 qqnorm(UN_M_nest_low$residuals)
 qqline(UN_M_nest_low$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
@@ -557,9 +567,24 @@ summary(UN_M_nest_low)
 confint(UN_M_nest_low)
 
 
+?phyloglm
 
 
+UN_M_nest_low_IG10 <- phyloglm(Urban ~ NestSite_Low + Mass_log, 
+                          data = NestTraitDat6, 
+                          phy = Nestphy6, 
+                          method = "logistic_IG10")
 
+
+# time to check out the model 
+qqnorm(UN_M_nest_low_IG10$residuals)
+qqline(UN_M_nest_low_IG10$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
+#the two lines do not have overlap... maybe this is good? 
+hist(UN_M_nest_low_IG10$residuals, breaks = 20) 
+
+#lets get those values for our results table 
+summary(UN_M_nest_low_IG10)
+confint(UN_M_nest_low_IG10)
 
 #NOW, let's try filtering out all species that have both HIGH and LOW nesting scores of 1 
 #### idea - are the "non-ambiguous" nesting species the ones driving this significant relationship 

@@ -387,7 +387,7 @@ confint(MUTI_GLS_pf)
 
 
 
-############################# Peak Frequency and MUTI #################################
+############################# Peak Frequency and UN #################################
 
 # lets first simplify a NEW database by removing records where we don't have an UAI value from Neate-Clegg
 UNSensory <- C_Sensory_dat2 %>% filter(!is.na(Urban)) 

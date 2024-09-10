@@ -378,7 +378,7 @@ confint(UN_M_hue)
 
 
 
-######################## UAI and Dichromatism - HUE ##########################
+######################## UAI and sexual-selection Male ##########################
 
 # lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
 UAIDataUT <- C_SSelect_dat2 %>% filter(!is.na(aveUAI)) 
@@ -430,7 +430,7 @@ confint(UAI_GLS_ssm)
 
 
 
-######################## MUTI and Dichromatism - HUE ##########################
+######################## MUTI and sexual selection intensity on males ##########################
 
 # lets first simplify a NEW database by removing records where we don't have an MUTI / brood_value
 MUTIDataUT <- C_SSelect_dat2 %>% filter(!is.na(MUTIscore)) 
@@ -483,7 +483,7 @@ confint(MUTI_GLS_ssm)
 
 
 
-######################## UN and Dichromatism - HUE ##########################
+######################## UN and sexual selection intensity on males ##########################
 
 # lets first simplify a NEW database by removing records where we don't have an UN / brood_value
 UNDataUT <- C_SSelect_dat2 %>% filter(!is.na(Urban)) 

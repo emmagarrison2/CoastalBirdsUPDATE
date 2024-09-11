@@ -388,7 +388,7 @@ for (i in seq(0, 4, by = 0.1)) {
   print(phyloglm(Urban ~ scale(Diet.Inv) + scale(Mass_log), 
                data = DietTraitDat3, 
                phy = Dietphy3,
-               log.alpha.bound = i)$logLik)
+               log.alpha.bound = i)$aic)
 }
 
 # higher support for larger alpha values (later in the printed list) that correspond to low phylogenetic signal
@@ -398,7 +398,7 @@ for (i in seq(0, 4, by = 0.1)) {
   print(phyloglm(Urban ~ scale(Diet.Inv) + scale(Mass_log), 
                  data = DietTraitDat3, 
                  phy = Dietphy3,
-                 log.alpha.bound = i)$aic)
+                 log.alpha.bound = i)$logLik)
 }
 # same as above. Lower log likelihood values for models with higher values of alpha/lower phylo signal
 

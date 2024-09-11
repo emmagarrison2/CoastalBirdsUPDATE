@@ -16,6 +16,7 @@ library(geiger)
 library(ggeffects)
 library(easystats)
 library(phylolm)
+library(logistf)
 
 ###################### BODY MASS ######################
 #######################################################
@@ -79,15 +80,54 @@ phyglm_UN_Mass <- phyloglm( Urban ~ Mass_log,
                                data = MassTraitDat3, 
                                phy = Massphy3, 
                                boot = 1000) # just add the boot = argument to the function
-
+summary(phyglm_UN_Mass)
+# fails to converge!
 #Warning message:
   #In phyloglm(Urban ~ Mass_log, data = MassTraitDat3, phy = Massphy3,  :
                 #the estimate of 'alpha' (0.555065022314764) reached the upper bound (0.559633190138608).
              # This may simply reflect a flat likelihood at large alpha values,
              # meaning that the phylogenetic correlation is estimated to be negligible.
 
+# set the mean tip height of the tree as a variable called t
+t <- phyglm_UN_Mass$mean.tip.height
 
-# time to check out the model 
+# scale and center mass and try model 
+phyglm_UN_Mass_scale <- phyloglm( Urban ~ scale(Mass_log), 
+                            data = MassTraitDat3, 
+                            phy = Massphy3, 
+                            boot = 1000) 
+
+summary(phyglm_UN_Mass_scale)
+# this also fails converge
+
+# try model with scale(Mass_log) by fixing alpha at upper bounds
+# upper bounds for alpha in our models is:
+exp(4)/t # where t is the mean tip height of our tree
+# log.alpha.bound = 4 sets the upper bound at this value (0.5596332)
+# set start.alpha at 0.55, which is just below the upper bound to effectively fix alpha
+# note: if you set start.alpha to exactly 0.5596332 it doesn't like it, so this is my work around
+
+phyglm_UN_Mass_fix <- phyloglm( Urban ~ scale(Mass_log), 
+                                  data = MassTraitDat3, 
+                                  phy = Massphy3, 
+                                  log.alpha.bound = 4,
+                                  start.alpha = 0.55,
+                                  boot = 1000)
+summary(phyglm_UN_Mass_fix)
+
+
+# as alpha is at upper bounds, try a regular logistic model
+# use logistf package for this
+# this runs as logistic regression with Firth's correction (a bias reduction method)
+# Ives and Garland 2010 recommend log.alpha.bound = 4 as the limits (and this is default setting in phyloglm)
+# they specify this value (4) because when the model reaches the upper bounds of this limit,
+# the model estimates should be very similar to a logistic model using Firth's correction
+glm_UN_Mass <- logistf(Urban ~ scale(Mass_log), data = MassTraitDat3)
+summary(glm_UN_Mass)
+summary(phyglm_UN_Mass_fix) # compare estimates
+# very similar
+
+# time to check out the model - CAN DELETE THIS. NOT USEFUL FOR LOGISTIC MODEL
 qqnorm(phyglm_UN_Mass$residuals)
 qqline(phyglm_UN_Mass$residuals)
 hist(phyglm_UN_Mass$residuals, breaks = 12) 
@@ -96,17 +136,20 @@ hist(phyglm_UN_Mass$residuals, breaks = 12)
 summary(phyglm_UN_Mass)
 confint(phyglm_UN_Mass)
 
-# z value = 1.177
-# SE = 0.114
-# p value = 0.239
-# 95% CI = (-0.0890, 0.357)
+# get values for results table for the fixed alpha model with scale(Mass_log)
+summary(phyglm_UN_Mass_fix)
+# use the bootstrapped CIs in the summary. Do not use confint() on these models
 
 #let's calculate alpha and half-life as measurements of phylogenetic signal 
-
 alpha <- phyglm_UN_Mass$alpha # where phyglm_UN_Mass is the name of your model
 alpha #555065
 log(2)/alpha # Half-Life for the model = 1.249
 #compared to T of 97.561, this is a small Half-Life (small phylogenetic signal) 
+
+# get half life for the fixed model
+alpha <- phyglm_UN_Mass_fix$alpha # where phyglm_UN_Mass is the name of your model
+log(2)/alpha # Half-Life for the model = 1.260
+#compared to T of 97.561, this is a small -> low phylogenetic signal
 
 
 ###################### SENSORY TRAITS ######################
@@ -165,35 +208,30 @@ SensoryTraitDat2$C.T <- as.numeric(SensoryTraitDat2$C.T)
 
 
 ######## method = logistic_MPLE ######## 
-
-
 phyglm_UN_CT <- phyloglm( Urban ~ C.T + Mass_log, 
                               data = SensoryTraitDat2, 
                               phy = Sensoryphy2, 
                               boot = 1000) # just add the boot = argument to the function
-
+# this model fails to converge
 #Warning message:
  # In phyloglm(Urban ~ C.T + Mass_log, data = SensoryTraitDat2, phy = Sensoryphy2,  :
   #              the boundary of the linear predictor has been reached during the optimization procedure.
    #           You can increase this bound by increasing 'btol'.
 
-# time to check out the model 
-qqnorm(phyglm_UN_CT$residuals)
-qqline(phyglm_UN_CT$residuals)
-hist(phyglm_UN_CT$residuals, breaks = 20) 
 
-#lets get those values for our results table 
-summary(phyglm_UN_CT)
-confint(phyglm_UN_CT)
+# scale explanatory variables
+phyglm_UN_CT_scale <- phyloglm(Urban ~ scale(C.T) + scale(Mass_log), 
+                          data = SensoryTraitDat2, 
+                          phy = Sensoryphy2, 
+                          boot = 1000) 
 
-alpha <- phyglm_UN_CT$alpha 
-alpha # 0.5172797 
-log(2)/alpha # Half-Life for the model = 1.339985 
-#compared to T of 97.561, this is a small Half-Life 
+# this version does converge
+summary(phyglm_UN_CT_scale)
 
-
-
-
+# get half life for the model
+alpha <- phyglm_UN_CT_scale$alpha 
+log(2)/alpha # Half-Life for the model = 1.799
+# compared to T of 97.561, this is a small Half-Life -> low phylogenetic signal
 
 ############################# Peak Frequency and UN #################################
 
@@ -230,33 +268,36 @@ SensoryTraitDat5$peak_freq <- as.numeric(SensoryTraitDat5$peak_freq)
 
 ######## method = logistic_MPLE ######## 
 
-
 phyglm_UN_pf <- phyloglm( Urban ~ peak_freq + Mass_log, 
                           data = SensoryTraitDat5, 
                           phy = Sensoryphy5, 
                           boot = 1000) # just add the boot = argument to the function
 
 #Warning message:
-# In phyloglm(Urban ~ C.T + Mass_log, data = SensoryTraitDat2, phy = Sensoryphy2,  :
-#              the boundary of the linear predictor has been reached during the optimization procedure.
-#           You can increase this bound by increasing 'btol'.
-
-# time to check out the model 
-qqnorm(phyglm_UN_CT$residuals)
-qqline(phyglm_UN_CT$residuals)
-hist(phyglm_UN_CT$residuals, breaks = 20) 
-
-#lets get those values for our results table 
-summary(phyglm_UN_CT)
-confint(phyglm_UN_CT)
-
-alpha <- phyglm_UN_CT$alpha 
-alpha # 0.5172797 
-log(2)/alpha # Half-Life for the model = 1.339985 
-#compared to T of 97.561, this is a small Half-Life 
+  #In phyloglm(Urban ~ peak_freq + Mass_log, data = SensoryTraitDat5,  :
+              #  the boundary of the linear predictor has been reached during the optimization procedure.
+             # You can increase this bound by increasing 'btol'
 
 
+# run model with scaled and centered explanatory variables
+phyglm_UN_pf_scale <- phyloglm( Urban ~ scale(peak_freq) + scale(Mass_log), 
+                          data = SensoryTraitDat5, 
+                          phy = Sensoryphy5, 
+                          boot = 1000)
+# warning: alpha reached upper bound
+# but model converges
+summary(phyglm_UN_pf_scale)
 
+# as alpha is at upper bound, also look at regular logistic model
+glm_UN_pf_scale <- logistf(Urban ~ scale(peak_freq) + scale(Mass_log), 
+                           data = SensoryTraitDat5)
+summary(glm_UN_pf_scale)
+# coefficient for peak freq is quite different, but we reach the same conclusions
+
+# get half life for the model
+alpha <- phyglm_UN_pf_scale$alpha
+log(2)/alpha
+# low half life relative to mean tip height -> low phylogenetic signal
 
 
 ###################### DIET TRAITS ######################
@@ -317,7 +358,6 @@ DietTraitDat3$Diet.Inv <- as.numeric(DietTraitDat3$Diet.Inv)
 
 ######## method = logistic_MPLE ######## 
 
-
 phyglm_UN_Invert <- phyloglm( Urban ~ Diet.Inv + Mass_log, 
                             data = DietTraitDat3, 
                             phy = Dietphy3, 
@@ -328,27 +368,79 @@ phyglm_UN_Invert <- phyloglm( Urban ~ Diet.Inv + Mass_log,
                 #the boundary of the linear predictor has been reached during the optimization procedure.
              # You can increase this bound by increasing 'btol'.
 
-# time to check out the model 
-qqnorm(phyglm_UN_Invert$residuals)
-qqline(phyglm_UN_Invert$residuals)
-hist(phyglm_UN_Invert$residuals, breaks = 20) 
+# run model with scaled/center explanatory variables
+phyglm_UN_Invert_scale <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log), 
+                              data = DietTraitDat3, 
+                              phy = Dietphy3, 
+                              boot = 1000)
 
-#lets get those values for our results table 
-summary(phyglm_UN_Invert)
-confint(phyglm_UN_Invert)
-
-# z value = 1.080
-# SE = 0.00880
-# p value = 0.280
-# 95% CI = (-0.00774, 0.0267)
-
-alpha <- phyglm_UN_Invert$alpha 
-alpha #0.0107
-log(2)/alpha # Half-Life for the model = 65.057
-#compared to T of 97.561, this is a small-moderate Half-Life 
+summary(phyglm_UN_Invert_scale) 
+# this fails to converge
+# we also get a warning that alpha reached upper bounds
 
 
+# print AIC values for models with different upper bounds
+# intervals of 0.1 from 0 up to 4
+# I tried saving these to a vector but I am only able to get it to save AIC for models where it converged
+# so a lot of values are lost and it's hard to know which AIC corresponds to which value of log.alpha.bound 
+# this is not super sophisticated but it works for what we need it for
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~ scale(Diet.Inv) + scale(Mass_log), 
+               data = DietTraitDat3, 
+               phy = Dietphy3,
+               log.alpha.bound = i)$logLik)
+}
 
+# higher support for larger alpha values (later in the printed list) that correspond to low phylogenetic signal
+
+# we can also look at logLik, which should show a similar pattern to AIC
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~ scale(Diet.Inv) + scale(Mass_log), 
+                 data = DietTraitDat3, 
+                 phy = Dietphy3,
+                 log.alpha.bound = i)$aic)
+}
+# same as above. Lower log likelihood values for models with higher values of alpha/lower phylo signal
+
+
+# try to fix alpha at exp(4)/t (at the default upper bounds)
+# this fails to converge
+phyglm_UN_Invert_fix_4 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log), 
+                                      data = DietTraitDat3, 
+                                      phy = Dietphy3, 
+                                      start.alpha = 0.55,
+                                      log.alpha.bound = 4)
+
+# try increasing upper bounds a small amount over 4
+# both these models converge
+phyglm_UN_Invert_fix_4.05 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log), 
+                                    data = DietTraitDat3, 
+                                    phy = Dietphy3, 
+                                    start.alpha = 0.55,
+                                    log.alpha.bound = 4.05, boot=1000)
+summary(phyglm_UN_Invert_fix_4.05)
+phyglm_UN_Invert_fix_4.05$aic
+
+phyglm_UN_Invert_fix_4.1 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log), 
+                                       data = DietTraitDat3, 
+                                       phy = Dietphy3, 
+                                       start.alpha = 0.55,
+                                       log.alpha.bound = 4.1, boot=1000)
+summary(phyglm_UN_Invert_fix_4.1)
+phyglm_UN_Invert_fix_4.1$aic
+
+
+# also look at non-phylogenetic logistic model
+glm_UN_Invert <- logistf(Urban ~ scale(Diet.Inv) + scale(Mass_log), 
+        data = DietTraitDat3)
+summary(glm_UN_Invert)
+# we reach similar conclusions as two models above
+# interestingly, coef for Diet.Inv is even smaller here
+
+# get half life for the model
+alpha <- phyglm_UN_Invert_fix_4.05$alpha 
+alpha
+log(2)/alpha # small half life -> low phylogenetic signal
 
 ######################## UN and % Diet Vertebrates ##########################
 
@@ -393,28 +485,76 @@ phyglm_UN_Vert <- phyloglm( Urban ~ Diet.Vert + Mass_log,
                               data = DietTraitDat6, 
                               phy = Dietphy6, 
                               boot = 1000) # just add the boot = argument to the function
+summary(phyglm_UN_Vert)
 
 #Warning message:
  # In phyloglm(Urban ~ Diet.Vert + Mass_log, data = DietTraitDat6,  :
   #              the boundary of the linear predictor has been reached during the optimization procedure.
    #           You can increase this bound by increasing 'btol'.
 
-# time to check out the model 
-qqnorm(phyglm_UN_Vert$residuals)
-qqline(phyglm_UN_Vert$residuals)
-hist(phyglm_UN_Vert$residuals, breaks = 20) 
 
-#lets get those values for our results table 
-summary(phyglm_UN_Vert)
-confint(phyglm_UN_Vert)
+# using scaled explanatory variables
+phyglm_UN_Vert_scale <- phyloglm( Urban ~ scale(Diet.Vert) + scale(Mass_log), 
+                            data = DietTraitDat6, 
+                            phy = Dietphy6, 
+                            boot = 1000)
+summary(phyglm_UN_Vert_scale)
+# this fails to converge
 
-alpha <- phyglm_UN_Vert$alpha 
-alpha #0.0103
-log(2)/alpha # Half-Life for the model = 67.579
-#compared to T of 97.561, this is a small-moderate Half-Life
+# print AIC values for models with different upper bounds
+# intervals of 0.1 from 0 up to 4
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~ scale(Diet.Vert) + scale(Mass_log), 
+                 data = DietTraitDat6, 
+                 phy = Dietphy6,
+                 log.alpha.bound = i)$aic)
+}
+# AIC values support models with larger values of alpha (low phylo signal)
 
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~ scale(Diet.Vert) + scale(Mass_log), 
+                 data = DietTraitDat6, 
+                 phy = Dietphy6,
+                 log.alpha.bound = i)$logLik)
+}
+# we reach the same conclusion with log likelihood
 
+# try to fix alphe at upper bounds
+# this fails to converge
+phyglm_UN_Vert_fix_4 <- phyloglm( Urban ~ scale(Diet.Vert) + scale(Mass_log), 
+                                     data = DietTraitDat6, 
+                                     phy = Dietphy6, 
+                                     start.alpha = 0.55,
+                                     log.alpha.bound = 4, boot = 1000)
 
+# try increasing upper bounds a small amount over 4
+# both of these models converge
+phyglm_UN_Vert_fix_4.05 <- phyloglm( Urban ~ scale(Diet.Vert) + scale(Mass_log), 
+                                     data = DietTraitDat6, 
+                                     phy = Dietphy6, 
+                                     start.alpha = 0.55,
+                                    log.alpha.bound = 4.05, boot = 1000)
+summary(phyglm_UN_Vert_fix_4.05)
+phyglm_UN_Vert_fix_4.05$aic # ~ 170
+
+phyglm_UN_Vert_fix_4.1 <- phyloglm( Urban ~ scale(Diet.Vert) + scale(Mass_log), 
+                                     data = DietTraitDat6, 
+                                     phy = Dietphy6, 
+                                     start.alpha = 0.55,
+                                     log.alpha.bound = 4.1, boot = 1000)
+summary(phyglm_UN_Vert_fix_4.1)
+phyglm_UN_Vert_fix_4.1$aic # ~ 170
+
+# look at a non-phylogenetic model
+glm_UN_Vert <- logistf(Urban ~ scale(Diet.Vert) + scale(Mass_log), 
+                       data = DietTraitDat6)
+summary(glm_UN_Vert)
+# very similar
+
+# get half life
+alpha <- phyglm_UN_Vert_fix_4.05$alpha 
+log(2)/alpha # Half-Life for the model = 1.18
+# compared to T of 97.561, this is a small Half-Life
 
 ######################## UN and % Diet Plant/Seed ##########################
 
@@ -465,24 +605,22 @@ phyglm_UN_PS <- phyloglm( Urban ~ Diet.PS + Mass_log,
  # In phyloglm(Urban ~ Diet.PS + Mass_log, data = DietTraitDat9, phy = Dietphy9,  :
   #              the boundary of the linear predictor has been reached during the optimization procedure.
    #           You can increase this bound by increasing 'btol'.
-
-
-
-# time to check out the model 
-qqnorm(phyglm_UN_PS$residuals)
-qqline(phyglm_UN_PS$residuals)
-hist(phyglm_UN_PS$residuals, breaks = 20) 
-
-#lets get those values for our results table 
 summary(phyglm_UN_PS)
-confint(phyglm_UN_PS)
 
-alpha <- phyglm_UN_PS$alpha 
-alpha # 0.0108
-log(2)/alpha # Half-Life for the model = 63.920
-#compared to T of 97.561, this is a small-moderate Half-Life
+# try model with scaled and centered explanatory variables
+phyglm_UN_PS_scale <- phyloglm( Urban ~ scale(Diet.PS) + scale(Mass_log), 
+                          data = DietTraitDat9, 
+                          phy = Dietphy9, 
+                          boot = 1000) # just add the boot = argument to the function
 
+# this converges
+summary(phyglm_UN_PS_scale)
 
+# find half life for the model
+alpha <- phyglm_UN_PS_scale$alpha 
+alpha # 0.110
+log(2)/alpha # Half-Life for the model = 6.32
+# small compared to T of 97.561 -> low phylogenetic signal
 
 
 ######################## UN and % Diet Fruit/Nut ##########################
@@ -531,27 +669,23 @@ phyglm_UN_FN <- phyloglm( Urban ~ Diet.FN + Mass_log,
                           phy = Dietphy12, 
                           boot = 1000) # just add the boot = argument to the function
 
-#Warning message:
- # In phyloglm(Urban ~ Diet.FN + Mass_log, data = DietTraitDat12, phy = Dietphy12,  :
-  #              the boundary of the linear predictor has been reached during the optimization procedure.
-   #           You can increase this bound by increasing 'btol'.
+# this model fails to converge
+# multiple other warning messages
 
-# time to check out the model 
-qqnorm(phyglm_UN_FN$residuals)
-qqline(phyglm_UN_FN$residuals)
-hist(phyglm_UN_FN$residuals, breaks = 20) 
+# run model with scaled and centered explanatory variables
+phyglm_UN_FN_scale <- phyloglm( Urban ~ scale(Diet.FN) + scale(Mass_log), 
+                          data = DietTraitDat12, 
+                          phy = Dietphy12, 
+                          boot = 1000)
 
-#lets get those values for our results table 
-summary(phyglm_UN_FN)
-confint(phyglm_UN_FN)
+# this model converges
+summary(phyglm_UN_FN_scale)
 
-alpha <- phyglm_UN_FN$alpha 
-alpha # 0.5436619 
-log(2)/alpha # Half-Life for the model = 1.27496
-#compared to T of 97.561, this is a small  Half-Life
-
-
-
+# find half life for the model
+alpha <- phyglm_UN_FN_scale$alpha 
+alpha # 0.091
+log(2)/alpha # Half-Life for the model = 7.632
+# compared to T of 97.561, this is a small Half-Life
 
 
 
@@ -621,30 +755,29 @@ phyglm_UN_bv <- phyloglm( Urban ~ brood_value + Mass_log,
                           data = LifehistTraitDat3, 
                           phy = Lifehistphy3, 
                           boot = 1000) # just add the boot = argument to the function
-
-#Warning messages:
- # 1: In phyloglm(Urban ~ brood_value + Mass_log, data = LifehistTraitDat3,  :
-  #                 the estimate of 'alpha' (0.559459062146366) reached the upper bound (0.559633190137694).
-   #              This may simply reflect a flat likelihood at large alpha values,
-    #             meaning that the phylogenetic correlation is estimated to be negligible.
-     #            2: In phyloglm(Urban ~ brood_value + Mass_log, data = LifehistTraitDat3,  :
-      #                            phyloglm failed to converge.
-
-# time to check out the model 
-qqnorm(phyglm_UN_bv$residuals)
-qqline(phyglm_UN_bv$residuals)
-hist(phyglm_UN_bv$residuals, breaks = 20) 
-
-#lets get those values for our results table 
+# this model fails to converge
 summary(phyglm_UN_bv)
-confint(phyglm_UN_bv)
 
-alpha <- phyglm_UN_bv$alpha 
-alpha #  
-log(2)/alpha # Half-Life for the model = 
-#compared to T of 97.561, this is a ______  Half-Life
+# try the model with center and scaled variables
+phyglm_UN_bv_scale <- phyloglm( Urban ~ scale(brood_value) + scale(Mass_log), 
+                          data = LifehistTraitDat3, 
+                          phy = Lifehistphy3, 
+                          boot = 1000) 
+summary(phyglm_UN_bv_scale) 
+# this successfully converges 
+# alpha at upper bounds
 
+# run a non-phylogenetic logistic model for comparison
+glm_UN_bv <- logistf(Urban ~ scale(brood_value) + scale(Mass_log), 
+  data = LifehistTraitDat3)            
+summary(glm_UN_bv)
+# we reach the same conclusions
+# some differences in coefficients though
 
+alpha <- phyglm_UN_bv_scale$alpha 
+alpha #  0.5585
+log(2)/alpha # Half-Life for the model = 1.241
+# small half life relative to t -> low phylogenetic signal
 
 
 ######################## UN and % clutch size ##########################
@@ -689,30 +822,61 @@ phyglm_UN_clutch <- phyloglm( Urban ~ clutch_size + Mass_log,
                           data = LifehistTraitDat6, 
                           phy = Lifehistphy6, 
                           boot = 1000) # just add the boot = argument to the function
+# this model fails to converge
 
-#Warning messages:
- # 1: In phyloglm(Urban ~ clutch_size + Mass_log, data = LifehistTraitDat6,  :
-  #                 the estimate of 'alpha' (0.559269614382704) reached the upper bound (0.559633190137426).
-   #              This may simply reflect a flat likelihood at large alpha values,
-    #             meaning that the phylogenetic correlation is estimated to be negligible.
-     #            2: In phyloglm(Urban ~ clutch_size + Mass_log, data = LifehistTraitDat6,  :
-      #                            phyloglm failed to converge.
+# try model with scaled and centered variables
+phyglm_UN_clutch_scale <- phyloglm( Urban ~ scale(clutch_size) + scale(Mass_log), 
+                              data = LifehistTraitDat6, 
+                              phy = Lifehistphy6, 
+                              boot = 1000) # just add the boot = argument to the function
 
-# time to check out the model 
-qqnorm(phyglm_UN_clutch$residuals)
-qqline(phyglm_UN_clutch$residuals)
-hist(phyglm_UN_clutch$residuals, breaks = 20) 
+summary(phyglm_UN_clutch_scale) 
+# still fails to converge
 
-#lets get those values for our results table 
-summary(phyglm_UN_clutch)
-confint(phyglm_UN_clutch)
 
-alpha <- phyglm_UN_clutch$alpha 
+# print AIC values for models with different upper bounds
+# intervals of 0.1 from 0 up to 4
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~ scale(clutch_size) + scale(Mass_log), 
+                 data = LifehistTraitDat6, 
+                 phy = Lifehistphy6,
+                 log.alpha.bound = i)$aic)
+}
+# AIC values support models with larger values of alpha (low phylo signal)
+
+# fix alpha at upper bounds
+# this still fails to converge
+phyglm_UN_clutch_fix_4 <- phyloglm( Urban ~ scale(clutch_size) + scale(Mass_log), 
+                              data = LifehistTraitDat6, 
+                              phy = Lifehistphy6, 
+                              log.alpha.bound = 4,
+                              start.alpha = 0.55,
+                              boot = 1000) 
+
+# I tried a bunch of options of log.alpha.bound with fix log.alpha.bounds slightly and slight above 4
+# none of them want to converge
+phyglm_UN_clutch_fix_2.9 <- phyloglm( Urban ~ scale(clutch_size) + scale(Mass_log), 
+                                    data = LifehistTraitDat6, 
+                                    phy = Lifehistphy6, 
+                                    log.alpha.bound = 2.9, boot=1000) 
+# I can't get this to converge unless I drop it all the way down to 2.9
+# this doesn't really line up with the AIC values above
+# not sure what to make of this
+summary(phyglm_UN_clutch_fix_2.9)
+exp(2.9)/t
+
+# run non-phylogenetic glm
+library(logistf)
+glm_UN_clutch <- logistf(Urban ~ scale(clutch_size) + scale(Mass_log), 
+                     data = LifehistTraitDat6)            
+summary(glm_UN_clutch)
+# we reach the same conclusions
+
+
+# get half life for the model
+alpha <- phyglm_UN_clutch_fix_2.9$alpha 
 alpha #  
-log(2)/alpha # Half-Life for the model = 
-#compared to T of 97.561, this is a ______  Half-Life
-
-
+log(2)/alpha 
 
 
 
@@ -759,24 +923,53 @@ phyglm_UN_long <- phyloglm( Urban ~ longevity + Mass_log,
                               phy = Lifehistphy9, 
                               boot = 1000) # just add the boot = argument to the function
 
+summary(phyglm_UN_long)
+# this model converges but we see the following warning
 #Warning message:
  # In phyloglm(Urban ~ longevity + Mass_log, data = LifehistTraitDat9,  :
   #              the boundary of the linear predictor has been reached during the optimization procedure.
    #           You can increase this bound by increasing 'btol'.
 
-# time to check out the model 
-qqnorm(phyglm_UN_long$residuals)
-qqline(phyglm_UN_long$residuals)
-hist(phyglm_UN_long$residuals, breaks = 20) 
 
-#lets get those values for our results table 
-summary(phyglm_UN_long)
-confint(phyglm_UN_long)
+# run model using scaled and centered variables
+phyglm_UN_long_scale <- phyloglm( Urban ~ scale(longevity) + scale(Mass_log), 
+                            data = LifehistTraitDat9, 
+                            phy = Lifehistphy9, 
+                            boot = 1000) 
 
-alpha <- phyglm_UN_long$alpha 
-alpha #  0.01031167 
-log(2)/alpha # Half-Life for the model = 67.21971 
-#compared to T of 97.561, this is a small-moderate  Half-Life
+# this model fails to converge
+summary(phyglm_UN_long_scale)
+
+# print AIC values for models with different upper bounds
+# intervals of 0.1 from 0 up to 4
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~ scale(longevity) + scale(Mass_log), 
+                 data = LifehistTraitDat9, 
+                 phy = Lifehistphy9,
+                 log.alpha.bound = i)$aic)
+}
+# AIC values support models with larger values of alpha (low phylo signal)
+
+# try fixing alpha at upper bounds
+
+phyglm_UN_long_fix_4 <- phyloglm( Urban ~ scale(longevity) + scale(Mass_log), 
+                                  data = LifehistTraitDat9, 
+                                  phy = Lifehistphy9, 
+                                  log.alpha.bound = 4,
+                                  start.alpha = 0.55)
+summary(phyglm_UN_long_fix_4) # this works
+
+# compare with non-phylogenetic logistic regression
+glm_UN_long <- logistf(Urban ~ scale(longevity) + scale(Mass_log), 
+                      data = LifehistTraitDat9)
+summary(glm_UN_long)
+# this is similar to model with log.alpha.bound fixed at 4
+
+# get half life for the model
+alpha <- phyglm_UN_long_fix_4$alpha 
+alpha #  0.557 
+log(2)/alpha # Half-Life for the model = 1.244
+# compared to T of 97.561, this is a small half-life
 
 
 
@@ -1102,6 +1295,14 @@ phyglm_UN_nest_high <- phyloglm( Urban ~ NestSite_High + Mass_log,
    #           This may simply reflect a flat likelihood at large alpha values,
     #          meaning that the phylogenetic correlation is estimated to be negligible.
 
+# scale and center mass to be consistent with other models
+phyglm_UN_nest_high <- phyloglm( Urban ~ NestSite_High + scale(Mass_log), 
+                                 data = NestTraitDat9, 
+                                 phy = Nestphy9, 
+                                 boot = 1000)
+summary(phyglm_UN_nest_high) # this fails to converge... weird. Version above with non-scaled Mass is fine
+
+
 # time to check out the model 
 qqnorm(phyglm_UN_nest_high$residuals)
 qqline(phyglm_UN_nest_high$residuals)
@@ -1253,31 +1454,21 @@ phyglm_UN_nest_safety <- phyloglm( Urban ~ nest.safety + Mass_log,
                                  data = NestTraitDat12, 
                                  phy = Nestphy12, 
                                  boot = 1000) # just add the boot = argument to the function
+# this model fails to converge
 
-#Warning messages:
- # 1: In phyloglm(Urban ~ nest.safety + Mass_log, data = NestTraitDat12,  :
-  #                 the estimate of 'alpha' (0.559398725309794) reached the upper bound (0.559633190138608).
-   #              This may simply reflect a flat likelihood at large alpha values,
-    #             meaning that the phylogenetic correlation is estimated to be negligible.
-     #            2: In phyloglm(Urban ~ nest.safety + Mass_log, data = NestTraitDat12,  :
-      #                            the boundary of the linear predictor has been reached during the optimization procedure.
-       #                         You can increase this bound by increasing 'btol'.
-        #                        3: In phyloglm(Urban ~ nest.safety + Mass_log, data = NestTraitDat12,  :
-         #                                        phyloglm failed to converge.
+# try with scaled and centered variables
+phyglm_UN_nest_safety_scale <- phyloglm( Urban ~ scale(nest.safety) + scale(Mass_log), 
+                                   data = NestTraitDat12, 
+                                   phy = Nestphy12, 
+                                   boot = 1000) # just add the boot = argument to the function
+summary(phyglm_UN_nest_safety_scale)
 
-# time to check out the model 
-qqnorm(phyglm_UN_nest_safety$residuals)
-qqline(phyglm_UN_nest_safety$residuals)
-hist(phyglm_UN_nest_safety$residuals, breaks = 20) 
 
-#lets get those values for our results table 
-summary(phyglm_UN_nest_safety)
-confint(phyglm_UN_nest_safety)
-
-alpha <- phyglm_UN_nest_safety$alpha 
-alpha #  ____ 
-log(2)/alpha # Half-Life for the model =    
-#compared to T of 97.561, this is a ____ Half-Life
+# get model half life
+alpha <- phyglm_UN_nest_safety_scale$alpha 
+alpha #  0.548
+log(2)/alpha # Half-Life for the model =  1.264
+#compared to T of 97.561, this is a small Half-Life relative to t
 
 
 

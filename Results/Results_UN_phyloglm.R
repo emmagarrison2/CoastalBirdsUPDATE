@@ -417,7 +417,7 @@ phyglm_UN_Invert_fix_4.05 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log)
                                     data = DietTraitDat3, 
                                     phy = Dietphy3, 
                                     start.alpha = 0.55,
-                                    log.alpha.bound = 4.05, boot=1000)
+                                    log.alpha.bound = 4.05, boot=1000) # also converged - means no phylogenetic signal 
 summary(phyglm_UN_Invert_fix_4.05)
 phyglm_UN_Invert_fix_4.05$aic
 
@@ -425,7 +425,7 @@ phyglm_UN_Invert_fix_4.1 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log),
                                        data = DietTraitDat3, 
                                        phy = Dietphy3, 
                                        start.alpha = 0.55,
-                                       log.alpha.bound = 4.1, boot=1000)
+                                       log.alpha.bound = 4.1, boot=1000) # also converged - means no phylogenetic signal 
 summary(phyglm_UN_Invert_fix_4.1)
 phyglm_UN_Invert_fix_4.1$aic
 

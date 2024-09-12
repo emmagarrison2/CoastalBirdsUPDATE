@@ -59,6 +59,12 @@ if(!require(gridExtra)){
 library(gridExtra)
 
 
+if(!require(dplyr)){
+  install.packages("dplyr")
+  require(dplyr)
+}
+library(dplyr)
+
 
 #pull in refined dataset of coastal species and index scores
 
@@ -66,6 +72,8 @@ AllIndexesCoastal <- readRDS(here("Data", "Coastal_Birds_List.rds"))
 str(AllIndexesCoastal)
 AllIndexesCoastal$Urban <- ifelse(AllIndexesCoastal$Urban == "U", 1, 0)
 colnames(AllIndexesCoastal)
+View(AllIndexesCoastal)
+nrow(AllIndexesCoastal) #807
 
 summary(AllIndexesCoastal$aveUAI)
 summary(AllIndexesCoastal$Urban)
@@ -94,137 +102,77 @@ nrow(AllIndexes_AllBirds)#4433
 #######################################################################
 #####density plot for aveUAI 
 
-UAICoastal <- AllIndexesCoastal %>% 
+# refine all birds to just be UAI score, species, and group (N/A)
+# change all "NA" to = all
+# refine coastal birds just be UAI score, species, and group (coastal = yes)
+# change all "yes" to = coastal 
+# bind rows, which just stacks the rows from coastal underneath the rows for all. 
+# then, do density plot 
+
+#new df with reduced columns of AllIndexes_AllBirds
+
+nrow(AllIndexes_AllBirds) #4433
+colnames(AllIndexes_AllBirds)
+AllIndexes_AllBirds$Group <- "All"
+colnames(AllIndexes_AllBirds)
+AllBirds_UAI <- AllIndexes_AllBirds %>% 
   filter(!is.na(aveUAI) & is.finite(aveUAI))
-nrow(UAICoastal)#798
+nrow(AllBirds_UAI) #4347
 
-UAI_density <- UAICoastal %>%
-  ggplot(aes(x=aveUAI, fill=aveUAI)) + 
-  stat_halfeye(
-    adjust=0.5,
-    justification=-0.0,
-    .width= 0,
-    point_colour = NA, 
-    fill ='#FFC107', 
-    alpha = 0.8
-  ) + 
-  geom_boxplot(
-    width = 0.12, 
-    color = 'black',
-    fill= '#FFC107',
-    outlier.colour = '#FFC107',
-    alpha = 0.5, 
-    position = position_nudge(y=-0.1)
-  ) +  
-  labs (
-    #title = "Coastal Score Distribution", 
-    x = "Average UAI Score - Coastal Birds", 
-    y = ""
-  ) + 
-  theme_classic() + 
-  theme(
-    #plot.title = element_text(hjust = 0.5), # Center the plot title
-    axis.title = element_text(size = 12)    # Adjust axis title size
-    # axis.text.y=element_blank() # Remove y-axis text labels
-    # axis.ticks.y=element_blank()  # Remove y-axis ticks
-  )
+AllBirds_UAI_2 <- AllBirds_UAI %>% 
+  select(aveUAI, Group)
+colnames(AllBirds_UAI)
+nrow(AllBirds_UAI) #4347, looks good! 
 
+#new df with reduced columnds of AllIndexesCoastal
 
-print(UAI_density)
-
-#########################################################
-# For comparison purposes, let's OVERLAY "ALLBIRDS" DENSITY PLOT 
-# W/ "COASTALBIRDS" DENSITY PLOT 
-
-###### FIRSTLY, 
-# setup of UAI with all-birds list 
-
-UAI_all <- AllIndexes_AllBirds %>% 
+nrow(AllIndexesCoastal) #807
+colnames(AllIndexesCoastal)
+AllIndexesCoastal$Group <- "Coastal"
+colnames(AllIndexesCoastal)
+View(AllIndexesCoastal)
+CoastalBirds_UAI <- AllIndexesCoastal %>% 
   filter(!is.na(aveUAI) & is.finite(aveUAI))
-nrow(UAI_all)#4347
-colnames(UAI_all)
+nrow(CoastalBirds_UAI) #798
 
+CoastalBirds_UAI_2 <- CoastalBirds_UAI %>% 
+  select(aveUAI, Group)
+colnames(CoastalBirds_UAI)
+nrow(CoastalBirds_UAI_2) #798, looks good! 
 
-#NOW, let's investigate what the density plot for ALL BIRDS and UAI scores looks like 
+###time to bind rows for UAI 
 
-UAI_density_all <- UAI_all %>%
-  ggplot(aes(x=aveUAI, fill=aveUAI)) + 
-  geom_boxplot(
-    width = 0.12, 
-    color = 'black',
-    fill= 'red3',
-    outlier.colour = 'red3',
-    alpha = 0.5, 
-    position = position_nudge(y = -0.1)
-  ) + 
-  stat_halfeye(
-    adjust=0.5,
-    justification=-0.0,
-    .width= 0,
-    point_colour = NA, 
-    fill ='red3', 
-    alpha = 0.8
-  ) + 
-  labs (
-    x = "Average UAI Score - All Birds", 
-    y = ""
-  ) + 
-  theme_classic() + 
-  theme(
-    #plot.title = element_text(hjust = 0.5), # Center the plot title
-    axis.title = element_text(size = 12)    # Adjust axis title size
-    # axis.text.y=element_blank() # Remove y-axis text labels
-    # axis.ticks.y=element_blank()  # Remove y-axis ticks
-  )
+combined_UAI_for_density <- bind_rows(AllBirds_UAI_2, CoastalBirds_UAI_2)
+nrow(combined_UAI_for_density) #5145
+4347 + 798 # = 5145
+#correct number of rows 
 
-
-print(UAI_density_all)
-
-######## ATTEMPT #1 at OVERLAID DENSITY PLOT ######## 
-
-UAICoastal$group <- "Coastal birds"
-colnames(UAICoastal)
-head(UAICoastal)
-UAI_all$group <- "All birds"
 
 # Create the plot
 UAI_density <- ggplot() + 
-  # Density plot for all birds
+  # Density plots according to groups 
   geom_density(
-    data = UAI_all, 
-    aes(x = aveUAI, fill = group), 
-    alpha = 0.3, 
+    data = combined_UAI_for_density, 
+    aes(x = aveUAI, fill = Group), 
+    alpha = 0.5, 
     adjust = 0.5, 
   ) + 
-  # Half-eye plot for coastal birds
-  stat_halfeye(
-    data = UAICoastal,
-    aes(x = aveUAI, fill = group), 
-    adjust = 0.5,
-    justification = -0.0,
-    .width = 0,
-    point_colour = NA, 
-    fill = "#FFC107",       # Fill color for Coastal birds
-    color = "black",        # Outline for the density plot of UAICoastal
-    alpha = 0.8
-  ) + 
-  # Boxplot for coastal birds
+  # Boxplot for both groups i believe? 
   geom_boxplot(
-    data = UAICoastal,
-    aes(x = aveUAI, fill = group), 
+    data = combined_UAI_for_density,
+    aes(x = aveUAI, fill = Group), 
     width = 0.12, 
     color = 'black',
     alpha = 0.5, 
     position = position_nudge(y = -0.1)
   ) +  
+  scale_fill_manual(
+    values = c("All" = "#FFD67B", "Coastal" = "#E48816")
+  ) +
   labs(
-    x = "Average UAI", 
+    x = "UAI", 
     y = ""
   ) + 
-  scale_fill_manual(
-    values = c("Coastal birds" = "#FFC107", "All birds" = "red"), 
-    labels = c("All birds", "Coastal birds")
-  ) +
   theme_classic() + 
   theme(
     axis.title = element_text(size = 12),  # Adjust axis title size
@@ -232,209 +180,217 @@ UAI_density <- ggplot() +
     legend.title = element_blank()         # Remove the legend title
   )
 
-# Print the plot
 print(UAI_density)
 
+saveRDS(UAI_density, here("Outputs", "UAI_Density_Comparison.rds"))
 
 
 
 
-######## ATTEMPT #2 at OVERLAID DENSITY PLOT ######## 
 
 
-# because I am having difficulty with the y-axus of UAI_all_density and UAI_density, I was thinking to plot WITHOUT a boxplot, and just 
-# do geom_density. let's try this below. 
+#######################################################################
+#####density plot for MUTI 
 
+#new df with reduced columns of AllIndexes_AllBirds
 
-#TEST using geom_density, and not ggplot/stat_halfeye
-
-#combined_plot <- ggplot() + 
-  # First density layer for UAICoastal
-#  geom_density(data = UAICoastal, aes(x = aveUAI), color = "blue", fill = "blue", alpha = 0.3, adjust = 0.5) +
-  # Second density layer for MUTICoastal
-#  geom_density(data = UAI_all, aes(x = aveUAI), color = "red", fill = "red", alpha = 0.3, adjust = 0.5) +
-#  labs(x = "aveUAI", y = "Density", title = "Combined Density Plots") +
-#  scale_y_continuous(limits = c(0, max(1))) + 
-#  theme(legend.position = "bottom") + 
-#  scale_colour_manual(values = c('All Birds' = "blue", 
-           #                      'Coastal Birds' = "red"), name = 'Legend') 
-
-# Print the combined plot
-# print(combined_plot)
-
-
-#cannot get the legend to show up 
-
-# ALSO, it seems like both density plots are being plotted on different scales? It doesn't make sense that the 
-# coastal-bird density would be higher in some areas than the all-birds density, as the coastal 
-# list is a SUBSET of the all-birds list. 
-
-# SARAH and DR. FRANCIS --> do you know how to fix this y-axis scaling issue? 
-
-
-
-############################################################
-
-#Raincloud density plot for MUTI 
-
-MUTICoastal <- AllIndexesCoastal %>% 
+AllBirds_MUTI <- AllIndexes_AllBirds %>% 
   filter(!is.na(MUTIscore) & is.finite(MUTIscore))
-nrow(MUTICoastal)#130
+nrow(AllBirds_MUTI) #431
 
-MUTI_density <- MUTICoastal %>%
-  ggplot(aes(x=MUTIscore, fill=MUTIscore)) + 
-  stat_halfeye(
-    adjust=0.5,
-    justification= -0.2,
-    .width= 0,
-    point_colour = NA, 
-    fill ='#004D40', 
-    alpha = 0.8
+AllBirds_MUTI_2 <- AllBirds_MUTI %>% 
+  select(MUTIscore, Group)
+colnames(AllBirds_MUTI_2)
+nrow(AllBirds_MUTI_2) #431, looks good! 
+
+#new df with reduced columnds of AllIndexesCoastal
+
+CoastalBirds_MUTI <- AllIndexesCoastal %>% 
+  filter(!is.na(MUTIscore) & is.finite(MUTIscore))
+nrow(CoastalBirds_MUTI) #130
+
+CoastalBirds_MUTI_2 <- CoastalBirds_MUTI %>% 
+  select(MUTIscore, Group)
+colnames(CoastalBirds_MUTI_2)
+nrow(CoastalBirds_MUTI_2) #130, looks good! 
+
+###time to bind rows for UAI 
+
+combined_MUTI_for_density <- bind_rows(AllBirds_MUTI_2, CoastalBirds_MUTI_2)
+nrow(combined_MUTI_for_density) #561
+431 + 130 # = 561
+#correct number of rows 
+
+# Create the plot
+MUTI_density <- ggplot() + 
+  # Density plots according to groups 
+  geom_density(
+    data = combined_MUTI_for_density, 
+    aes(x = MUTIscore, fill = Group), 
+    alpha = 0.5, 
+    adjust = 0.5, 
   ) + 
+  # Boxplot for both groups i believe? 
   geom_boxplot(
-    width = 0.12, 
+    data = combined_MUTI_for_density,
+    aes(x = MUTIscore, fill = Group), 
+    width = 0.054, 
     color = 'black',
-    fill= '#004d40',
-    outlier.colour = '#003d40',
-    alpha = 0.5
+    alpha = 0.5, 
+    position = position_nudge(y = -0.045)
   ) +  
-  labs (
-    #title = "Coastal Score Distribution", 
-    x = "Multivariate Urban Tolerance Index", 
+  scale_fill_manual(
+    values = c("All" = "olivedrab1", "Coastal" = "olivedrab")
+  ) +
+  labs(
+    x = "MUTI", 
     y = ""
   ) + 
   theme_classic() + 
   theme(
-    #plot.title = element_text(hjust = 0.5), # Center the plot title
-    axis.title = element_text(size = 12)   
-    #axis.text.y=element_blank(), # Remove y-axis text labels
-    #axis.ticks.y=element_blank()  # Remove y-axis ticks
-  )    # Adjust axis title size
-
+    axis.title = element_text(size = 12),  # Adjust axis title size
+    legend.position = "top",             # Position the legend on the right
+    legend.title = element_blank()         # Remove the legend title
+  )
 
 print(MUTI_density)
 
 
-#########################################################
-# For comparison purposes, let's OVERLAY "ALLBIRDS" DENSITY PLOT 
-# W/ "COASTALBIRDS" DENSITY PLOT 
-
-###### FIRSTLY, 
-# setup of MUTI with all-birds list 
-
-MUTI_all <- AllIndexes_AllBirds %>% 
-  filter(!is.na(MUTIscore) & is.finite(MUTIscore))
-nrow(MUTI_all)#431
-colnames(MUTI_all)
+saveRDS(MUTI_density, here("Outputs", "MUTI_Density_Comparison.rds"))
 
 
-#using original density plot code, try to put all-birds density overlaid 
+#######################################################################
+#####density plot for UN 
 
-MUTICoastal$group <- "Coastal birds"
-colnames(MUTICoastal)
-head(MUTICoastal)
-MUTI_all$group <- "All birds"
+#new df with reduced columns of AllIndexes_AllBirds
 
-# Create the plot
-MUTI_density_compare <- ggplot() + 
-  # Density plot for all birds
-  geom_density(
-    data = MUTI_all, 
-    aes(x = MUTIscore, fill = group), 
-    alpha = 0.8, 
-    adjust = 0.5, 
-  ) + 
-  # Half-eye plot for coastal birds
-  stat_halfeye(
-    data = MUTICoastal,
-    aes(x = MUTIscore, fill = group), 
-    adjust = 0.5,
-    justification = -0.0,
-    .width = 0,
-    point_colour = NA, 
-    fill = "lightgreen",       # Fill color for Coastal birds
-    color = "black",        # Outline for the density plot of UAICoastal
-    alpha = 0.8
-  ) + 
-  # Boxplot for coastal birds
-  geom_boxplot(
-    data = MUTICoastal,
-    aes(x = MUTIscore, fill = group), 
-    width = 0.12, 
-    color = 'black',
-    alpha = 0.3, 
-    position = position_nudge(y = -0.1)
-  ) +  
-  labs(
-    x = "MUTI Score", 
-    y = ""
-  ) + 
-  scale_fill_manual(
-    values = c("Coastal birds" = "lightgreen", "All birds" = "darkgreen"), 
-    labels = c("All birds", "Coastal birds")
-  ) +
-  theme_classic() + 
-  theme(
-    axis.title = element_text(size = 12),  # Adjust axis title size
-    legend.position = "top",             # Position the legend on the right
-    legend.title = element_blank()         # Remove the legend title
-  )
-
-# Print the plot
-print(MUTI_density_compare)
-
-
-
-
-
-
-
-
-
-
-#####################################################################
-#histogram to display density of UN values (Urban or Non-Urban)  
-
-UNCoastal <- AllIndexesCoastal %>% 
+AllBirds_UN <- AllIndexes_AllBirds %>% 
   filter(!is.na(Urban) & is.finite(Urban))
-nrow(UNCoastal)
+nrow(AllBirds_UN) #533
 
-UN_density <- UNCoastal %>%
-  ggplot(aes(x=Urban, fill=Urban)) + 
+AllBirds_UN_2 <- AllBirds_UN %>% 
+  select(Urban, Group)
+colnames(AllBirds_UN_2)
+nrow(AllBirds_UN_2) #533, looks good! 
+
+#new df with reduced columnds of AllIndexesCoastal
+
+CoastalBirds_UN <- AllIndexesCoastal %>% 
+  filter(!is.na(Urban) & is.finite(Urban))
+nrow(CoastalBirds_UN) #129
+
+CoastalBirds_UN_2 <- CoastalBirds_UN %>% 
+  select(Urban, Group)
+colnames(CoastalBirds_UN_2)
+nrow(CoastalBirds_UN_2) #129, looks good! 
+
+###time to bind rows for UAI 
+
+combined_UN_for_density <- bind_rows(AllBirds_UN_2, CoastalBirds_UN_2)
+nrow(combined_UN_for_density) #662
+533 + 129 # = 662
+#correct number of rows 
+
+
+
+#histogram to display density of UN values (Urban or Non-Urban)  
+#comparing all_birds distribution and coastal_birds distribution 
+
+UN_density <- ggplot() + 
+  # Density plots according to groups 
   geom_histogram(
-    binwidth = 0.25,
-    color = 'black', 
-    fill ='#1E88E5', 
-    alpha = 0.5
-  )  +
-  scale_y_continuous(
-    breaks = c(0, 20, 40, 60, 80, 100),
-    labels = c("0", "20", "40", "60", "80", "100")
-  ) + 
+    data = combined_UN_for_density, 
+    aes(x = Urban, fill = Group), 
+    alpha = 0.7, 
+    binwidth = 0.3
+  ) +  
+  scale_fill_manual(
+    values = c("All" = "cadetblue1", "Coastal" = "cadetblue")
+  )  + 
   scale_x_continuous(
-    breaks = c(0, 1),              # Set x-axis breaks
-    labels = c("Non Urban", "Urban")           # Set x-axis labels 
-  ) + 
+    breaks = c(0, 1),         # Specify the breaks (original values on the x-axis)
+    labels = c("Non-Urban", "Urban")  # Labels to display for each break
+  ) +
   labs (
     #title = "Coastal Score Distribution", 
-    x = "Urban Classification", 
+    x = "UN", 
     y = ""
   ) + 
   theme_classic() + 
   theme(
-    #plot.title = element_text(hjust = 0.5), # Center the plot title
     axis.title = element_text(size = 12),   # Adjust axis title size
     axis.title.y = element_text(margin = margin(r = 10)) 
-    #axis.text.y=element_blank(), # Remove y-axis text labels
-    #axis.ticks.y=element_blank()  # Remove y-axis ticks
   )
 
 print(UN_density)
 
+saveRDS(UN_density, here("Outputs", "UN_Density_Comparison.rds"))
 
 
-#arrange them all side by side 
+
+
+###################### ARRANGE ###################### 
+###################### SIDE BY SIDE ###################### 
+
+#arrange plots 
 all_density <- grid.arrange(UAI_density, MUTI_density, UN_density, ncol=3, top= "Coastal Score Distributions", left = "Number of Species")
 
+saveRDS(all_density, here("Outputs", "All_Density_Plots.rds"))
 
 #?ggplot
+
+
+
+###################################### ALTERNATIVE OPTION FOR UN ###################################### 
+
+########################## percentages, stacked barplot for UN 
+
+
+library(dplyr)
+
+
+UN_stacked_barplot <- ggplot(combined_UN_for_density_summary, aes(x = Group, y = percentage, fill = Group_Urban)) + 
+  geom_bar(stat = "identity", position = "fill", color = "black") + 
+  scale_y_continuous(labels = scales::percent) +  # Show percentages on the y-axis
+  # Custom colors for each Group & Urban combination
+  scale_fill_manual(
+    values = c(
+      "All & 0" = "darkslategray3",   # Color for "All & Nonurban"
+      "All & 1" = "darkslategray4",        # Color for "All & Urban"
+      "Coastal & 0" = "deepskyblue1",  # Color for "Coastal & Nonurban"
+      "Coastal & 1" = "deepskyblue4"        # Color for "Coastal & Urban"
+    ),
+    labels = c(
+      "All & 0" = "Non-urban",    # Custom labels
+      "All & 1" = "Urban",
+      "Coastal & 0" = "Non-urban",
+      "Coastal & 1" = "Urban"
+    )
+  ) + 
+  labs(
+    x = "", 
+    y = "Percentage", 
+    fill = ""  # Legend title
+  ) + 
+  guides(
+    fill = guide_legend(nrow = 2)  # Split the legend into 2 rows
+  ) + 
+  theme_classic() + 
+  theme(
+    axis.title = element_text(size = 12),   # Adjust axis title size
+    legend.position = "top",                # Position the legend at the top
+    legend.title = element_text(size = 12), # Adjust legend title size
+    legend.text = element_text(size = 8)   # Adjust legend text size
+  )
+print(UN_stacked_barplot)
+
+
+
+
+#new arrangement of all the plots (using stacked, percentage barplot)
+
+all_density_2 <- grid.arrange(UAI_density, MUTI_density, UN_stacked_barplot, ncol=3, top= "Coastal Score Distributions", left = "Number of Species")
+
+saveRDS(all_density_2, here("Outputs", "All_Density_Plots_option2.rds"))
+
+

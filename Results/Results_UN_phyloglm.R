@@ -1,9 +1,15 @@
+##########################################################
+######### Coastal Birds Urban Tolerance Project ##########
+##########################################################
+# Goal: Run Phylogenetic Logistic Trait Models for UN
+# Authors: Sarah L. Jennings, Emma M. Garrison
+##########################################################
+
 # The objective of this script is to run UN models with phyloglm(), 
-# which is a logistic regression, NOT linear. This is more fitting 
-# for binary response variables. 
+# this is a logistic regression, which is more fitting for binary response variables like UN 
 
-#load required packages 
 
+# load required packages 
 library(nlme)
 library(tidyverse)
 library(here)
@@ -18,9 +24,18 @@ library(easystats)
 library(phylolm)
 library(logistf)
 
+
+# we will be boot strapping the final model for each trait
+# therefore, we need 21 random numbers for set.seed() to produce consistent results 
+set.seed(456)
+seednums <- sample(100:999, 21, replace=F) # get 21 integers with 3 digits (between 100 and 999)
+seednums
+
+
+#######################################################
 ###################### BODY MASS ######################
 #######################################################
-#######################################################
+
 
 ###################### Prep
 
@@ -74,24 +89,19 @@ MassTraitDat3$Mass_log <- as.numeric(MassTraitDat3$Mass_log)
 
 #lets run the model using Phyloglm
 
-######## method = default should be "logistic_MPLE" ######## 
+############################# 
+
+# default method ="logistic_MPLE"
 
 phyglm_UN_Mass <- phyloglm( Urban ~ Mass_log, 
                                data = MassTraitDat3, 
                                phy = Massphy3, 
-                               boot = 1000) # just add the boot = argument to the function
+                               boot = 1000)
 summary(phyglm_UN_Mass)
-# fails to converge!
-#Warning message:
-  #In phyloglm(Urban ~ Mass_log, data = MassTraitDat3, phy = Massphy3,  :
-                #the estimate of 'alpha' (0.555065022314764) reached the upper bound (0.559633190138608).
-             # This may simply reflect a flat likelihood at large alpha values,
-             # meaning that the phylogenetic correlation is estimated to be negligible.
+# this fails to converge
+# also produces warning about alpha reaching the upper bound
 
-# set the mean tip height of the tree as a variable called t
-t <- phyglm_UN_Mass$mean.tip.height
-
-# scale and center mass and try model 
+# scale and center mass and run model 
 phyglm_UN_Mass_scale <- phyloglm( Urban ~ scale(Mass_log), 
                             data = MassTraitDat3, 
                             phy = Massphy3, 
@@ -100,60 +110,82 @@ phyglm_UN_Mass_scale <- phyloglm( Urban ~ scale(Mass_log),
 summary(phyglm_UN_Mass_scale)
 # this also fails converge
 
+# print AIC values for models with different upper bounds
+# try intervals of 0.1 from 0 up to 4 for log.alpha.bound
+# 4 is the default setting for log.alpha.bound
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~ scale(Mass_log), 
+                 data = MassTraitDat3, 
+                 phy = Massphy3,
+                 log.alpha.bound = i)$aic)
+}
+
+# there is higher support for larger alpha values (later in the printed list) that correspond to low phylogenetic signal
+
+# we can also look at logLik, which should show a similar pattern to AIC
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~ scale(Mass_log), 
+                 data = MassTraitDat3, 
+                 phy = Massphy3,
+                 log.alpha.bound = i)$logLik)
+}
+# same as above. Lower log likelihood values for models with higher values of alpha/low phylo signal
+
+
 # try model with scale(Mass_log) by fixing alpha at upper bounds
 # upper bounds for alpha in our models is:
-exp(4)/t # where t is the mean tip height of our tree
-# log.alpha.bound = 4 sets the upper bound at this value (0.5596332)
-# set start.alpha at 0.55, which is just below the upper bound to effectively fix alpha
-# note: if you set start.alpha to exactly 0.5596332 it doesn't like it, so this is my work around
+t <- phyglm_UN_Mass$mean.tip.height # set the mean tip height of the tree as a variable called t
+t # t for our tree is 97.56
+# use t to find the upper bound of alpha for our model
+exp(4)/t # equals 0.5596322
+exp(-4)/t # this is the lower bound
+# Note: alpha can take on values from 0 to infinity, but around log.alpha.bound = 4 the model should produce results similar to a non-phylogenetic logistic model
 
-phyglm_UN_Mass_fix <- phyloglm( Urban ~ scale(Mass_log), 
+# log.alpha.bound = 4 sets the upper bound at this value (0.5596332)
+# we can also set start.alpha, the alpha value where the model begins its search
+# we can't set start.alpha to exactly 0.5596332 nad have the run model (so it won't let us actually fix the value of alpha)
+# we can give a start.alpha value very close to the upper bound (e.g., 0.557)
+# this work around basically constrains the model's search area for the optimal alpha value within a very small range of values (similar to fixing it)
+set.seed(seednums[1])
+phyglm_UN_Mass_fix <- phyloglm(Urban ~ scale(Mass_log), 
                                   data = MassTraitDat3, 
                                   phy = Massphy3, 
-                                  log.alpha.bound = 4,
-                                  start.alpha = 0.55,
-                                  boot = 1000)
+                                  start.alpha = 0.557,
+                                  log.alpha.bound = 4, 
+                                  boot=1000)
 summary(phyglm_UN_Mass_fix)
 
 
-# as alpha is at upper bounds, try a regular logistic model
+# save model
+saveRDS(phyglm_UN_Mass_fix, here("Outputs", "phyglm_UN_Mass_fix.rds"))
+# load model
+phyglm_UN_Mass_fix <- readRDS(here("Outputs", "phyglm_UN_Mass_fix.rds"))
+
+# as alpha is at upper bounds, we can also look at a regular logistic model
 # use logistf package for this
 # this runs as logistic regression with Firth's correction (a bias reduction method)
 # Ives and Garland 2010 recommend log.alpha.bound = 4 as the limits (and this is default setting in phyloglm)
-# they specify this value (4) because when the model reaches the upper bounds of this limit,
+# they specify 4 because when the model reaches the upper bounds of this limit,
 # the model estimates should be very similar to a logistic model using Firth's correction
 glm_UN_Mass <- logistf(Urban ~ scale(Mass_log), data = MassTraitDat3)
 summary(glm_UN_Mass)
 summary(phyglm_UN_Mass_fix) # compare estimates
-# very similar
-
-# time to check out the model - CAN DELETE THIS. NOT USEFUL FOR LOGISTIC MODEL
-qqnorm(phyglm_UN_Mass$residuals)
-qqline(phyglm_UN_Mass$residuals)
-hist(phyglm_UN_Mass$residuals, breaks = 12) 
-
-#lets get those values for our results table 
-summary(phyglm_UN_Mass)
-confint(phyglm_UN_Mass)
+# very similar coefficients
 
 # get values for results table for the fixed alpha model with scale(Mass_log)
 summary(phyglm_UN_Mass_fix)
-# use the bootstrapped CIs in the summary. Do not use confint() on these models
+# use the bootstrapped CIs in the summary
 
-#let's calculate alpha and half-life as measurements of phylogenetic signal 
-alpha <- phyglm_UN_Mass$alpha # where phyglm_UN_Mass is the name of your model
-alpha #555065
-log(2)/alpha # Half-Life for the model = 1.249
-#compared to T of 97.561, this is a small Half-Life (small phylogenetic signal) 
-
-# get half life for the fixed model
-alpha <- phyglm_UN_Mass_fix$alpha # where phyglm_UN_Mass is the name of your model
-log(2)/alpha # Half-Life for the model = 1.260
-#compared to T of 97.561, this is a small -> low phylogenetic signal
+# get alpha, t, and half life for the model
+(phyglm_UN_Mass_fix$mean.tip.height) # this is t (mean tip height) of the tree
+(alpha_mass <- phyglm_UN_Mass_fix$alpha) # this is alpha
+(hl_mass <- log(2)/alpha_mass) # this is the half-life for the model
+# compare the value for half life with the mean tip height of the tree
+# compared to t, the half life is small -> therefore we conclude there is low phylogenetic signal
 
 
-###################### SENSORY TRAITS ######################
 #######################################################
+###################### SENSORY TRAITS #################
 #######################################################
 
 
@@ -207,19 +239,17 @@ SensoryTraitDat2$C.T <- as.numeric(SensoryTraitDat2$C.T)
 # let's run a model using Phyloglm 
 
 
-######## method = logistic_MPLE ######## 
+############################ Run Models
+
 phyglm_UN_CT <- phyloglm( Urban ~ C.T + Mass_log, 
                               data = SensoryTraitDat2, 
                               phy = Sensoryphy2, 
-                              boot = 1000) # just add the boot = argument to the function
+                              boot = 1000) 
 # this model fails to converge
-#Warning message:
- # In phyloglm(Urban ~ C.T + Mass_log, data = SensoryTraitDat2, phy = Sensoryphy2,  :
-  #              the boundary of the linear predictor has been reached during the optimization procedure.
-   #           You can increase this bound by increasing 'btol'.
+summary(phyglm_UN_CT)
 
-
-# scale explanatory variables
+# scale and center the explanatory variables and run the model
+set.seed(seednums[2])
 phyglm_UN_CT_scale <- phyloglm(Urban ~ scale(C.T) + scale(Mass_log), 
                           data = SensoryTraitDat2, 
                           phy = Sensoryphy2, 
@@ -228,10 +258,16 @@ phyglm_UN_CT_scale <- phyloglm(Urban ~ scale(C.T) + scale(Mass_log),
 # this version does converge
 summary(phyglm_UN_CT_scale)
 
-# get half life for the model
-alpha <- phyglm_UN_CT_scale$alpha 
-log(2)/alpha # Half-Life for the model = 1.799
-# compared to T of 97.561, this is a small Half-Life -> low phylogenetic signal
+# save model
+saveRDS(phyglm_UN_CT_scale, here("Outputs", "phyglm_UN_CT_scale.rds"))
+# load model
+phyglm_UN_CT_scale <- readRDS(here("Outputs", "phyglm_UN_CT_scale.rds"))
+
+# get alpha, t, and half life for the model
+(alpha_CT <- phyglm_UN_CT_scale$alpha) # alpha
+(phyglm_UN_CT_scale$mean.tip.height) # t (aka mean tip height)
+(hl_CT<- log(2)/alpha_CT) # half-life
+# compared to t, this is a small Half-Life -> low phylogenetic signal
 
 ############################# Peak Frequency and UN #################################
 
@@ -266,27 +302,29 @@ SensoryTraitDat5$peak_freq <- as.numeric(SensoryTraitDat5$peak_freq)
 # let's run a model using Phyloglm 
 
 
-######## method = logistic_MPLE ######## 
+##################### Run Models
 
 phyglm_UN_pf <- phyloglm( Urban ~ peak_freq + Mass_log, 
                           data = SensoryTraitDat5, 
                           phy = Sensoryphy5, 
-                          boot = 1000) # just add the boot = argument to the function
+                          boot = 1000) 
 
-#Warning message:
-  #In phyloglm(Urban ~ peak_freq + Mass_log, data = SensoryTraitDat5,  :
-              #  the boundary of the linear predictor has been reached during the optimization procedure.
-             # You can increase this bound by increasing 'btol'
-
+summary(phyglm_UN_pf)
 
 # run model with scaled and centered explanatory variables
+set.seed(seednums[3])
 phyglm_UN_pf_scale <- phyloglm( Urban ~ scale(peak_freq) + scale(Mass_log), 
                           data = SensoryTraitDat5, 
                           phy = Sensoryphy5, 
                           boot = 1000)
 # warning: alpha reached upper bound
-# but model converges
+# but model does converge
 summary(phyglm_UN_pf_scale)
+
+# save model
+saveRDS(phyglm_UN_pf_scale, here("Outputs", "phyglm_UN_pf_scale.rds"))
+# load model
+phyglm_UN_pf_scale <- readRDS(here("Outputs", "phyglm_UN_pf_scale.rds"))
 
 # as alpha is at upper bound, also look at regular logistic model
 glm_UN_pf_scale <- logistf(Urban ~ scale(peak_freq) + scale(Mass_log), 
@@ -294,14 +332,15 @@ glm_UN_pf_scale <- logistf(Urban ~ scale(peak_freq) + scale(Mass_log),
 summary(glm_UN_pf_scale)
 # coefficient for peak freq is quite different, but we reach the same conclusions
 
-# get half life for the model
-alpha <- phyglm_UN_pf_scale$alpha
-log(2)/alpha
+# get alpha, t, and half life for the model
+(phyglm_UN_pf_scale$mean.tip.height) # t
+(alpha_pfreq <- phyglm_UN_pf_scale$alpha) # alpha
+(hl_pfreq<- log(2)/alpha_pfreq) # half life
 # low half life relative to mean tip height -> low phylogenetic signal
 
 
-###################### DIET TRAITS ######################
 #######################################################
+###################### DIET TRAITS #####################
 #######################################################
 
 
@@ -356,12 +395,12 @@ DietTraitDat3$Diet.Inv <- as.numeric(DietTraitDat3$Diet.Inv)
 # let's run a model using Phyloglm 
 
 
-######## method = logistic_MPLE ######## 
+###################### Run Models
 
 phyglm_UN_Invert <- phyloglm( Urban ~ Diet.Inv + Mass_log, 
                             data = DietTraitDat3, 
                             phy = Dietphy3, 
-                            boot = 1000) # just add the boot = argument to the function
+                            boot = 1000) 
 
 #Warning message:
   #In phyloglm(Urban ~ Diet.Inv + Mass_log, data = DietTraitDat3, phy = Dietphy3,  :
@@ -380,7 +419,7 @@ summary(phyglm_UN_Invert_scale)
 
 
 # print AIC values for models with different upper bounds
-# intervals of 0.1 from 0 up to 4
+# intervals of 0.1 from 0 up to 4 for log.alpha.bound
 # I tried saving these to a vector but I am only able to get it to save AIC for models where it converged
 # so a lot of values are lost and it's hard to know which AIC corresponds to which value of log.alpha.bound 
 # this is not super sophisticated but it works for what we need it for
@@ -413,34 +452,51 @@ phyglm_UN_Invert_fix_4 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log),
 
 # try increasing upper bounds a small amount over 4
 # both these models converge
+set.seed(seednums[4])
 phyglm_UN_Invert_fix_4.05 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log), 
                                     data = DietTraitDat3, 
                                     phy = Dietphy3, 
                                     start.alpha = 0.55,
+<<<<<<< HEAD
                                     log.alpha.bound = 4.05, boot=1000) # also converged - means no phylogenetic signal 
 summary(phyglm_UN_Invert_fix_4.05)
+=======
+                                    log.alpha.bound = 4.05, boot=1000)
+summary(phyglm_UN_Invert_fix_4.05) # this converges
+>>>>>>> f2d02a1c279c17c6383c64fbabdf01b684ca4b56
 phyglm_UN_Invert_fix_4.05$aic
 
 phyglm_UN_Invert_fix_4.1 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log), 
                                        data = DietTraitDat3, 
                                        phy = Dietphy3, 
                                        start.alpha = 0.55,
+<<<<<<< HEAD
                                        log.alpha.bound = 4.1, boot=1000) # also converged - means no phylogenetic signal 
 summary(phyglm_UN_Invert_fix_4.1)
+=======
+                                       log.alpha.bound = 4.1, boot=1000)
+summary(phyglm_UN_Invert_fix_4.1) # this also converges
+>>>>>>> f2d02a1c279c17c6383c64fbabdf01b684ca4b56
 phyglm_UN_Invert_fix_4.1$aic
 
+# coefficients fairly stable across 4.05 and 4.1 models
+# save model
+saveRDS(phyglm_UN_Invert_fix_4.05, here("Outputs", "phyglm_UN_Invert_fix.rds"))
+# load model
+phyglm_UN_Invert_fix_4.05 <- readRDS(here("Outputs", "phyglm_UN_Invert_fix.rds"))
 
 # also look at non-phylogenetic logistic model
 glm_UN_Invert <- logistf(Urban ~ scale(Diet.Inv) + scale(Mass_log), 
         data = DietTraitDat3)
 summary(glm_UN_Invert)
 # we reach similar conclusions as two models above
-# interestingly, coef for Diet.Inv is even smaller here
 
-# get half life for the model
-alpha <- phyglm_UN_Invert_fix_4.05$alpha 
-alpha
-log(2)/alpha # small half life -> low phylogenetic signal
+# get alpha, t, and half life for the model
+# using phyglm_UN_Invert_fix_4.05 as final model
+(phyglm_UN_Invert_fix_4.05$mean.tip.height) # t
+(alpha_invert <- phyglm_UN_Invert_fix_4.05$alpha) # alpha
+(hl_invert <- log(2)/alpha_invert) # half life
+# small half life -> low phylogenetic signal
 
 ######################## UN and % Diet Vertebrates ##########################
 
@@ -478,20 +534,14 @@ DietTraitDat6$Diet.Vert <- as.numeric(DietTraitDat6$Diet.Vert)
 #lets run the model using Phyloglm!  
 
 
-######## method = logistic_MPLE ######## 
+####################### Run Models
 
 
 phyglm_UN_Vert <- phyloglm( Urban ~ Diet.Vert + Mass_log, 
                               data = DietTraitDat6, 
                               phy = Dietphy6, 
-                              boot = 1000) # just add the boot = argument to the function
+                              boot = 1000) 
 summary(phyglm_UN_Vert)
-
-#Warning message:
- # In phyloglm(Urban ~ Diet.Vert + Mass_log, data = DietTraitDat6,  :
-  #              the boundary of the linear predictor has been reached during the optimization procedure.
-   #           You can increase this bound by increasing 'btol'.
-
 
 # using scaled explanatory variables
 phyglm_UN_Vert_scale <- phyloglm( Urban ~ scale(Diet.Vert) + scale(Mass_log), 
@@ -519,42 +569,31 @@ for (i in seq(0, 4, by = 0.1)) {
 }
 # we reach the same conclusion with log likelihood
 
-# try to fix alphe at upper bounds
-# this fails to converge
-phyglm_UN_Vert_fix_4 <- phyloglm( Urban ~ scale(Diet.Vert) + scale(Mass_log), 
+# try to fix alpha at upper bounds
+set.seed(seednums[5])
+phyglm_UN_Vert_fix <- phyloglm( Urban ~ scale(Diet.Vert) + scale(Mass_log), 
                                      data = DietTraitDat6, 
                                      phy = Dietphy6, 
-                                     start.alpha = 0.55,
+                                     start.alpha = 0.557,
                                      log.alpha.bound = 4, boot = 1000)
+summary(phyglm_UN_Vert_fix)
 
-# try increasing upper bounds a small amount over 4
-# both of these models converge
-phyglm_UN_Vert_fix_4.05 <- phyloglm( Urban ~ scale(Diet.Vert) + scale(Mass_log), 
-                                     data = DietTraitDat6, 
-                                     phy = Dietphy6, 
-                                     start.alpha = 0.55,
-                                    log.alpha.bound = 4.05, boot = 1000)
-summary(phyglm_UN_Vert_fix_4.05)
-phyglm_UN_Vert_fix_4.05$aic # ~ 170
+# save model
+saveRDS(phyglm_UN_Vert_fix, here("Outputs", "phyglm_UN_Vert_fix.rds"))
+# load model
+phyglm_UN_Vert_fix <- readRDS(here("Outputs", "phyglm_UN_Vert_fix.rds"))
 
-phyglm_UN_Vert_fix_4.1 <- phyloglm( Urban ~ scale(Diet.Vert) + scale(Mass_log), 
-                                     data = DietTraitDat6, 
-                                     phy = Dietphy6, 
-                                     start.alpha = 0.55,
-                                     log.alpha.bound = 4.1, boot = 1000)
-summary(phyglm_UN_Vert_fix_4.1)
-phyglm_UN_Vert_fix_4.1$aic # ~ 170
-
-# look at a non-phylogenetic model
+# as alpha is at upper bound, look at a non-phylogenetic model
 glm_UN_Vert <- logistf(Urban ~ scale(Diet.Vert) + scale(Mass_log), 
                        data = DietTraitDat6)
 summary(glm_UN_Vert)
 # very similar
 
-# get half life
-alpha <- phyglm_UN_Vert_fix_4.05$alpha 
-log(2)/alpha # Half-Life for the model = 1.18
-# compared to T of 97.561, this is a small Half-Life
+# get alpha, t, and half life for the model
+(phyglm_UN_Vert_fix$mean.tip.height) # t
+(alpha_vert <- phyglm_UN_Vert_fix$alpha) # alpha
+(hl_vert <- log(2)/alpha_vert) # half life
+# compared to t, this is a small half life
 
 ######################## UN and % Diet Plant/Seed ##########################
 
@@ -589,41 +628,41 @@ DietTraitDat9$Mass_log <- as.numeric(DietTraitDat9$Mass_log)
 DietTraitDat9$Diet.PS <- as.numeric(DietTraitDat9$Diet.PS)
 
 
-
 #lets run the model using Phyloglm!  
 
 
-######## method = logistic_MPLE ######## 
+######################## # Run Models
 
 
 phyglm_UN_PS <- phyloglm( Urban ~ Diet.PS + Mass_log, 
                             data = DietTraitDat9, 
                             phy = Dietphy9, 
-                            boot = 1000) # just add the boot = argument to the function
+                            boot = 1000) 
 
-#Warning message:
- # In phyloglm(Urban ~ Diet.PS + Mass_log, data = DietTraitDat9, phy = Dietphy9,  :
-  #              the boundary of the linear predictor has been reached during the optimization procedure.
-   #           You can increase this bound by increasing 'btol'.
 summary(phyglm_UN_PS)
 
 # try model with scaled and centered explanatory variables
+set.seed(seednums[6])
 phyglm_UN_PS_scale <- phyloglm( Urban ~ scale(Diet.PS) + scale(Mass_log), 
                           data = DietTraitDat9, 
                           phy = Dietphy9, 
-                          boot = 1000) # just add the boot = argument to the function
+                          boot = 1000) 
 
 # this converges
 summary(phyglm_UN_PS_scale)
 
-# find half life for the model
-alpha <- phyglm_UN_PS_scale$alpha 
-alpha # 0.110
-log(2)/alpha # Half-Life for the model = 6.32
-# small compared to T of 97.561 -> low phylogenetic signal
+# save model
+saveRDS(phyglm_UN_PS_scale, here("Outputs", "phyglm_UN_PS_scale.rds"))
+# load model
+phyglm_UN_PS_scale <- readRDS(here("Outputs", "phyglm_UN_PS_scale.rds"))
 
+# get alpha, t, and half life for the model
+(phyglm_UN_PS_scale$mean.tip.height) # t
+(alpha_PS <- phyglm_UN_PS_scale$alpha) # alpha
+(hl_PS <- log(2)/alpha_PS) # half life
+# small compared to t -> low phylogenetic signal
 
-######################## UN and % Diet Fruit/Nut ##########################
+######################## UN and % Diet Fruit/Nectar ##########################
 
 
 # lets first simplify a NEW database by removing records where we don't have an UAI / % diet plant seed 
@@ -661,18 +700,20 @@ DietTraitDat12$Diet.FN <- as.numeric(DietTraitDat12$Diet.FN)
 #lets run the model using Phyloglm!  
 
 
-######## method = logistic_MPLE ######## 
+####################### Run Models
 
 
 phyglm_UN_FN <- phyloglm( Urban ~ Diet.FN + Mass_log, 
                           data = DietTraitDat12, 
                           phy = Dietphy12, 
-                          boot = 1000) # just add the boot = argument to the function
+                          boot = 1000) 
 
 # this model fails to converge
 # multiple other warning messages
 
+
 # run model with scaled and centered explanatory variables
+set.seed(seednums[7])
 phyglm_UN_FN_scale <- phyloglm( Urban ~ scale(Diet.FN) + scale(Mass_log), 
                           data = DietTraitDat12, 
                           phy = Dietphy12, 
@@ -681,17 +722,24 @@ phyglm_UN_FN_scale <- phyloglm( Urban ~ scale(Diet.FN) + scale(Mass_log),
 # this model converges
 summary(phyglm_UN_FN_scale)
 
-# find half life for the model
-alpha <- phyglm_UN_FN_scale$alpha 
-alpha # 0.091
-log(2)/alpha # Half-Life for the model = 7.632
-# compared to T of 97.561, this is a small Half-Life
+
+# save model
+saveRDS(phyglm_UN_FN_scale, here("Outputs", "phyglm_UN_FN_scale.rds"))
+# load model
+phyglm_UN_FN_scale <- readRDS(here("Outputs", "phyglm_UN_FN_scale.rds"))
 
 
+# get alpha, t, and half life for the model
+(phyglm_UN_FN_scale$mean.tip.height) # t
+(alpha_FN <- phyglm_UN_FN_scale$alpha) # alpha
+(hl_FN <- log(2)/alpha_FN) # half life
+# compared to t, this is a small half life
 
-###################### LIFE HISTORY TRAITS ######################
+
 #######################################################
+###################### LIFE HISTORY TRAITS ############
 #######################################################
+
 
 
 ###################### Prep
@@ -749,23 +797,32 @@ LifehistTraitDat3$brood_value <- as.numeric(LifehistTraitDat3$brood_value)
 
 #lets run the model using Phyloglm!  
 
-######## method = logistic_MPLE --> the default ######## 
+############################## Run Models
 
 phyglm_UN_bv <- phyloglm( Urban ~ brood_value + Mass_log, 
                           data = LifehistTraitDat3, 
                           phy = Lifehistphy3, 
-                          boot = 1000) # just add the boot = argument to the function
+                          boot = 1000) 
 # this model fails to converge
 summary(phyglm_UN_bv)
 
-# try the model with center and scaled variables
+
+# run the model with center and scaled variables
+set.seed(seednums[8])
 phyglm_UN_bv_scale <- phyloglm( Urban ~ scale(brood_value) + scale(Mass_log), 
                           data = LifehistTraitDat3, 
                           phy = Lifehistphy3, 
                           boot = 1000) 
 summary(phyglm_UN_bv_scale) 
 # this successfully converges 
-# alpha at upper bounds
+# alpha is at upper bounds
+
+
+# save model
+saveRDS(phyglm_UN_bv_scale, here("Outputs", "phyglm_UN_bv_scale.rds"))
+# load model
+phyglm_UN_bv_scale <- readRDS(here("Outputs", "phyglm_UN_bv_scale.rds"))
+
 
 # run a non-phylogenetic logistic model for comparison
 glm_UN_bv <- logistf(Urban ~ scale(brood_value) + scale(Mass_log), 
@@ -774,9 +831,11 @@ summary(glm_UN_bv)
 # we reach the same conclusions
 # some differences in coefficients though
 
-alpha <- phyglm_UN_bv_scale$alpha 
-alpha #  0.5585
-log(2)/alpha # Half-Life for the model = 1.241
+
+# get alpha, t, and half life for the model
+(phyglm_UN_bv_scale$mean.tip.height) # t
+(alpha_bv <- phyglm_UN_bv_scale$alpha) # alpha
+(hl_bv <- log(2)/alpha_bv) # half-life
 # small half life relative to t -> low phylogenetic signal
 
 
@@ -816,19 +875,20 @@ LifehistTraitDat6$clutch_size <- as.numeric(LifehistTraitDat6$clutch_size)
 
 #lets run the model using Phyloglm!  
 
-######## method = logistic_MPLE --> the default ######## 
+################################ Run Models
 
 phyglm_UN_clutch <- phyloglm( Urban ~ clutch_size + Mass_log, 
                           data = LifehistTraitDat6, 
                           phy = Lifehistphy6, 
-                          boot = 1000) # just add the boot = argument to the function
+                          boot = 1000) 
 # this model fails to converge
+
 
 # try model with scaled and centered variables
 phyglm_UN_clutch_scale <- phyloglm( Urban ~ scale(clutch_size) + scale(Mass_log), 
                               data = LifehistTraitDat6, 
                               phy = Lifehistphy6, 
-                              boot = 1000) # just add the boot = argument to the function
+                              boot = 1000) 
 
 summary(phyglm_UN_clutch_scale) 
 # still fails to converge
@@ -844,41 +904,42 @@ for (i in seq(0, 4, by = 0.1)) {
 }
 # AIC values support models with larger values of alpha (low phylo signal)
 
+
+
 # fix alpha at upper bounds
-# this still fails to converge
-phyglm_UN_clutch_fix_4 <- phyloglm( Urban ~ scale(clutch_size) + scale(Mass_log), 
+set.seed(seednums[9])
+phyglm_UN_clutch_fix <- phyloglm( Urban ~ scale(clutch_size) + scale(Mass_log), 
                               data = LifehistTraitDat6, 
                               phy = Lifehistphy6, 
                               log.alpha.bound = 4,
-                              start.alpha = 0.55,
+                              start.alpha = 0.557,
                               boot = 1000) 
 
-# I tried a bunch of options of log.alpha.bound with fix log.alpha.bounds slightly and slight above 4
-# none of them want to converge
-phyglm_UN_clutch_fix_2.9 <- phyloglm( Urban ~ scale(clutch_size) + scale(Mass_log), 
-                                    data = LifehistTraitDat6, 
-                                    phy = Lifehistphy6, 
-                                    log.alpha.bound = 2.9, boot=1000) 
-# I can't get this to converge unless I drop it all the way down to 2.9
-# this doesn't really line up with the AIC values above
-# not sure what to make of this
-summary(phyglm_UN_clutch_fix_2.9)
-exp(2.9)/t
+summary(phyglm_UN_clutch_fix)
 
-# run non-phylogenetic glm
+
+# save model
+saveRDS(phyglm_UN_clutch_fix, here("Outputs", "phyglm_UN_clutch_fix.rds"))
+# load model
+phyglm_UN_clutch_fix <- readRDS(here("Outputs", "phyglm_UN_clutch_fix.rds"))
+
+
+
+# run non-phylogenetic glm for comparison
 library(logistf)
 glm_UN_clutch <- logistf(Urban ~ scale(clutch_size) + scale(Mass_log), 
                      data = LifehistTraitDat6)            
 summary(glm_UN_clutch)
 # we reach the same conclusions
+# fairly similar coefficients to fixed model above
 
 
-# get half life for the model
-alpha <- phyglm_UN_clutch_fix_2.9$alpha 
-alpha #  
-log(2)/alpha 
 
-
+# get alpha, t, and half life for the model
+(phyglm_UN_clutch_fix$mean.tip.height) # t
+(alpha_clutch <- phyglm_UN_clutch_fix$alpha) # alpha
+(hl_clutch <- log(2)/alpha_clutch) # half life
+# small half life relative to t -> low phylogenetic signal
 
 ######################## UN and % longevity ##########################
 
@@ -916,19 +977,13 @@ LifehistTraitDat9$longevity <- as.numeric(LifehistTraitDat9$longevity)
 
 #lets run the model using Phyloglm!  
 
-######## method = logistic_MPLE --> the default ######## 
+########################## Run Models
 
 phyglm_UN_long <- phyloglm( Urban ~ longevity + Mass_log, 
                               data = LifehistTraitDat9, 
                               phy = Lifehistphy9, 
-                              boot = 1000) # just add the boot = argument to the function
-
+                              boot = 1000) 
 summary(phyglm_UN_long)
-# this model converges but we see the following warning
-#Warning message:
- # In phyloglm(Urban ~ longevity + Mass_log, data = LifehistTraitDat9,  :
-  #              the boundary of the linear predictor has been reached during the optimization procedure.
-   #           You can increase this bound by increasing 'btol'.
 
 
 # run model using scaled and centered variables
@@ -940,6 +995,7 @@ phyglm_UN_long_scale <- phyloglm( Urban ~ scale(longevity) + scale(Mass_log),
 # this model fails to converge
 summary(phyglm_UN_long_scale)
 
+
 # print AIC values for models with different upper bounds
 # intervals of 0.1 from 0 up to 4
 for (i in seq(0, 4, by = 0.1)) {
@@ -950,28 +1006,36 @@ for (i in seq(0, 4, by = 0.1)) {
 }
 # AIC values support models with larger values of alpha (low phylo signal)
 
-# try fixing alpha at upper bounds
 
-phyglm_UN_long_fix_4 <- phyloglm( Urban ~ scale(longevity) + scale(Mass_log), 
+# try fixing alpha at upper bounds
+set.seed(seednums[10])
+phyglm_UN_long_fix <- phyloglm( Urban ~ scale(longevity) + scale(Mass_log), 
                                   data = LifehistTraitDat9, 
                                   phy = Lifehistphy9, 
                                   log.alpha.bound = 4,
-                                  start.alpha = 0.55)
-summary(phyglm_UN_long_fix_4) # this works
+                                  start.alpha = 0.55,
+                                  boot = 1000)
+summary(phyglm_UN_long_fix) # this converges
 
-# compare with non-phylogenetic logistic regression
+
+# save model
+saveRDS(phyglm_UN_long_fix, here("Outputs", "phyglm_UN_long_fix.rds"))
+# load model
+phyglm_UN_long_fix <- readRDS(here("Outputs", "phyglm_UN_long_fix.rds"))
+
+
+# because alpha at upper bounds, compare with non-phylogenetic logistic regression
 glm_UN_long <- logistf(Urban ~ scale(longevity) + scale(Mass_log), 
                       data = LifehistTraitDat9)
 summary(glm_UN_long)
 # this is similar to model with log.alpha.bound fixed at 4
 
-# get half life for the model
-alpha <- phyglm_UN_long_fix_4$alpha 
-alpha #  0.557 
-log(2)/alpha # Half-Life for the model = 1.244
-# compared to T of 97.561, this is a small half-life
 
-
+# get alpha, t, and half life for the model
+(phyglm_UN_long_fix$mean.tip.height) # t
+(alpha_long <- phyglm_UN_long_fix$alpha) # alpha
+(hl_long <- log(2)/alpha_long) # half life
+# compared to t, this is a small half-life
 
 
 ######################## UN and % developmental mode ##########################
@@ -1011,40 +1075,77 @@ LifehistTraitDat12$developmental_mode <- as.numeric(LifehistTraitDat12$developme
 
 #lets run the model using Phyloglm!  
 
-######## method = logistic_MPLE --> the default ######## 
+################################## Run Models
 
-phyglm_UN_develop <- phyloglm( Urban ~ developmental_mode + Mass_log, 
+phyglm_UN_develop <- phyloglm(Urban ~ developmental_mode + Mass_log, 
                             data = LifehistTraitDat12, 
                             phy = Lifehistphy12, 
-                            boot = 1000) # just add the boot = argument to the function
-
-#Warning message:
- # In phyloglm(Urban ~ developmental_mode + Mass_log, data = LifehistTraitDat12,  :
-  #              the estimate of 'alpha' (0.559597400576619) reached the upper bound (0.559633190138608).
-   #           This may simply reflect a flat likelihood at large alpha values,
-    #          meaning that the phylogenetic correlation is estimated to be negligible.
-
-# time to check out the model 
-qqnorm(phyglm_UN_develop$residuals)
-qqline(phyglm_UN_develop$residuals)
-hist(phyglm_UN_develop$residuals, breaks = 20) 
-
-#lets get those values for our results table 
-summary(phyglm_UN_develop)
-confint(phyglm_UN_develop)
-
-alpha <- phyglm_UN_develop$alpha 
-alpha # 0.5595974
-log(2)/alpha # Half-Life for the model =   1.238653 
-#compared to T of 97.561, this is a small Half-Life
+                            boot = 1000) 
+summary(phyglm_UN_develop) # this converges
+# alpha at upper bound
 
 
+# model with scaled and centered explanatory variables
+# not scaling developmental mode as it is 0/1 binary variable
+phyglm_UN_develop_scale <- phyloglm( Urban ~ developmental_mode + scale(Mass_log), 
+                               data = LifehistTraitDat12, 
+                               phy = Lifehistphy12,
+                               boot = 1000) 
+# this fails to converge
+summary(phyglm_UN_develop_scale)
 
 
+# print AIC values for models with different upper bounds
+# intervals of 0.1 from 0 up to 4
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~ developmental_mode + scale(Mass_log), 
+                 data = LifehistTraitDat12, 
+                 phy = Lifehistphy12,
+                 log.alpha.bound = i)$aic)
+}
+# AIC values support models with larger values of alpha (low phylo signal)
 
 
-###################### NESTING TRAITS ######################
+# try fixing model at upper bounds for alpha
+set.seed(seednums[11])
+phyglm_UN_develop_fix <- phyloglm( Urban ~ developmental_mode + scale(Mass_log), 
+                                     data = LifehistTraitDat12, 
+                                     phy = Lifehistphy12,
+                                     log.alpha.bound = 4,
+                                     start.alpha = 0.557,
+                                    boot = 1000) 
+
+# this converges
+summary(phyglm_UN_develop_fix)
+# 95% bootstrapped CI for developmental mode does not overlap 0, but p-value is 0.12
+# I ran the model without the bootstrapping and it gives the exact same p-value
+# I suspect p-values are derived from the original data (although I can't find anything in package documentation)
+# while the 95% CI is derived from bootstrapping process and thus more reliable
+# mark as a significant trend based on our criteria to use 95% CI
+
+
+# save model
+saveRDS(phyglm_UN_develop_fix, here("Outputs", "phyglm_UN_develop_fix.rds"))
+# load model
+phyglm_UN_develop_fix <- readRDS(here("Outputs", "phyglm_UN_develop_fix.rds"))
+
+
+# compare results with a non-phylogenetic logistic model
+glm_UN_develop <- logistf(Urban ~ developmental_mode + scale(Mass_log), 
+                          data = LifehistTraitDat12)
+
+summary(glm_UN_develop) # similar coefficients
+
+
+# get alpha, t, and half life for the model
+(phyglm_UN_develop_fix$mean.tip.height) # t
+(alpha_dev <- phyglm_UN_develop_fix$alpha) # alpha
+(hl_dev <- log(2)/alpha_dev) # half life
+#compared to t, this is a small Half-Life
+
+
 #######################################################
+###################### NESTING TRAITS #################
 #######################################################
 
 
@@ -1129,33 +1230,73 @@ NestTraitDat6$NestSite_Low <- as.numeric(NestTraitDat6$NestSite_Low)
 # (aka, we will not exclude "ambiguous-nesting species" in this model)
 
 
-######## method = logistic_MPLE --> the default ######## 
+############################## Run Models
 
 phyglm_UN_nest_low <- phyloglm( Urban ~ NestSite_Low + Mass_log, 
                                data = NestTraitDat6, 
                                phy = Nestphy6, 
-                               boot = 1000) # just add the boot = argument to the function
+                               boot = 1000) 
 
-#Warning message:
-#In phyloglm(Urban ~ NestSite_Low + Mass_log, data = NestTraitDat6,  :
- #               the estimate of 'alpha' (0.557838282933223) reached the upper bound (0.559633190138608).
-  #            This may simply reflect a flat likelihood at large alpha values,
-   #           meaning that the phylogenetic correlation is estimated to be negligible.
-
-# time to check out the model 
-qqnorm(phyglm_UN_nest_low$residuals)
-qqline(phyglm_UN_nest_low$residuals)
-hist(phyglm_UN_nest_low$residuals, breaks = 20) 
-
-#lets get those values for our results table 
 summary(phyglm_UN_nest_low)
-confint(phyglm_UN_nest_low)
+# converges. alpha at upper bounds
 
-alpha <- phyglm_UN_nest_low$alpha 
-alpha # 0.5578383 
-log(2)/alpha # Half-Life for the model = 1.242559 
-#compared to T of 97.561, this is a small Half-Life
 
+
+# model with scaled and centered mass
+phyglm_UN_nest_low_scale <- phyloglm( Urban ~ NestSite_Low + scale(Mass_log), 
+                                data = NestTraitDat6, 
+                                phy = Nestphy6, 
+                                boot = 1000) 
+
+summary(phyglm_UN_nest_low_scale)
+# fails to converge
+# alpha at upper bounds
+
+
+# print AIC values for models with different upper bounds
+# intervals of 0.1 from 0 up to 4
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~  NestSite_Low + scale(Mass_log), 
+                 data = NestTraitDat6, 
+                 phy = Nestphy6,
+                 log.alpha.bound = i)$aic)
+}
+# AIC values support models with larger values of alpha (low phylo signal)
+
+
+# try fixing alpha at upper bounds
+# I am giving the model a little more searching space for alpha because AIC is actually lowest slightly below log.alpha.bounds = 4
+exp(3.7)/(phyglm_UN_nest_low_scale$mean.tip.height) # equals 0.41. Using this as start.alpha
+set.seed(seednums[12])
+phyglm_UN_nest_low_fix <- phyloglm( Urban ~ NestSite_Low + scale(Mass_log), 
+                                      data = NestTraitDat6, 
+                                      phy = Nestphy6, 
+                                      log.alpha.bound = 4,
+                                      start.alpha = 0.41,
+                                      boot = 1000)
+summary(phyglm_UN_nest_low_fix)
+# model converges
+# alpha at upper bounds (= 0.559)
+
+
+# save model
+saveRDS(phyglm_UN_nest_low_fix, here("Outputs", "phyglm_UN_nest_low_fix.rds"))
+# load model
+phyglm_UN_nest_low_fix <- readRDS(here("Outputs", "phyglm_UN_nest_low_fix.rds"))
+
+
+# compare with non-phylogenetic model
+glm_UN_nest_low <- logistf(Urban ~ NestSite_Low + scale(Mass_log), 
+                           data = NestTraitDat6)
+summary(glm_UN_nest_low)
+# some differences for coefficients but same conclusions reached
+
+
+# get alpha, t, and half life for the model
+(phyglm_UN_nest_low_fix$mean.tip.height) # t
+(alpha_Nlow <- phyglm_UN_nest_low_fix$alpha) # alpha
+(hl_NLow <- log(2)/alpha_Nlow) # half life
+# compared to t, this is a small half life
 
  # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -1210,29 +1351,37 @@ NestTraitDat6_only$NestSite_Low <- as.numeric(NestTraitDat6_only$NestSite_Low)
       #but this time, for species who ONLY nest "low" ! 
 
 
-######## method = logistic_MPLE --> the default ######## 
-
-phyglm_UN_nest_low_only <- phyloglm( Urban ~ NestSite_Low + Mass_log, 
+####################### Run Model
+# model using scaled Mass_log
+set.seed(seednums[13])
+phyglm_UN_nest_low_only_scale <- phyloglm( Urban ~ NestSite_Low + scale(Mass_log), 
                                 data = NestTraitDat6_only, 
-                                phy = Nestphy6_only, 
-                                boot = 1000) # just add the boot = argument to the function
+                                phy = Nestphy6_only,
+                                boot = 1000)
 
 
-# time to check out the model 
-qqnorm(phyglm_UN_nest_low_only$residuals)
-qqline(phyglm_UN_nest_low_only$residuals)
-hist(phyglm_UN_nest_low_only$residuals, breaks = 20) 
-
-#lets get those values for our results table 
-summary(phyglm_UN_nest_low_only)
-confint(phyglm_UN_nest_low_only)
-
-alpha <- phyglm_UN_nest_low_only$alpha 
-alpha # 0.04336139 
-log(2)/alpha # Half-Life for the model = 15.98536 
-#compared to T of 97.561, this is a small-moderate Half-Life
+summary(phyglm_UN_nest_low_only_scale)
+# alpha at upper bounds
+# puzzling... p-value for NestSite_low flagged as significant
+# but the bootstrapped CI interval strongly overlaps zero
+# this seems off
+# I think the CI is more trustworthy
+# I ran the model without the bootstrapping and it gives the exact same p-value
+# I suspect p-values are calculated on original dataset only... 
+# We should use the bootstrapped 95% CI here over the p-value
 
 
+# save model
+saveRDS(phyglm_UN_nest_low_only_scale, here("Outputs", "phyglm_UN_nest_low_only_scale.rds"))
+# load model
+phyglm_UN_nest_low_only_scale <- readRDS(here("Outputs", "phyglm_UN_nest_low_only_scale.rds"))
+
+
+# get alpha, t, and half life for the model
+(phyglm_UN_nest_low_only_scale$mean.tip.height) # t
+(alpha_Nlowonly <- phyglm_UN_nest_low_only_scale$alpha) # alpha
+(hl_Nlowonly <- log(2)/alpha_Nlowonly) # half life
+# compared to t, this is a small half-life -> low phylogenetic signal
 
 
 
@@ -1282,40 +1431,70 @@ NestTraitDat9$NestSite_High <- as.numeric(NestTraitDat9$NestSite_High)
 # (aka, we will not exclude "ambiguous-nesting species" in this model)
 
 
-######## method = logistic_MPLE --> the default ######## 
+############################### Run Models
 
 phyglm_UN_nest_high <- phyloglm( Urban ~ NestSite_High + Mass_log, 
                                 data = NestTraitDat9, 
                                 phy = Nestphy9, 
-                                boot = 1000) # just add the boot = argument to the function
+                                boot = 1000) 
 
-#Warning message:
- # In phyloglm(Urban ~ NestSite_High + Mass_log, data = NestTraitDat9,  :
-  #              the estimate of 'alpha' (0.559269401187482) reached the upper bound (0.559633190138608).
-   #           This may simply reflect a flat likelihood at large alpha values,
-    #          meaning that the phylogenetic correlation is estimated to be negligible.
+summary(phyglm_UN_nest_high) # alpha at upper bounds
+
 
 # scale and center mass to be consistent with other models
-phyglm_UN_nest_high <- phyloglm( Urban ~ NestSite_High + scale(Mass_log), 
+phyglm_UN_nest_high_scale <- phyloglm( Urban ~ NestSite_High + scale(Mass_log), 
                                  data = NestTraitDat9, 
                                  phy = Nestphy9, 
                                  boot = 1000)
-summary(phyglm_UN_nest_high) # this fails to converge... weird. Version above with non-scaled Mass is fine
+summary(phyglm_UN_nest_high_scale) # this fails to converge
 
 
-# time to check out the model 
-qqnorm(phyglm_UN_nest_high$residuals)
-qqline(phyglm_UN_nest_high$residuals)
-hist(phyglm_UN_nest_high$residuals, breaks = 20) 
 
-#lets get those values for our results table 
-summary(phyglm_UN_nest_high)
-confint(phyglm_UN_nest_high)
+# print AIC values for models with different upper bounds
+# intervals of 0.1 from 0 up to 4
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~  NestSite_High + scale(Mass_log), 
+                 data = NestTraitDat9, 
+                 phy = Nestphy9,
+                 log.alpha.bound = i)$aic)
+}
+# AIC values support models with larger values of alpha (low phylo signal)
 
-alpha <- phyglm_UN_nest_high$alpha 
-alpha #  1.23938 
-log(2)/alpha # Half-Life for the model =  1.23938  
-#compared to T of 97.561, this is a small Half-Life
+
+
+# try fixing alpha at upper bounds
+# give the model a little more searching space for alpha because AIC is actually lowest slightly below log.alpha.bounds = 4
+exp(3.8)/(phyglm_UN_nest_high_scale$mean.tip.height) # equals 0.45. Using this as start.alpha
+set.seed(seednums[14])
+phyglm_UN_nest_high_fix <- phyloglm( Urban ~ NestSite_High + scale(Mass_log), 
+                                    data = NestTraitDat9, 
+                                    phy = Nestphy9, 
+                                    log.alpha.bound = 4,
+                                    start.alpha = 0.45,
+                                    boot = 1000)
+summary(phyglm_UN_nest_high_fix)
+# model converges
+# nest site high is important
+
+
+# save model
+saveRDS(phyglm_UN_nest_high_fix, here("Outputs", "phyglm_UN_nest_high_fix.rds"))
+# load model
+phyglm_UN_nest_high_fix <- readRDS(here("Outputs", "phyglm_UN_nest_high_fix.rds"))
+
+
+# look at a non-phylogenetic logistic model
+glm_UN_nest_high <- logistf(Urban ~ NestSite_High + scale(Mass_log), 
+        data = NestTraitDat9)
+
+summary(glm_UN_nest_high) # we reach same conclusions
+
+
+# get alpha, t, and half life for the model
+(phyglm_UN_nest_high_fix$mean.tip.height) # t
+(alpha_Nhigh <- phyglm_UN_nest_high_fix$alpha) # alpha
+(hl_Nhigh <- log(2)/alpha_Nhigh) # half life
+#compared to t, this is a small half life
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -1373,31 +1552,30 @@ NestTraitDat9_only$NestSite_High <- as.numeric(NestTraitDat9_only$NestSite_High)
      #but this time, for species who ONLY nest "high" ! 
 
 
-######## method = logistic_MPLE --> the default ######## 
+########################## Run Model
 
-phyglm_UN_nest_high_only <- phyloglm( Urban ~ NestSite_High + Mass_log, 
+set.seed(seednums[15])
+phyglm_UN_nest_high_only_scale <- phyloglm( Urban ~ NestSite_High + scale(Mass_log), 
                                      data = NestTraitDat9_only, 
                                      phy = Nestphy9_only, 
-                                     boot = 1000) # just add the boot = argument to the function
-#Warning message:
- # In phyloglm(Urban ~ NestSite_High + Mass_log, data = NestTraitDat9_only,  :
-  #              the estimate of 'alpha' (0.558408354005091) reached the upper bound (0.55963319013772).
-   #           This may simply reflect a flat likelihood at large alpha values,
-    #          meaning that the phylogenetic correlation is estimated to be negligible.
+                                     boot = 1000) 
+# model converges
+# alpha at upper bounds
+summary(phyglm_UN_nest_high_only_scale)
+# nest site high is no longer important
 
-# time to check out the model 
-qqnorm(phyglm_UN_nest_high_only$residuals)
-qqline(phyglm_UN_nest_high_only$residuals)
-hist(phyglm_UN_nest_high_only$residuals, breaks = 20) 
 
-#lets get those values for our results table 
-summary(phyglm_UN_nest_high_only)
-confint(phyglm_UN_nest_high_only)
+# save model
+saveRDS(phyglm_UN_nest_high_only_scale, here("Outputs", "phyglm_UN_nest_high_only_scale.rds"))
+# load model
+phyglm_UN_nest_high_only_scale <- readRDS(here("Outputs", "phyglm_UN_nest_high_only_scale.rds"))
 
-alpha <- phyglm_UN_nest_high_only$alpha 
-alpha # 0.5584084  
-log(2)/alpha # Half-Life for the model =  1.241291 
-#compared to T of 97.561, this is a small Half-Life
+
+# get alpha, t, and half life for the model
+(phyglm_UN_nest_high_only_scale$mean.tip.height) # t
+(alpha_Nhighonly <- phyglm_UN_nest_high_only_scale$alpha) # alpha
+(hl_Nhighonly <- log(2)/alpha) # half life
+# compared to t, this is a small half life -> low phylogenetic signal
 
 
 
@@ -1448,36 +1626,44 @@ NestTraitDat12$nest.safety <- as.numeric(NestTraitDat12$nest.safety)
 #lets run a Phyloglm model!
 
 
-######## method = logistic_MPLE --> the default ######## 
+######################## Run Models
 
 phyglm_UN_nest_safety <- phyloglm( Urban ~ nest.safety + Mass_log, 
                                  data = NestTraitDat12, 
                                  phy = Nestphy12, 
-                                 boot = 1000) # just add the boot = argument to the function
+                                 boot = 1000)
 # this model fails to converge
 
-# try with scaled and centered variables
+
+# try model with scaled and centered variables
+set.seed(seednums[16])
 phyglm_UN_nest_safety_scale <- phyloglm( Urban ~ scale(nest.safety) + scale(Mass_log), 
                                    data = NestTraitDat12, 
                                    phy = Nestphy12, 
-                                   boot = 1000) # just add the boot = argument to the function
+                                   boot = 1000) 
 summary(phyglm_UN_nest_safety_scale)
-
-
-# get model half life
-alpha <- phyglm_UN_nest_safety_scale$alpha 
-alpha #  0.548
-log(2)/alpha # Half-Life for the model =  1.264
-#compared to T of 97.561, this is a small Half-Life relative to t
+# this model converges
+# this is a positive trend for nest.safety based on bootstrapped 95% CI (don't use p-value which is less reliable)
 
 
 
+# save model
+saveRDS(phyglm_UN_nest_safety_scale, here("Outputs", "phyglm_UN_nest_safety_scale.rds"))
+# load model
+phyglm_UN_nest_safety_scale <- readRDS(here("Outputs", "phyglm_UN_nest_safety_scale.rds"))
 
 
 
-###################### SEXUAL SELECTION TRAITS ######################
-#######################################################
-#######################################################
+# get alpha, t, and half life for the model
+(phyglm_UN_nest_safety_scale$mean.tip.height) # t
+(alpha_Nsafe <- phyglm_UN_nest_safety_scale$alpha) # alpha
+(hl_Nsafe <- log(2)/alpha) # half life
+# compared to t, this is small half life
+
+
+############################################################
+################## SEXUAL SELECTION TRAITS #################
+###########################################################
 
 
 
@@ -1538,31 +1724,38 @@ SSTraitDat3$Dichrom_bright <- as.numeric(SSTraitDat3$Dichrom_bright)
 #lets run a Phyloglm model!
 
 
-######## method = logistic_MPLE --> the default ######## 
+################################## Run Models
 
 phyglm_UN_brightness <- phyloglm( Urban ~ Dichrom_bright + Mass_log, 
                                    data = SSTraitDat3, 
                                    phy = SSphy3, 
-                                   boot = 1000) # just add the boot = argument to the function
-
-#Warning message:
- # In phyloglm(Urban ~ Dichrom_bright + Mass_log, data = SSTraitDat3,  :
-  #              the boundary of the linear predictor has been reached during the optimization procedure.
-   #           You can increase this bound by increasing 'btol'.
-
-# time to check out the model 
-qqnorm(phyglm_UN_brightness$residuals)
-qqline(phyglm_UN_brightness$residuals)
-hist(phyglm_UN_brightness$residuals, breaks = 20) 
-
-#lets get those values for our results table 
+                                   boot = 1000)
 summary(phyglm_UN_brightness)
-confint(phyglm_UN_brightness)
 
-alpha <- phyglm_UN_brightness$alpha 
-alpha #  0.04296851  
-log(2)/alpha # Half-Life for the model =  16.13151   
-#compared to T of 97.561, this is a small/moderate Half-Life
+
+# run model with scaled and centered explanatory variables
+set.seed(seednums[17])
+phyglm_UN_brightness_scale <- phyloglm( Urban ~ scale(Dichrom_bright) + scale(Mass_log), 
+                                  data = SSTraitDat3, 
+                                  phy = SSphy3, 
+                                  boot = 1000) 
+# this model converges
+summary(phyglm_UN_brightness_scale)
+
+
+
+# save model
+saveRDS(phyglm_UN_brightness_scale, here("Outputs", "phyglm_UN_brightness_scale.rds"))
+# load model
+phyglm_UN_brightness_scale <- readRDS(here("Outputs", "phyglm_UN_brightness_scale.rds"))
+
+
+
+# get alpha, t, and half life for the model
+(phyglm_UN_brightness_scale$mean.tip.height) # t
+(alpha_bright <- phyglm_UN_brightness_scale$alpha) # alpha
+(hl_bright <- log(2)/alpha_bright) # half life
+# compared to t, this is a small/moderate half life
 
 
 
@@ -1606,33 +1799,38 @@ SSTraitDat6$Dichrom_hue <- as.numeric(SSTraitDat6$Dichrom_hue)
 #lets run a Phyloglm model!
 
 
-######## method = logistic_MPLE --> the default ######## 
+################################## Run Models 
 
 phyglm_UN_hue <- phyloglm( Urban ~ Dichrom_hue + Mass_log, 
                                   data = SSTraitDat6, 
                                   phy = SSphy6, 
-                                  boot = 1000) # just add the boot = argument to the function
-
-#Warning message:
-# In phyloglm(Urban ~ NestSite_High + Mass_log, data = NestTraitDat9,  :
-#              the estimate of 'alpha' (0.559269401187482) reached the upper bound (0.559633190138608).
-#           This may simply reflect a flat likelihood at large alpha values,
-#          meaning that the phylogenetic correlation is estimated to be negligible.
-
-# time to check out the model 
-qqnorm(phyglm_UN_hue$residuals)
-qqline(phyglm_UN_hue$residuals)
-hist(phyglm_UN_hue$residuals, breaks = 20) 
-
-#lets get those values for our results table 
+                                  boot = 1000) 
 summary(phyglm_UN_hue)
-confint(phyglm_UN_hue)
 
-alpha <- phyglm_UN_hue$alpha 
-alpha #  0.4830611  
-log(2)/alpha # Half-Life for the model =   1.434906  
-#compared to T of 97.561, this is a small Half-Life
 
+
+# model with scaled and centered variables
+set.seed(seednums[18])
+phyglm_UN_hue_scale <- phyloglm( Urban ~ scale(Dichrom_hue) + scale(Mass_log), 
+                           data = SSTraitDat6, 
+                           phy = SSphy6, 
+                            boot = 1000)
+
+summary(phyglm_UN_hue_scale) # this model converges successfully
+
+
+
+# save model
+saveRDS(phyglm_UN_hue_scale, here("Outputs", "phyglm_UN_hue_scale.rds"))
+# load model
+phyglm_UN_hue_scale <- readRDS(here("Outputs", "phyglm_UN_hue_scale.rds"))
+
+
+# get alpha, t, and half life for the model
+(phyglm_UN_hue_scale$mean.tip.height) # t
+(alpha_hue <- phyglm_UN_hue_scale$alpha) # alpha
+(hl_hue <- log(2)/alpha_hue) # half life for the model 
+# small half life compared with t -> low phylogenetic signal
 
 
 
@@ -1674,34 +1872,72 @@ SSTraitDat9$sex.sel.m <- as.numeric(SSTraitDat9$sex.sel.m)
 #lets run a Phyloglm model!
 
 
-######## method = logistic_MPLE --> the default ######## 
+################################ Run Models
 
 phyglm_UN_ssm <- phyloglm( Urban ~ sex.sel.m + Mass_log, 
                            data = SSTraitDat9, 
                            phy = SSphy9, 
-                           boot = 1000) # just add the boot = argument to the function
+                           boot = 1000)
 
-#Warning messages:
- # 1: In phyloglm(Urban ~ sex.sel.m + Mass_log, data = SSTraitDat9, phy = SSphy9,  :
-  #                 the estimate of 'alpha' (0.557824566925717) reached the upper bound (0.559633190138608).
-   #              This may simply reflect a flat likelihood at large alpha values,
-    #             meaning that the phylogenetic correlation is estimated to be negligible.
-     #            2: In phyloglm(Urban ~ sex.sel.m + Mass_log, data = SSTraitDat9, phy = SSphy9,  :
-      #                            phyloglm failed to converge.
-
-# time to check out the model 
-qqnorm(phyglm_UN_ssm$residuals)
-qqline(phyglm_UN_ssm$residuals)
-hist(phyglm_UN_ssm$residuals, breaks = 20) 
-
-#lets get those values for our results table 
 summary(phyglm_UN_ssm)
-confint(phyglm_UN_ssm)
+# this model fails to converge
 
-alpha <- phyglm_UN_ssm$alpha 
-alpha #  ____  
-log(2)/alpha # Half-Life for the model =    
-#compared to T of 97.561, this is a ____ Half-Life
+
+
+# run model with scaled and centered explanatory variables
+phyglm_UN_ssm_scale <- phyloglm( Urban ~ scale(sex.sel.m) + scale(Mass_log), 
+                           data = SSTraitDat9, 
+                           phy = SSphy9, 
+                           boot = 1000) 
+# this also fails to converge
+summary(phyglm_UN_ssm_scale)
+
+
+
+# print AIC values for models with different upper bounds
+# intervals of 0.1 from 0 up to 4
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~ scale(sex.sel.m) + scale(Mass_log), 
+                 data = SSTraitDat9, 
+                 phy = SSphy9,
+                 log.alpha.bound = i)$aic)
+}
+# AIC values support models with larger values of alpha (low phylo signal)
+
+
+# try fixing alpha at upper bounds
+# give the model a little more searching space for alpha because AIC is actually lowest slightly below log.alpha.bounds = 4
+exp(3.8)/(phyglm_UN_ssm_scale$mean.tip.height) # equals 0.45. Using this as start.alpha
+set.seed(seednums[19])
+phyglm_UN_ssm_fix <- phyloglm( Urban ~ scale(sex.sel.m) + scale(Mass_log), 
+                                    data = SSTraitDat9, 
+                                    phy = SSphy9, 
+                                     log.alpha.bound = 4,
+                                     start.alpha = 0.45,
+                                      boot = 1000)
+summary(phyglm_UN_ssm_fix)
+# this model converges
+# alpha at upper boundary
+
+
+# save model
+saveRDS(phyglm_UN_ssm_fix, here("Outputs", "phyglm_UN_ssm_fix.rds"))
+# load model
+phyglm_UN_ssm_fix <- readRDS(here("Outputs", "phyglm_UN_ssm_fix.rds"))
+
+
+# compare results with a non-phylogenetic logistic model
+glm_UN_ssm <- logistf(Urban ~ scale(sex.sel.m) + scale(Mass_log), 
+                      data = SSTraitDat9)
+summary(glm_UN_ssm)
+
+
+
+# get alpha, t, and half life for the model
+(phyglm_UN_ssm_fix$mean.tip.height) # t
+(alpha_ssm <- phyglm_UN_ssm_fix$alpha) # alpha
+(hl_ssm <- log(2)/alpha_ssm) # half life  
+# small half life relative to t
 
 
 
@@ -1743,42 +1979,86 @@ SSTraitDat12$sex.sel.f <- as.numeric(SSTraitDat12$sex.sel.f)
 #lets run a Phyloglm model!
 
 
-######## method = logistic_MPLE --> the default ######## 
+######################################## Run Models
 
 phyglm_UN_ssf <- phyloglm( Urban ~ sex.sel.f + Mass_log, 
                            data = SSTraitDat12, 
                            phy = SSphy12, 
-                           boot = 1000) # just add the boot = argument to the function
-
-#Warning messages:
- # 1: In phyloglm(Urban ~ sex.sel.f + Mass_log, data = SSTraitDat12, phy = SSphy12,  :
-  #                 the estimate of 'alpha' (0.559342431481888) reached the upper bound (0.559633190138608).
-   #              This may simply reflect a flat likelihood at large alpha values,
-    #             meaning that the phylogenetic correlation is estimated to be negligible.
-     #            2: In phyloglm(Urban ~ sex.sel.f + Mass_log, data = SSTraitDat12, phy = SSphy12,  :
-      #                            phyloglm failed to converge.
-
-# time to check out the model 
-qqnorm(phyglm_UN_ssf$residuals)
-qqline(phyglm_UN_ssf$residuals)
-hist(phyglm_UN_ssf$residuals, breaks = 20) 
-
-#lets get those values for our results table 
+                           boot = 1000) 
 summary(phyglm_UN_ssf)
-confint(phyglm_UN_ssf)
-
-alpha <- phyglm_UN_ssf$alpha 
-alpha #  ____  
-log(2)/alpha # Half-Life for the model =    
-#compared to T of 97.561, this is a ____ Half-Life
+# model converges
+# alpha at upper bounds
 
 
+# run model with scaled and centered variables
+phyglm_UN_ssf_scale <- phyloglm( Urban ~ scale(sex.sel.f) + Mass_log, 
+                           data = SSTraitDat12, 
+                           phy = SSphy12, 
+                           boot = 1000) 
+
+summary(phyglm_UN_ssf_scale) 
+# this version fails to converge
+# alpha at upper bounds
 
 
+# print AIC values for models with different upper bounds
+# intervals of 0.1 from 0 up to 4
+for (i in seq(0, 4, by = 0.1)) {
+  print(phyloglm(Urban ~ scale(sex.sel.f) + scale(Mass_log), 
+                 data = SSTraitDat12, 
+                 phy = SSphy12,
+                 log.alpha.bound = i)$aic)
+}
+# AIC values support models with larger values of alpha (low phylo signal)
 
-###################### SEXUAL SELECTION TRAITS ######################
+
+# try fixing alpha at upper bounds
+# had to go slightly above log.alpha.bound of 4 to get models that would converge
+set.seed(seednums[20])
+phyglm_UN_ssf_fix_4.05 <- phyloglm( Urban ~ scale(sex.sel.f) + scale(Mass_log), 
+                               data = SSTraitDat12, 
+                               phy = SSphy12, 
+                               log.alpha.bound = 4.05,
+                               start.alpha = 0.56,
+                               boot = 1000
+                          )
+
+phyglm_UN_ssf_fix_4.1 <- phyloglm( Urban ~ scale(sex.sel.f) + scale(Mass_log), 
+                                    data = SSTraitDat12, 
+                                    phy = SSphy12, 
+                                    log.alpha.bound = 4.1,
+                                    start.alpha = 0.6,
+                                    boot = 1000
+)
+summary(phyglm_UN_ssf_fix_4.05)
+summary(phyglm_UN_ssf_fix_4.1)
+# both model converge and produce similar estimates
+
+
+# save model
+saveRDS(phyglm_UN_ssf_fix_4.05, here("Outputs", "phyglm_UN_ssf_fix.rds"))
+# load model
+phyglm_UN_ssf_fix_4.05 <- readRDS(here("Outputs", "phyglm_UN_ssf_fix.rds"))
+
+
+# look at non-phylogenetic model
+glm_UN_ssf <- logistf(Urban ~ scale(sex.sel.f) + scale(Mass_log), 
+                      data = SSTraitDat12)
+summary(glm_UN_ssf)
+# agrees with two models above
+
+
+# get alpha, t, and half life for the model
+(phyglm_UN_ssf_fix_4.05$mean.tip.height) # t
+(alpha_ssf <- phyglm_UN_ssf_fix_4.05$alpha) # alpha
+(hl_ssf <- log(2)/alpha_ssf) # half life
+# small half life compared to t
+
+
 #######################################################
+###################### SOCIAL TRAITS ##################
 #######################################################
+
 
 
 ###################### Prep
@@ -1838,27 +2118,39 @@ SocialTraitDat3$territoriality <- as.numeric(SocialTraitDat3$territoriality)
 #lets run a Phyloglm model!
 
 
-######## method = logistic_MPLE --> the default ######## 
+################################# Run Models
 
 phyglm_UN_territorial <- phyloglm( Urban ~ territoriality + Mass_log, 
                            data = SocialTraitDat3, 
                            phy = Socialphy3, 
-                           boot = 1000) # just add the boot = argument to the function
+                           boot = 1000) 
 
-
-# time to check out the model 
-qqnorm(phyglm_UN_territorial$residuals)
-qqline(phyglm_UN_territorial$residuals)
-hist(phyglm_UN_territorial$residuals, breaks = 20) 
-
-#lets get those values for our results table 
 summary(phyglm_UN_territorial)
-confint(phyglm_UN_territorial)
 
-alpha <- phyglm_UN_territorial$alpha 
-alpha #  0.07617762   
-log(2)/alpha # Half-Life for the model = 9.099092 
-#compared to T of 97.561, this is a small  Half-Life
+
+# run model with scaled and centered explanatory variables
+set.seed(seednums[21])
+phyglm_UN_territorial_scale <- phyloglm( Urban ~ scale(territoriality) + scale(Mass_log), 
+                                   data = SocialTraitDat3, 
+                                   phy = Socialphy3, 
+                                    boot = 1000) 
+
+summary(phyglm_UN_territorial_scale)
+
+
+
+# save model
+saveRDS(phyglm_UN_territorial_scale, here("Outputs", "phyglm_UN_territorial_scale.rds"))
+# load model
+phyglm_UN_territorial_scale <- readRDS(here("Outputs", "phyglm_UN_territorial_scale.rds"))
+
+
+
+# get alpha, t, and half life for the model
+(phyglm_UN_territorial_scale$mean.tip.height) # t
+(alpha_terr <- phyglm_UN_territorial_scale$alpha) # alpha
+(hl_terr <- log(2)/alpha_terr) # half life
+# small half life compared to t -> low phylogenetic signal
 
 
 

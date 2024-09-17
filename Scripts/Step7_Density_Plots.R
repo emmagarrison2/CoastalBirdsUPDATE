@@ -65,6 +65,13 @@ if(!require(dplyr)){
 }
 library(dplyr)
 
+if(!require(patchwork)){
+  install.packages("patchwork")
+  require(patchwork)
+}
+library(patchwork)
+
+
 
 #pull in refined dataset of coastal species and index scores
 
@@ -165,7 +172,8 @@ UAI_density <- ggplot() +
     width = 0.12, 
     color = 'black',
     alpha = 0.5, 
-    position = position_nudge(y = -0.1)
+    position = position_nudge(y = -0.1), 
+    show.legend = F
   ) +  
   scale_fill_manual(
     values = c("All" = "#FFD67B", "Coastal" = "#E48816")
@@ -198,6 +206,8 @@ saveRDS(UAI_density, here("Outputs", "UAI_Density_Comparison.rds"))
 AllBirds_MUTI <- AllIndexes_AllBirds %>% 
   filter(!is.na(MUTIscore) & is.finite(MUTIscore))
 nrow(AllBirds_MUTI) #431
+
+View(AllBirds_MUTI)
 
 AllBirds_MUTI_2 <- AllBirds_MUTI %>% 
   select(MUTIscore, Group)
@@ -238,7 +248,8 @@ MUTI_density <- ggplot() +
     width = 0.054, 
     color = 'black',
     alpha = 0.5, 
-    position = position_nudge(y = -0.045)
+    position = position_nudge(y = -0.045), 
+    show.legend = F
   ) +  
   scale_fill_manual(
     values = c("All" = "olivedrab1", "Coastal" = "olivedrab")
@@ -343,10 +354,21 @@ UN_stacked_barplot_labeled <- UN_stacked_barplot + annotate("text", x = c(1, 1, 
 print(UN_stacked_barplot_labeled)
 
 
+######################################################################
+######################################################################
+######################################################################
+
 #new arrangement of all the plots (using stacked, percentage barplot)
 
 all_density_2 <- grid.arrange(UAI_density, MUTI_density, UN_stacked_barplot_labeled, ncol=3, top= "Coastal Score Distributions", left = "Number of Species")
 
 saveRDS(all_density_2, here("Outputs", "All_Density_Plots_option2.rds"))
 
+
+#let's try using the patchwork package... since grid.arrange may mess up the 
+#formatting (UN doesn't have legend)
+
+all_density_3 <- UAI_density + MUTI_density + UN_stacked_barplot_labeled
+
+saveRDS (all_density_3, here("Outputs", "All_Density_Plots_edited.rds"))
 

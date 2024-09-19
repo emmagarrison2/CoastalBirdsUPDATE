@@ -180,13 +180,18 @@ UAI_density <- ggplot() +
   ) +
   labs(
     x = "UAI", 
-    y = ""
+    y = "Density"
   ) + 
   theme_classic() + 
   theme(
-    axis.title = element_text(size = 12),  # Adjust axis title size
-    legend.position = "top",             # Position the legend on the right
-    legend.title = element_blank()         # Remove the legend title
+    axis.title.x = element_text(size = 14, margin = margin(t = 8)),  # Adjust axis title size
+    axis.title.y = element_text(margin = margin(r = 10), size = 11), 
+    legend.position = c(.95, .85),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6),            
+    legend.title = element_blank(),         # Remove the legend title
+    legend.text = element_text(size = 10)
   )
 
 print(UAI_density)
@@ -256,13 +261,18 @@ MUTI_density <- ggplot() +
   ) +
   labs(
     x = "MUTI", 
-    y = ""
+    y = "Density"
   ) + 
   theme_classic() + 
   theme(
-    axis.title = element_text(size = 12),  # Adjust axis title size
-    legend.position = "top",             # Position the legend on the right
-    legend.title = element_blank()         # Remove the legend title
+    axis.title.x = element_text(size = 14, margin = margin(t = 8)),  # Adjust axis title size
+    axis.title.y = element_text(margin = margin(r = 13), size = 11), 
+    legend.position = c(.95, .85),
+    legend.justification = c("right", "top"),
+    legend.box.just = "right",
+    legend.margin = margin(6, 6, 6, 6),            
+    legend.title = element_blank(), # Remove the legend title
+    legend.text = element_text(size = 10)
   )
 
 print(MUTI_density)
@@ -330,10 +340,10 @@ UN_stacked_barplot <- ggplot(combined_UN_for_density_summary, aes(x = Group, y =
   # Custom colors for each Group & Urban combination
   scale_fill_manual(
     values = c(
-      "All & 0" = "darkslategray3",   # Color for "All & Nonurban"
-      "All & 1" = "darkslategray4",        # Color for "All & Urban"
-      "Coastal & 0" = "deepskyblue1",  # Color for "Coastal & Nonurban"
-      "Coastal & 1" = "deepskyblue4"        # Color for "Coastal & Urban"
+      "All & 0" = "#B8D5E9",   # Color for "All & Nonurban"
+      "All & 1" = "#93BADB",        # Color for "All & Urban"
+      "Coastal & 0" = "#6C9CCC",  # Color for "Coastal & Nonurban"
+      "Coastal & 1" = "#417CBD"        # Color for "Coastal & Urban"
     )
   ) + 
   labs(
@@ -343,32 +353,51 @@ UN_stacked_barplot <- ggplot(combined_UN_for_density_summary, aes(x = Group, y =
   ) + 
   theme_classic() + 
   theme(
-   legend.position = "none"
-  )
+    axis.title.x = element_text(size = 14, margin = margin(t = 8)), 
+    axis.title.y = element_text(size = 11), 
+    legend.position = "none"
+  ) + 
+  annotate(
+    "text", 
+    x = c(1, 1, 2, 2), 
+    y = c(0.2, 0.7, 0.16, 0.65), 
+    label = c("Urban", "Non-Urban", "Urban", "Non-Urban"))
 
 print(UN_stacked_barplot)
 
 
-UN_stacked_barplot_labeled <- UN_stacked_barplot + annotate("text", x = c(1, 1, 2, 2), y = c(0.2, 0.7, 0.17, 0.65), label = c("Urban", "Non-Urban", "Urban", "Non-Urban"))
-
-print(UN_stacked_barplot_labeled)
-
 
 ######################################################################
 ######################################################################
 ######################################################################
 
-#new arrangement of all the plots (using stacked, percentage barplot)
+#arrange all three plots side by side 
 
-all_density_2 <- grid.arrange(UAI_density, MUTI_density, UN_stacked_barplot_labeled, ncol=3, top= "Coastal Score Distributions", left = "Number of Species")
+# hcl.colors(8, palette = "Blues 2")
+#C6C8D7
+#AEB2CD
+#9299C2
+#727EB5
 
-saveRDS(all_density_2, here("Outputs", "All_Density_Plots_option2.rds"))
+# hcl.colors(8, palette = "Blues 3")
+#BAD5FA
+#91BAEB
+#5E9BD8
+#007BC0
 
+
+# hcl.colors(8, palette = "Blues")
+#B8D5E9
+#93BADB
+#6C9CCC
+#417CBD
 
 #let's try using the patchwork package... since grid.arrange may mess up the 
 #formatting (UN doesn't have legend)
 
-all_density_3 <- UAI_density + MUTI_density + UN_stacked_barplot_labeled
+all_density_3 <- UAI_density + MUTI_density + UN_stacked_barplot
+
+print(all_density_3)
 
 saveRDS (all_density_3, here("Outputs", "All_Density_Plots_edited.rds"))
 

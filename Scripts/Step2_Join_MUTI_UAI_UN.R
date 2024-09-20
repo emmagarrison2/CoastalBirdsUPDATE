@@ -29,6 +29,8 @@ View(UAI)
 colnames(UAI)
 nrow(UAI)
 #4347
+min(UAI$aveUAI) #0
+max(UAI$aveUAI) #3.972
 
 #UAI Naming Scheme Methods --> weird combo of eBird and other naming schemes --> Sarah Investigated on UAINamestoSpecies.R
 
@@ -53,7 +55,8 @@ colnames(MUTI.f)
 View(MUTI.f)
 nrow(MUTI.f)
 #432 rows in MUTI (species)
-
+min(MUTI.f$MUTIscore) #-2.0492
+max(MUTI.f$MUTIscore) #5.461
 
 
 

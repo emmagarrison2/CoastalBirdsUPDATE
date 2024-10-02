@@ -457,27 +457,18 @@ phyglm_UN_Invert_fix_4.05 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log)
                                     data = DietTraitDat3, 
                                     phy = Dietphy3, 
                                     start.alpha = 0.55,
-<<<<<<< HEAD
-                                    log.alpha.bound = 4.05, boot=1000) # also converged - means no phylogenetic signal 
-summary(phyglm_UN_Invert_fix_4.05)
-=======
                                     log.alpha.bound = 4.05, boot=1000)
-summary(phyglm_UN_Invert_fix_4.05) # this converges
->>>>>>> f2d02a1c279c17c6383c64fbabdf01b684ca4b56
+summary(phyglm_UN_Invert_fix_4.05) 
 phyglm_UN_Invert_fix_4.05$aic
 
 phyglm_UN_Invert_fix_4.1 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log), 
                                        data = DietTraitDat3, 
                                        phy = Dietphy3, 
                                        start.alpha = 0.55,
-<<<<<<< HEAD
-                                       log.alpha.bound = 4.1, boot=1000) # also converged - means no phylogenetic signal 
-summary(phyglm_UN_Invert_fix_4.1)
-=======
                                        log.alpha.bound = 4.1, boot=1000)
-summary(phyglm_UN_Invert_fix_4.1) # this also converges
->>>>>>> f2d02a1c279c17c6383c64fbabdf01b684ca4b56
+summary(phyglm_UN_Invert_fix_4.1) 
 phyglm_UN_Invert_fix_4.1$aic
+
 
 # coefficients fairly stable across 4.05 and 4.1 models
 # save model
@@ -1129,7 +1120,9 @@ saveRDS(phyglm_UN_develop_fix, here("Outputs", "phyglm_UN_develop_fix.rds"))
 # load model
 phyglm_UN_develop_fix <- readRDS(here("Outputs", "phyglm_UN_develop_fix.rds"))
 
-
+summary(phyglm_UN_develop_fix)
+summary(phyglm_UN_develop_fix_OG )
+summary(phyglm_UN_develop_fix_SARAH )
 # compare results with a non-phylogenetic logistic model
 glm_UN_develop <- logistf(Urban ~ developmental_mode + scale(Mass_log), 
                           data = LifehistTraitDat12)

@@ -457,16 +457,36 @@ phyglm_UN_Invert_fix_4.05 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log)
                                     data = DietTraitDat3, 
                                     phy = Dietphy3, 
                                     start.alpha = 0.55,
+<<<<<<< HEAD
                                     log.alpha.bound = 4.05, boot=1000)
 summary(phyglm_UN_Invert_fix_4.05) 
+=======
+<<<<<<< HEAD
+                                    log.alpha.bound = 4.05, boot=1000) # also converged - means no phylogenetic signal 
+summary(phyglm_UN_Invert_fix_4.05)
+=======
+                                    log.alpha.bound = 4.05, boot=1000)
+summary(phyglm_UN_Invert_fix_4.05) # this converges
+>>>>>>> f2d02a1c279c17c6383c64fbabdf01b684ca4b56
+>>>>>>> parent of 34f4e7f (Ran Sarah's FIXED phyloglm models (on Emma's computer) and saved model outputs. Recorded values for results.)
 phyglm_UN_Invert_fix_4.05$aic
 
 phyglm_UN_Invert_fix_4.1 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log), 
                                        data = DietTraitDat3, 
                                        phy = Dietphy3, 
                                        start.alpha = 0.55,
+<<<<<<< HEAD
                                        log.alpha.bound = 4.1, boot=1000)
 summary(phyglm_UN_Invert_fix_4.1) 
+=======
+<<<<<<< HEAD
+                                       log.alpha.bound = 4.1, boot=1000) # also converged - means no phylogenetic signal 
+summary(phyglm_UN_Invert_fix_4.1)
+=======
+                                       log.alpha.bound = 4.1, boot=1000)
+summary(phyglm_UN_Invert_fix_4.1) # this also converges
+>>>>>>> f2d02a1c279c17c6383c64fbabdf01b684ca4b56
+>>>>>>> parent of 34f4e7f (Ran Sarah's FIXED phyloglm models (on Emma's computer) and saved model outputs. Recorded values for results.)
 phyglm_UN_Invert_fix_4.1$aic
 
 

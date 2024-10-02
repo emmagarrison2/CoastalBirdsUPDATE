@@ -1280,7 +1280,9 @@ for (i in seq(0, 4, by = 0.1)) {
 # try fixing alpha at upper bounds
 # I am giving the model a little more searching space for alpha because AIC is actually lowest slightly below log.alpha.bounds = 4
 exp(3.7)/(phyglm_UN_nest_low_scale$mean.tip.height) # equals 0.41. Using this as start.alpha
+
 set.seed(seednums[12])
+#here
 phyglm_UN_nest_low_fix <- phyloglm( Urban ~ NestSite_Low + scale(Mass_log), 
                                       data = NestTraitDat6, 
                                       phy = Nestphy6, 
@@ -1367,6 +1369,7 @@ NestTraitDat6_only$NestSite_Low <- as.numeric(NestTraitDat6_only$NestSite_Low)
 ####################### Run Model
 # model using scaled Mass_log
 set.seed(seednums[13])
+#here
 phyglm_UN_nest_low_only_scale <- phyloglm( Urban ~ NestSite_Low + scale(Mass_log), 
                                 data = NestTraitDat6_only, 
                                 phy = Nestphy6_only,
@@ -1479,6 +1482,7 @@ for (i in seq(0, 4, by = 0.1)) {
 # give the model a little more searching space for alpha because AIC is actually lowest slightly below log.alpha.bounds = 4
 exp(3.8)/(phyglm_UN_nest_high_scale$mean.tip.height) # equals 0.45. Using this as start.alpha
 set.seed(seednums[14])
+#here
 phyglm_UN_nest_high_fix <- phyloglm( Urban ~ NestSite_High + scale(Mass_log), 
                                     data = NestTraitDat9, 
                                     phy = Nestphy9, 
@@ -1568,6 +1572,7 @@ NestTraitDat9_only$NestSite_High <- as.numeric(NestTraitDat9_only$NestSite_High)
 ########################## Run Model
 
 set.seed(seednums[15])
+#here
 phyglm_UN_nest_high_only_scale <- phyloglm( Urban ~ NestSite_High + scale(Mass_log), 
                                      data = NestTraitDat9_only, 
                                      phy = Nestphy9_only, 
@@ -1587,7 +1592,7 @@ phyglm_UN_nest_high_only_scale <- readRDS(here("Outputs", "phyglm_UN_nest_high_o
 # get alpha, t, and half life for the model
 (phyglm_UN_nest_high_only_scale$mean.tip.height) # t
 (alpha_Nhighonly <- phyglm_UN_nest_high_only_scale$alpha) # alpha
-(hl_Nhighonly <- log(2)/alpha) # half life
+(hl_Nhighonly <- log(2)/alpha_Nhighonly) # half life
 # compared to t, this is a small half life -> low phylogenetic signal
 
 
@@ -1650,6 +1655,7 @@ phyglm_UN_nest_safety <- phyloglm( Urban ~ nest.safety + Mass_log,
 
 # try model with scaled and centered variables
 set.seed(seednums[16])
+#here
 phyglm_UN_nest_safety_scale <- phyloglm( Urban ~ scale(nest.safety) + scale(Mass_log), 
                                    data = NestTraitDat12, 
                                    phy = Nestphy12, 
@@ -1670,7 +1676,7 @@ phyglm_UN_nest_safety_scale <- readRDS(here("Outputs", "phyglm_UN_nest_safety_sc
 # get alpha, t, and half life for the model
 (phyglm_UN_nest_safety_scale$mean.tip.height) # t
 (alpha_Nsafe <- phyglm_UN_nest_safety_scale$alpha) # alpha
-(hl_Nsafe <- log(2)/alpha) # half life
+(hl_Nsafe <- log(2)/alpha_Nsafe) # half life
 # compared to t, this is small half life
 
 
@@ -1748,6 +1754,7 @@ summary(phyglm_UN_brightness)
 
 # run model with scaled and centered explanatory variables
 set.seed(seednums[17])
+#here
 phyglm_UN_brightness_scale <- phyloglm( Urban ~ scale(Dichrom_bright) + scale(Mass_log), 
                                   data = SSTraitDat3, 
                                   phy = SSphy3, 
@@ -1824,6 +1831,7 @@ summary(phyglm_UN_hue)
 
 # model with scaled and centered variables
 set.seed(seednums[18])
+#here
 phyglm_UN_hue_scale <- phyloglm( Urban ~ scale(Dichrom_hue) + scale(Mass_log), 
                            data = SSTraitDat6, 
                            phy = SSphy6, 
@@ -1922,6 +1930,7 @@ for (i in seq(0, 4, by = 0.1)) {
 # give the model a little more searching space for alpha because AIC is actually lowest slightly below log.alpha.bounds = 4
 exp(3.8)/(phyglm_UN_ssm_scale$mean.tip.height) # equals 0.45. Using this as start.alpha
 set.seed(seednums[19])
+#here
 phyglm_UN_ssm_fix <- phyloglm( Urban ~ scale(sex.sel.m) + scale(Mass_log), 
                                     data = SSTraitDat9, 
                                     phy = SSphy9, 
@@ -2028,6 +2037,7 @@ for (i in seq(0, 4, by = 0.1)) {
 # try fixing alpha at upper bounds
 # had to go slightly above log.alpha.bound of 4 to get models that would converge
 set.seed(seednums[20])
+#here
 phyglm_UN_ssf_fix_4.05 <- phyloglm( Urban ~ scale(sex.sel.f) + scale(Mass_log), 
                                data = SSTraitDat12, 
                                phy = SSphy12, 
@@ -2143,6 +2153,7 @@ summary(phyglm_UN_territorial)
 
 # run model with scaled and centered explanatory variables
 set.seed(seednums[21])
+#here
 phyglm_UN_territorial_scale <- phyloglm( Urban ~ scale(territoriality) + scale(Mass_log), 
                                    data = SocialTraitDat3, 
                                    phy = Socialphy3, 

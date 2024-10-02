@@ -143,15 +143,15 @@ library(effects)
 Mass.UAIdb <- predictorEffect("Mass_log" , UAI_GLS_mass)
 
 
-plot(Mass.UAIdb, ask =FALSE, xlab = "Body Mass", ylab = "UAI", main ="", lines=list(multiline=TRUE, col=c("indianred4")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
+plot(Mass.UAIdb, ask =FALSE, xlab = "Body Mass", ylab = "UAI", main ="", lines=list(multiline=TRUE, col=c("#FFD67B")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
 
 MASS.UAI.DF<-data.frame(Mass.UAIdb)
 
 BodyMass_UAI_plot<-ggplot(data=MASS.UAI.DF,aes(x=Mass_log, y=fit)) +
-  geom_line(color="indianred3",lwd=1.5) +
-  geom_ribbon(aes(ymin=lower, ymax=upper), fill="indianred3",alpha=.2, lwd=.1)+xlim(-1000,1000) +
+  geom_line(color="#FFD67B",lwd=1.5) +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="#FFD67B",alpha=.3, lwd=.1)+xlim(-1000,1000) +
   
-  geom_point(data=MassTraitDat1,aes(x=jitter(Mass_log, 1), y =aveUAI),color="blue", bg="blue",alpha=.2, size=2,pch=21) +
+  geom_point(data=MassTraitDat1,aes(x=jitter(Mass_log, 1), y =aveUAI),color="#E48816", bg="#E48816",alpha=.6, size=2,pch=21) +
   coord_cartesian(ylim = c(-0, 4.2), xlim =c(0,10.5)) + theme_classic() +
   theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
   xlab("log(Body Mass)") + 
@@ -161,93 +161,6 @@ BodyMass_UAI_plot
 
 saveRDS(BodyMass_UAI_plot, here("Results", "BodyMass_UAI.rds"))
 
-
-
-
-######################## MUTI and body mass ##########################
-
-# lets first simplify a NEW database by removing records where we don't have an MUTI / brood_value
-MUTIDataUT <- C_mass_dat2 %>% filter(!is.na(MUTIscore)) 
-MassData2 <- MUTIDataUT %>% filter(!is.na(Mass_log)) 
-length(MassData2$Mass_log)
-#130 species with MUTI and Mass_log
-
-colnames(MassData2)
-
-###### add and pair tree
-
-# add rownames to data
-row.names(MassData2) <- MassData2$Species_Jetz
-
-tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
-
-Massphydat2 <- treedata(tree_out,MassData2, sort=T)
-
-Massphy2 <- Massphydat2$phy
-MassTraitDat2 <- as.data.frame(Massphydat2$data)
-
-str(MassTraitDat2)
-length(MassTraitDat2$Mass_log)
-#130
-
-
-### convert traits of interest to numeric
-
-MassTraitDat2$MUTIscore <- as.numeric(MassTraitDat2$MUTIscore)
-MassTraitDat2$Mass_log <- as.numeric(MassTraitDat2$Mass_log)
-
-
-#lets run the model!
-
-
-MUTI_GLS_mass <- gls(MUTIscore~ Mass_log, data = MassTraitDat2, 
-                     correlation = corPagel(0.5, phy=Massphy2,fixed=F, form = ~Species_Jetz), 
-                     method = "ML") 
-#check out the model
-check_model(MUTI_GLS_mass) 
-qqnorm(resid(MUTI_GLS_mass)) 
-qqline(resid(MUTI_GLS_mass)) 
-hist(resid(MUTI_GLS_mass)) 
-
-
-summary(MUTI_GLS_mass) 
-confint(MUTI_GLS_mass)
-
-
-############
-#plot it 
-
-library(effects)
-Mass.MUTIdb <- predictorEffect("Mass_log" , MUTI_GLS_mass)
-
-
-plot(Mass.MUTIdb, ask =FALSE, xlab = "Body Mass", ylab = "MUTI", main ="", lines=list(multiline=TRUE, col=c("indianred4")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
-
-MASS.MUTI.DF<-data.frame(Mass.MUTIdb)
-
-BodyMass_MUTI_PLOT <-ggplot(data=MASS.MUTI.DF,aes(x=Mass_log, y=fit)) +
-  geom_line(color="indianred3",lwd=1.5) +
-  geom_ribbon(aes(ymin=lower, ymax=upper), fill="indianred3",alpha=.2, lwd=.1)+xlim(-1000,1000) +
-  
-  geom_point(data= MassTraitDat2, aes(x=jitter(Mass_log, 1), y =MUTIscore),color="blue", bg="blue",alpha=.2, size=2,pch=21) +
-  coord_cartesian(ylim = c(-4, 4), xlim =c(0,10.5)) + theme_classic() +
-  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
-  xlab("log(Body Mass)") + 
-  ylab("MUTI") 
-
-BodyMass_MUTI_PLOT
-
-saveRDS(BodyMass_MUTI_PLOT, here("Results", "BodyMass_MUTI.rds"))
-
-
-
-##############################################################################
-#arrange all body mass in a grid (besides two opposing clutch size)
-
-UAI_bodymass_plot <- readRDS(here("Results", "BodyMass_UAI.rds"))
-MUTI_bodymass_plot <- readRDS(here("Results", "BodyMass_MUTI.rds"))
-
-bodymass_plots <- grid.arrange(UAI_bodymass_plot, MUTI_bodymass_plot, ncol=2, nrow = 1)
 
 
 
@@ -271,6 +184,231 @@ str(C_LifeHist_dat2)
 C_LifeHist_dat2$Urban <- ifelse(C_LifeHist_dat2$Urban == "U", 1, 0)
 View(C_LifeHist_dat2)
 colnames(C_LifeHist_dat2)
+
+
+######################## UAI and % brood value ##########################
+
+
+# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+UAIDataUT <- C_LifeHist_dat2 %>% filter(!is.na(aveUAI)) 
+LifehistData1 <- UAIDataUT %>% filter(!is.na(brood_value)) 
+length(LifehistData1$brood_value)
+#480 species with UAI and brood_value
+
+###### add and pair tree
+
+# add rownames to data
+row.names(LifehistData1) <- LifehistData1$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Lifehistphydat1 <- treedata(tree_out,LifehistData1, sort=T)
+
+Lifehistphy1 <- Lifehistphydat1$phy
+LifehistTraitDat1 <- as.data.frame(Lifehistphydat1$data)
+
+str(LifehistTraitDat1)
+length(LifehistTraitDat1$brood_value)
+#480
+
+### convert traits of interest to numeric
+
+LifehistTraitDat1$aveUAI <- as.numeric(LifehistTraitDat1$aveUAI)
+LifehistTraitDat1$Mass_log <- as.numeric(LifehistTraitDat1$Mass_log)
+LifehistTraitDat1$brood_value <- as.numeric(LifehistTraitDat1$brood_value)
+
+
+#lets run the model!
+
+
+UAI_GLS_bv <- gls(aveUAI~ brood_value + Mass_log, data = LifehistTraitDat1, 
+                  correlation = corPagel(0.5, phy=Lifehistphy1,fixed=F, form = ~Species_Jetz), 
+                  method = "ML") 
+#check out the model
+check_model(UAI_GLS_bv) ## low collinearity - which is good! - normality of residuals line does not fall on line, but is in a straight line 
+qqnorm(resid(UAI_GLS_bv)) 
+qqline(resid(UAI_GLS_bv)) #most points fall on the line 
+hist(resid(UAI_GLS_bv)) #roughly normal dist of residuals
+
+
+summary(UAI_GLS_bv) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
+confint(UAI_GLS_bv)
+
+
+
+############
+#plot it 
+
+library(effects)
+bv.UAIdb <- predictorEffect("brood_value" , UAI_GLS_bv)
+
+
+plot(bv.UAIdb, ask =FALSE, xlab = "Brood Value", ylab = "UAI", main ="", lines=list(multiline=TRUE, col=c("#FFD67B")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
+
+BV.UAI.DF<-data.frame(bv.UAIdb)
+
+BV_UAI_plot<-ggplot(data=BV.UAI.DF,aes(x=brood_value, y=fit)) +
+  geom_line(color="#FFD67B",lwd=1.5) +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="#FFD67B",alpha=.3, lwd=.1)+xlim(-1000,1000) +
+  
+  geom_point(data=LifehistTraitDat1,aes(x=jitter(brood_value, 1), y =aveUAI),color="#E48816", bg="#E48816",alpha=.6, size=2,pch=21) +
+  coord_cartesian(ylim = c(-0, 3.5), xlim =c(-6,-1.7)) + theme_classic() +
+  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  xlab("Brood Value") + 
+  ylab("Average UAI") 
+
+BV_UAI_plot
+
+saveRDS(BV_UAI_plot, here("Results", "BroodValue_UAI_plot.rds"))
+
+
+#################  WITHOUT OUTLIER #################
+
+################ so, brood value has this outlier... let's try again with UAI and Brood Value to see if this relationship is still significantly negative 
+
+LifehistDataFiltered <- LifehistData1 %>% filter(brood_value >= -5)
+
+# Add rownames to filtered data
+row.names(LifehistDataFiltered) <- LifehistDataFiltered$Species_Jetz
+
+# Pair with the tree
+LifehistphydatFiltered <- treedata(tree_out, LifehistDataFiltered, sort=T)
+
+LifehistphyFiltered <- LifehistphydatFiltered$phy
+LifehistTraitDatFiltered <- as.data.frame(LifehistphydatFiltered$data)
+
+# Convert traits of interest to numeric
+LifehistTraitDatFiltered$aveUAI <- as.numeric(LifehistTraitDatFiltered$aveUAI)
+LifehistTraitDatFiltered$Mass_log <- as.numeric(LifehistTraitDatFiltered$Mass_log)
+LifehistTraitDatFiltered$brood_value <- as.numeric(LifehistTraitDatFiltered$brood_value)
+
+# Run the GLS model on the filtered dataset
+UAI_GLS_bv_filtered <- gls(aveUAI ~ brood_value + Mass_log, data = LifehistTraitDatFiltered, 
+                           correlation = corPagel(0.5, phy=LifehistphyFiltered, fixed=F, form = ~Species_Jetz), 
+                           method = "ML")
+
+# Check the model
+check_model(UAI_GLS_bv_filtered)
+qqnorm(resid(UAI_GLS_bv_filtered)) 
+qqline(resid(UAI_GLS_bv_filtered))
+hist(resid(UAI_GLS_bv_filtered))
+
+# Model summary and confidence intervals
+summary(UAI_GLS_bv_filtered) # still significant (p = 0.0288)
+confint(UAI_GLS_bv_filtered) # still significant (C.I. = (-0.349, -0.0195)
+
+############
+
+
+#plot it 
+
+library(effects)
+bv.filtered.UAIdb <- predictorEffect("brood_value" , UAI_GLS_bv_filtered)
+
+
+plot(bv.filtered.UAIdb, ask =FALSE, xlab = "Brood Value", ylab = "UAI", main ="", lines=list(multiline=TRUE, col=c("#FFD67B")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
+
+BV.filtered.UAI.DF<-data.frame(bv.filtered.UAIdb)
+
+BV_filtered_UAI_plot<-ggplot(data=BV.filtered.UAI.DF,aes(x=brood_value, y=fit)) +
+  geom_line(color="#FFD67B",lwd=1.5) +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="#FFD67B",alpha=.3, lwd=.1)+xlim(-1000,1000) +
+  
+  geom_point(data=LifehistTraitDatFiltered,aes(x=jitter(brood_value, 1), y =aveUAI),color="#E48816", bg="#E48816",alpha=.6, size=2,pch=21) +
+  coord_cartesian(ylim = c(-0, 3.5), xlim =c(-4.3,-1.8)) + theme_classic() +
+  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  xlab("Brood Value") + 
+  ylab("Average UAI") 
+
+BV_filtered_UAI_plot
+
+saveRDS(BV_filtered_UAI_plot, here("Results", "BroodValue_UAI_plot_filtered.rds"))
+
+
+
+
+
+
+######################## UAI and % clutch size ##########################
+
+
+# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+UAIDataUT <- C_LifeHist_dat2 %>% filter(!is.na(aveUAI)) 
+LifehistData4 <- UAIDataUT %>% filter(!is.na(clutch_size)) 
+length(LifehistData4$clutch_size)
+#738 species with UAI and clutch_size
+
+###### add and pair tree
+
+# add rownames to data
+LifehistData4 <- as.data.frame(LifehistData4)
+row.names(LifehistData4) <- LifehistData4$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Lifehistphydat4 <- treedata(tree_out,LifehistData4, sort=T)
+
+Lifehistphy4 <- Lifehistphydat4$phy
+LifehistTraitDat4 <- as.data.frame(Lifehistphydat4$data)
+
+str(LifehistTraitDat4)
+length(LifehistTraitDat4$clutch_size)
+#738
+
+### convert traits of interest to numeric
+
+LifehistTraitDat4$aveUAI <- as.numeric(LifehistTraitDat4$aveUAI)
+LifehistTraitDat4$Mass_log <- as.numeric(LifehistTraitDat4$Mass_log)
+LifehistTraitDat4$clutch_size <- as.numeric(LifehistTraitDat4$clutch_size)
+
+
+
+#lets run the model!
+
+
+UAI_GLS_clutch <- gls(aveUAI~ clutch_size + Mass_log, data = LifehistTraitDat4, 
+                      correlation = corPagel(0.5, phy=Lifehistphy4,fixed=F, form = ~Species_Jetz), 
+                      method = "ML") 
+#check out the model
+check_model(UAI_GLS_clutch) ## low collinearity - which is good! - normality of residuals line does not fall on line, but is in a straight line 
+qqnorm(resid(UAI_GLS_clutch)) 
+qqline(resid(UAI_GLS_clutch)) #most points fall on the line 
+hist(resid(UAI_GLS_clutch)) #roughly normal dist of residuals
+
+
+summary(UAI_GLS_clutch) # strong phylogenetic relationship between traits and response, but no remaining influence of any predictor trait and response
+confint(UAI_GLS_clutch)
+
+
+############
+
+
+#plot it 
+
+library(effects)
+clutch.UAIdb <- predictorEffect("clutch_size" , UAI_GLS_clutch)
+
+
+plot(clutch.UAIdb, ask =FALSE, xlab = "Clutch Size", ylab = "UAI", main ="", lines=list(multiline=TRUE, col=c("#FFD67B")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
+
+clutch.UAI.DF<-data.frame(clutch.UAIdb)
+
+clutch_UAI_plot<-ggplot(data=clutch.UAI.DF,aes(x=clutch_size, y=fit)) +
+  geom_line(color="#FFD67B",lwd=1.5) +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="#FFD67B",alpha=.3, lwd=.1)+xlim(-1000,1000) +
+  
+  geom_point(data=LifehistTraitDat4,aes(x=jitter(clutch_size, 1), y =aveUAI),color="#E48816", bg="#E48816",alpha=.6, size=2,pch=21) +
+  coord_cartesian(ylim = c(-0, 4.1), xlim =c(0,15.5)) + theme_classic() +
+  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  xlab("Clutch Size") + 
+  ylab("Average UAI") 
+
+clutch_UAI_plot
+
+saveRDS(clutch_UAI_plot, here("Results", "clutch_UAI_plot.rds"))
+
+
+
 
 
 
@@ -358,9 +496,9 @@ LifehistTraitDat11$developmental_mode <- as.numeric(as.character(LifehistTraitDa
 
 
 correct_develop_MUTI_plot <- ggplot() +
-  geom_boxplot(data = category0_data, aes(x = "Precocial", y = MUTIscore), fill = "lightblue") +
-  geom_boxplot(data = category1_data, aes(x = "Altricial", y = MUTIscore), fill = "lightgreen") +
-  geom_point(data = LifehistTraitDat11, aes(x = ifelse(developmental_mode == 0, "Precocial", "Altricial"), y = MUTIscore), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
+  geom_boxplot(data = category0_data, aes(x = "Precocial", y = MUTIscore), fill = "olivedrab1", alpha = 0.7) +
+  geom_boxplot(data = category1_data, aes(x = "Altricial", y = MUTIscore), fill = "olivedrab", alpha = 0.7) +
+  geom_point(data = LifehistTraitDat11, aes(x = ifelse(developmental_mode == 0, "Precocial", "Altricial"), y = MUTIscore), color = "olivedrab4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.6, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Developmental Mode") +
   ylab("MUTIscore") +
@@ -445,7 +583,6 @@ library(crayon)
 LifehistTraitDat12$developmental_mode <- factor(LifehistTraitDat12$developmental_mode, levels = c(0, 1), labels = c("Precocial", "Altricial"))
 
 str(LifehistTraitDat12)
-View(LifehistTraitDat12)
 
 
 #stacked bar chart ---> IT WORKS!! 

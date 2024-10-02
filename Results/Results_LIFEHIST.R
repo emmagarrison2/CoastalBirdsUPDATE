@@ -82,6 +82,41 @@ summary(UAI_GLS_bv) # strong phylogenetic relationship between traits and respon
 confint(UAI_GLS_bv)
 
 
+################ so, brood value has this outlier... let's try again with UAI and Brood Value to see if this relationship is still significantly negative 
+
+# Filter out brood_value datapoints that are less than -5
+LifehistDataFiltered <- LifehistData1 %>% filter(brood_value >= -5)
+
+# Add rownames to filtered data
+row.names(LifehistDataFiltered) <- LifehistDataFiltered$Species_Jetz
+
+# Pair with the tree
+LifehistphydatFiltered <- treedata(tree_out, LifehistDataFiltered, sort=T)
+
+LifehistphyFiltered <- LifehistphydatFiltered$phy
+LifehistTraitDatFiltered <- as.data.frame(LifehistphydatFiltered$data)
+
+# Convert traits of interest to numeric
+LifehistTraitDatFiltered$aveUAI <- as.numeric(LifehistTraitDatFiltered$aveUAI)
+LifehistTraitDatFiltered$Mass_log <- as.numeric(LifehistTraitDatFiltered$Mass_log)
+LifehistTraitDatFiltered$brood_value <- as.numeric(LifehistTraitDatFiltered$brood_value)
+
+# Run the GLS model on the filtered dataset
+UAI_GLS_bv_filtered <- gls(aveUAI ~ brood_value + Mass_log, data = LifehistTraitDatFiltered, 
+                           correlation = corPagel(0.5, phy=LifehistphyFiltered, fixed=F, form = ~Species_Jetz), 
+                           method = "ML")
+
+# Check the model
+check_model(UAI_GLS_bv_filtered)
+qqnorm(resid(UAI_GLS_bv_filtered)) 
+qqline(resid(UAI_GLS_bv_filtered))
+hist(resid(UAI_GLS_bv_filtered))
+
+# Model summary and confidence intervals
+summary(UAI_GLS_bv_filtered) # still significant (p = 0.0288)
+confint(UAI_GLS_bv_filtered) # still significant (C.I. = (-0.349, -0.0195)
+
+
 
 
 ######################## MUTI and % brood value ##########################

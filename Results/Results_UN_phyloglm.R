@@ -22,12 +22,6 @@ library(geiger)
 library(ggeffects)
 library(easystats)
 library(phylolm)
-
-if(!require(logistf)){
-  install.packages("logistf")
-  require(logistf)
-}
-
 library(logistf)
 
 
@@ -153,7 +147,6 @@ exp(-4)/t # this is the lower bound
 # we can give a start.alpha value very close to the upper bound (e.g., 0.557)
 # this work around basically constrains the model's search area for the optimal alpha value within a very small range of values (similar to fixing it)
 set.seed(seednums[1])
-#here 
 phyglm_UN_Mass_fix <- phyloglm(Urban ~ scale(Mass_log), 
                                   data = MassTraitDat3, 
                                   phy = Massphy3, 
@@ -161,7 +154,7 @@ phyglm_UN_Mass_fix <- phyloglm(Urban ~ scale(Mass_log),
                                   log.alpha.bound = 4, 
                                   boot=1000)
 summary(phyglm_UN_Mass_fix)
-confint(phyglm_UN_Mass_fix)
+
 
 # save model
 saveRDS(phyglm_UN_Mass_fix, here("Outputs", "phyglm_UN_Mass_fix.rds"))
@@ -178,7 +171,6 @@ glm_UN_Mass <- logistf(Urban ~ scale(Mass_log), data = MassTraitDat3)
 summary(glm_UN_Mass)
 summary(phyglm_UN_Mass_fix) # compare estimates
 # very similar coefficients
-
 
 # get values for results table for the fixed alpha model with scale(Mass_log)
 summary(phyglm_UN_Mass_fix)
@@ -258,7 +250,6 @@ summary(phyglm_UN_CT)
 
 # scale and center the explanatory variables and run the model
 set.seed(seednums[2])
-#here
 phyglm_UN_CT_scale <- phyloglm(Urban ~ scale(C.T) + scale(Mass_log), 
                           data = SensoryTraitDat2, 
                           phy = Sensoryphy2, 
@@ -322,7 +313,6 @@ summary(phyglm_UN_pf)
 
 # run model with scaled and centered explanatory variables
 set.seed(seednums[3])
-#here
 phyglm_UN_pf_scale <- phyloglm( Urban ~ scale(peak_freq) + scale(Mass_log), 
                           data = SensoryTraitDat5, 
                           phy = Sensoryphy5, 
@@ -467,22 +457,26 @@ phyglm_UN_Invert_fix_4.05 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log)
                                     data = DietTraitDat3, 
                                     phy = Dietphy3, 
                                     start.alpha = 0.55,
+<<<<<<< HEAD
                                     log.alpha.bound = 4.05, boot=1000) # also converged - means no phylogenetic signal 
-
-
+summary(phyglm_UN_Invert_fix_4.05)
+=======
+                                    log.alpha.bound = 4.05, boot=1000)
 summary(phyglm_UN_Invert_fix_4.05) # this converges
-
+>>>>>>> f2d02a1c279c17c6383c64fbabdf01b684ca4b56
 phyglm_UN_Invert_fix_4.05$aic
 
 phyglm_UN_Invert_fix_4.1 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log), 
                                        data = DietTraitDat3, 
                                        phy = Dietphy3, 
                                        start.alpha = 0.55,
+<<<<<<< HEAD
                                        log.alpha.bound = 4.1, boot=1000) # also converged - means no phylogenetic signal 
-
-
+summary(phyglm_UN_Invert_fix_4.1)
+=======
+                                       log.alpha.bound = 4.1, boot=1000)
 summary(phyglm_UN_Invert_fix_4.1) # this also converges
-
+>>>>>>> f2d02a1c279c17c6383c64fbabdf01b684ca4b56
 phyglm_UN_Invert_fix_4.1$aic
 
 # coefficients fairly stable across 4.05 and 4.1 models
@@ -577,7 +571,6 @@ for (i in seq(0, 4, by = 0.1)) {
 
 # try to fix alpha at upper bounds
 set.seed(seednums[5])
-#here
 phyglm_UN_Vert_fix <- phyloglm( Urban ~ scale(Diet.Vert) + scale(Mass_log), 
                                      data = DietTraitDat6, 
                                      phy = Dietphy6, 
@@ -650,7 +643,6 @@ summary(phyglm_UN_PS)
 
 # try model with scaled and centered explanatory variables
 set.seed(seednums[6])
-#here
 phyglm_UN_PS_scale <- phyloglm( Urban ~ scale(Diet.PS) + scale(Mass_log), 
                           data = DietTraitDat9, 
                           phy = Dietphy9, 
@@ -722,7 +714,6 @@ phyglm_UN_FN <- phyloglm( Urban ~ Diet.FN + Mass_log,
 
 # run model with scaled and centered explanatory variables
 set.seed(seednums[7])
-#here
 phyglm_UN_FN_scale <- phyloglm( Urban ~ scale(Diet.FN) + scale(Mass_log), 
                           data = DietTraitDat12, 
                           phy = Dietphy12, 
@@ -818,7 +809,6 @@ summary(phyglm_UN_bv)
 
 # run the model with center and scaled variables
 set.seed(seednums[8])
-#here
 phyglm_UN_bv_scale <- phyloglm( Urban ~ scale(brood_value) + scale(Mass_log), 
                           data = LifehistTraitDat3, 
                           phy = Lifehistphy3, 
@@ -918,7 +908,6 @@ for (i in seq(0, 4, by = 0.1)) {
 
 # fix alpha at upper bounds
 set.seed(seednums[9])
-#here
 phyglm_UN_clutch_fix <- phyloglm( Urban ~ scale(clutch_size) + scale(Mass_log), 
                               data = LifehistTraitDat6, 
                               phy = Lifehistphy6, 
@@ -1020,7 +1009,6 @@ for (i in seq(0, 4, by = 0.1)) {
 
 # try fixing alpha at upper bounds
 set.seed(seednums[10])
-#here
 phyglm_UN_long_fix <- phyloglm( Urban ~ scale(longevity) + scale(Mass_log), 
                                   data = LifehistTraitDat9, 
                                   phy = Lifehistphy9, 
@@ -1120,7 +1108,6 @@ for (i in seq(0, 4, by = 0.1)) {
 
 # try fixing model at upper bounds for alpha
 set.seed(seednums[11])
-#here
 phyglm_UN_develop_fix <- phyloglm( Urban ~ developmental_mode + scale(Mass_log), 
                                      data = LifehistTraitDat12, 
                                      phy = Lifehistphy12,

@@ -471,6 +471,8 @@ phyglm_UN_Invert_fix_4.05 <- phyloglm( Urban ~ scale(Diet.Inv) + scale(Mass_log)
 
 
 summary(phyglm_UN_Invert_fix_4.05) # this converges
+#HERE
+
 
 phyglm_UN_Invert_fix_4.05$aic
 
@@ -1142,7 +1144,9 @@ saveRDS(phyglm_UN_develop_fix, here("Outputs", "phyglm_UN_develop_fix.rds"))
 # load model
 phyglm_UN_develop_fix <- readRDS(here("Outputs", "phyglm_UN_develop_fix.rds"))
 
-
+summary(phyglm_UN_develop_fix)
+summary(phyglm_UN_develop_fix_OG )
+summary(phyglm_UN_develop_fix_SARAH )
 # compare results with a non-phylogenetic logistic model
 glm_UN_develop <- logistf(Urban ~ developmental_mode + scale(Mass_log), 
                           data = LifehistTraitDat12)

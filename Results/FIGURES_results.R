@@ -405,6 +405,7 @@ clutch_UAI_plot<-ggplot(data=clutch.UAI.DF,aes(x=clutch_size, y=fit)) +
 
 clutch_UAI_plot
 
+
 saveRDS(clutch_UAI_plot, here("Results", "clutch_UAI_plot.rds"))
 
 
@@ -729,13 +730,19 @@ NestTraitDat4$NestSite_Low <- as.numeric(as.character(NestTraitDat4$NestSite_Low
 # now, plot! 
 
 correct_low_UAI_plot <- ggplot() +
-  geom_boxplot(data = not_low_data, aes(x = "Not Low", y = aveUAI), fill = "lightblue") +
-  geom_boxplot(data = low_data, aes(x = "Low", y = aveUAI), fill = "lightgreen") +
-  geom_point(data = NestTraitDat4, aes(x = ifelse(NestSite_Low == 0, "Not Low", "Low"), y = aveUAI), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
+  geom_boxplot(data = not_low_data, aes(x = "Not Low", y = aveUAI), fill = "#FFD67B", alpha = 0.4) +
+  geom_boxplot(data = low_data, aes(x = "Low", y = aveUAI), fill = "#E48816", alpha = 0.4) +
+  geom_point(data = NestTraitDat4, aes(x = ifelse(NestSite_Low == 0, "Not Low", "Low"), y = aveUAI), color = "#E48816", size = 2, shape = 21, fill = "#E48816", alpha = 0.6, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
-  ylab("Average UAI score") +
-  scale_x_discrete(limits = c("Not Low", "Low"), labels = c("Not Low", "Low"))  # Specify the order here
+  ylab("UAI") +
+  scale_x_discrete(limits = c("Not Low", "Low"), labels = c("Not Low", "Low"))  + # Specify the order here 
+  theme(
+  axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
+  axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
+  axis.text.x = element_text(size = 12),     # Adjust font size for x-axis tick labels
+  axis.text.y = element_text(size = 12)      # Adjust font size for y-axis tick labels
+)
 
 print(correct_low_UAI_plot)
 
@@ -832,49 +839,27 @@ category1_data <- subset(NestTraitDat5, NestSite_Low == 1)
 
 NestTraitDat5$NestSite_Low <- as.numeric(as.character(NestTraitDat5$NestSite_Low))
 
-# now, plot! 
+# now, plot! olivedrab1, olivedrab, olivedrab4
 
 correct_low_MUTI_plot <- ggplot() +
-  geom_boxplot(data = category0_data, aes(x = "Not Low", y = MUTIscore), fill = "lightblue") +
-  geom_boxplot(data = category1_data, aes(x = "Low", y = MUTIscore), fill = "lightgreen") +
-  geom_point(data = NestTraitDat5, aes(x = ifelse(NestSite_Low == 0, "Not Low", "Low"), y = MUTIscore), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
+  geom_boxplot(data = category0_data, aes(x = "Not Low", y = MUTIscore), fill = "olivedrab", alpha = 0.4) +
+  geom_boxplot(data = category1_data, aes(x = "Low", y = MUTIscore), fill = "olivedrab1", alpha = 0.4) +
+  geom_point(data = NestTraitDat5, aes(x = ifelse(NestSite_Low == 0, "Not Low", "Low"), y = MUTIscore), color = "olivedrab4", size = 2, shape = 21, fill = "olivedrab4", alpha = 0.7, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
-  ylab("MUTI score") +
-  scale_x_discrete(labels = c("Not Low", "Low"))
+  ylab("MUTI") +
+  scale_x_discrete(labels = c("Not Low", "Low")) + 
+  theme(
+    axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
+    axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
+    axis.text.x = element_text(size = 12),     # Adjust font size for x-axis tick labels
+    axis.text.y = element_text(size = 12)      # Adjust font size for y-axis tick labels
+  )
 
 print(correct_low_MUTI_plot)
 
 saveRDS(correct_low_MUTI_plot, here("Results", "MUTI_low_nest.rds"))
 
-
-
-
-
-# Filter data for category 0 and category 1
-not_low_data <- subset(NestTraitDat5, NestSite_Low == 0)
-#0 = not high
-low_data <- subset(NestTraitDat5, NestSite_Low == 1)
-#1 = high
-
-# Plotting boxplots side by side
-
-NestTraitDat5$NestSite_Low <- as.numeric(as.character(NestTraitDat5$NestSite_Low))
-
-# now, plot! 
-
-correct_low_MUTI_plot <- ggplot() +
-  geom_boxplot(data = not_low_data, aes(x = "Not Low", y = MUTIscore), fill = "lightblue") +
-  geom_boxplot(data = low_data, aes(x = "Low", y = MUTIscore), fill = "lightgreen") +
-  geom_point(data = NestTraitDat5, aes(x = ifelse(NestSite_Low == 0, "Not Low", "Low"), y = MUTIscore), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
-  theme_classic() +
-  xlab("Nest Site") +
-  ylab("MUTI score") +
-  scale_x_discrete(limits = c("Not Low", "Low"), labels = c("Not Low", "Low"))  # Specify the order here
-
-print(correct_low_MUTI_plot)
-
-saveRDS(correct_low_MUTI_plot, here("Results", "MUTI_low_nest.rds"))
 
 
 
@@ -982,13 +967,19 @@ NestTraitDat7$NestSite_High <- as.numeric(as.character(NestTraitDat7$NestSite_Hi
 # now, plot! 
 
 correct_high_UAI_plot <- ggplot() +
-  geom_boxplot(data = not_high_data, aes(x = "Not High", y = aveUAI), fill = "lightblue") +
-  geom_boxplot(data = high_data, aes(x = "High", y = aveUAI), fill = "lightgreen") +
-  geom_point(data = NestTraitDat7, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = aveUAI), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
+  geom_boxplot(data = not_high_data, aes(x = "Not High", y = aveUAI), fill = "#FFD67B", alpha = 0.4) +
+  geom_boxplot(data = high_data, aes(x = "High", y = aveUAI), fill = "#E48816", alpha = 0.4) +
+  geom_point(data = NestTraitDat7, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = aveUAI), color = "#E48816", size = 2, shape = 21, fill = "#E48816", alpha = 0.6, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
   ylab("Average UAI score") +
-  scale_x_discrete(limits = c("Not High", "High"), labels = c("Not High", "High"))  # Specify the order here
+  scale_x_discrete(limits = c("Not High", "High"), labels = c("Not High", "High"))   + # Specify the order here
+  theme(
+    axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
+    axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
+    axis.text.x = element_text(size = 12),     # Adjust font size for x-axis tick labels
+    axis.text.y = element_text(size = 12)      # Adjust font size for y-axis tick labels
+  )
 
 print(correct_high_UAI_plot)
 
@@ -1088,17 +1079,38 @@ NestTraitDat8$NestSite_High <- as.numeric(as.character(NestTraitDat8$NestSite_Hi
 str(NestTraitDat8)
 #NestSite_high is numeric right now 
 
-# now, plot! 
+
+
+correct_high_UAI_plot <- ggplot() +
+  geom_boxplot(data = not_high_data, aes(x = "Not High", y = aveUAI), fill = "#FFD67B", alpha = 0.4) +
+  geom_boxplot(data = high_data, aes(x = "High", y = aveUAI), fill = "#E48816", alpha = 0.4) +
+  geom_point(data = NestTraitDat7, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = aveUAI), color = "#E48816", size = 2, shape = 21, fill = "#E48816", alpha = 0.6, position = position_jitter(width = 0.2)) +
+  theme_classic() +
+  xlab("Nest Site") +
+  ylab("Average UAI score") +
+  scale_x_discrete(limits = c("Not High", "High"), labels = c("Not High", "High"))   + # Specify the order here
+  theme(
+    axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
+    axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
+    axis.text.x = element_text(size = 12),     # Adjust font size for x-axis tick labels
+    axis.text.y = element_text(size = 12)      # Adjust font size for y-axis tick labels
+  )
+
+# now, plot! olivedrab1, olivedrab, olivedrab4
 
 correct_high_MUTI_plot <- ggplot() +
-  geom_boxplot(data = not_high_data, aes(x = "Not High", y = MUTIscore), fill = "lightblue") +
-  geom_boxplot(data = high_data, aes(x = "High", y = MUTIscore), fill = "lightgreen") +
-  geom_point(data = NestTraitDat8, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = MUTIscore), color = "deepskyblue4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.3, position = position_jitter(width = 0.2)) +
+  geom_boxplot(data = not_high_data, aes(x = "Not High", y = MUTIscore), fill = "olivedrab1", alpha = 0.4) +
+  geom_boxplot(data = high_data, aes(x = "High", y = MUTIscore), fill = "olivedrab", alpha = 0.4) +
+  geom_point(data = NestTraitDat8, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = MUTIscore), color = "olivedrab4", size = 2, shape = 21, fill = "olivedrab4", alpha = 0.7, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
   ylab("MUTI score") +
-  scale_x_discrete(limits = c("Not High", "High"), labels = c("Not High", "High"))  # Specify the order here
-
+  scale_x_discrete(labels = c("Not High", "High"))  + 
+  theme(axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
+        axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
+        axis.text.x = element_text(size = 12),     # Adjust font size for x-axis tick labels
+        axis.text.y = element_text(size = 12))
+    
 print(correct_high_MUTI_plot)
 
 

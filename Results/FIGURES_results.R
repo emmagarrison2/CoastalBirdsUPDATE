@@ -151,7 +151,7 @@ BodyMass_UAI_plot<-ggplot(data=MASS.UAI.DF,aes(x=Mass_log, y=fit)) +
   geom_line(color="#FFD67B",lwd=1.5) +
   geom_ribbon(aes(ymin=lower, ymax=upper), fill="#FFD67B",alpha=.3, lwd=.1)+xlim(-1000,1000) +
   
-  geom_point(data=MassTraitDat1,aes(x=jitter(Mass_log, 1), y =aveUAI),color="#E48816", bg="#E48816",alpha=.6, size=2,pch=21) +
+  geom_point(data=MassTraitDat1,aes(x=jitter(Mass_log, 1), y =aveUAI),color="#E48816", bg="#E48816",alpha=.6, size=1,pch=21) +
   coord_cartesian(ylim = c(-0, 4.2), xlim =c(0,10.5)) + theme_classic() +
   theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
   xlab("log(Body Mass)") + 
@@ -581,24 +581,70 @@ library(crayon)
 
 
 ################# Bar Chart 
+View(LifehistTraitDat12)
 
-LifehistTraitDat12$developmental_mode <- factor(LifehistTraitDat12$developmental_mode, levels = c(0, 1), labels = c("Precocial", "Altricial"))
 
-str(LifehistTraitDat12)
+Develop_UN <- LifehistTraitDat12 %>% 
+  select(Urban, developmental_mode)
+colnames(Develop_UN)
+nrow(Develop_UN) #129, looks good! 
 
+
+Develop_UN$developmental_mode <- factor(Develop_UN$developmental_mode, levels = c(0, 1), labels = c("Precocial", "Altricial"))
+
+str(Develop_UN)
+View(Develop_UN)
 
 #stacked bar chart ---> IT WORKS!! 
 
-UN_develop_stacked_barchart <- ggplot(LifehistTraitDat12, aes(x =developmental_mode, fill = Urban, group = Urban)) + 
-  geom_bar(position = "fill") + 
-  xlab("Developmental Mode") + 
-  ylab("UN score") + 
-  theme_minimal()
+#first, calculate percentages 
 
-print(UN_develop_stacked_barchart)
+Develop_UN_summary <- Develop_UN %>%
+  group_by(developmental_mode, Urban) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  group_by(developmental_mode) %>%
+  mutate(percentage = count / sum(count) * 100) %>%
+  mutate(Group_Urban = paste(developmental_mode, Urban, sep = " & "))  # Combine Group and Urban for legend
 
-#save and return to this tomorrow 
-saveRDS(UN_develop_stacked_barchart, here("Results", "UN_develop_stacked_barchart.rds"))
+View(Develop_UN_summary)
+
+library(dplyr)
+
+Develop_UN_plot <- ggplot(Develop_UN_summary, aes(x = developmental_mode, y = percentage, fill = Group_Urban)) + 
+  geom_bar(stat = "identity", position = "fill", color = "black") + 
+  scale_y_continuous(labels = scales::percent) +  # Show percentages on the y-axis
+  # Custom colors for each Group & Urban combination
+  scale_fill_manual(
+    values = c(
+      "Precocial & 0" = "#B8D5E9",   # Color for "Precocial & Nonurban"
+      "Precocial & 1" = "#6C9CCC",        # Color for "Precocial & Urban"
+      "Altricial & 0" = "#B8D5E9",  # Color for "Altricial & Nonurban"
+      "Altricial & 1" = "#6C9CCC"        # Color for "Altricial & Urban"
+    )
+  ) + 
+  labs(
+    x = "Developmental Mode", 
+    y = "UN", 
+    fill = ""  # Legend title
+  ) + 
+  theme_classic() + 
+  theme(
+    axis.title.x = element_text(size = 14, margin = margin(t = 8)), 
+    axis.title.y = element_text(size = 12), 
+    legend.position = "none"
+  ) + 
+  annotate(
+    "text", 
+    x = c(1, 1, 2, 2), 
+    y = c(0.15, 0.63, 0.21, 0.7), 
+    label = c("Urban", "Non-Urban", "Urban", "Non-Urban"))
+
+
+print(Develop_UN_plot)
+
+saveRDS(Develop_UN_plot, here("Results", "develop_UN_plot.rds"))
+
 
 
 ##############################################################################
@@ -616,6 +662,7 @@ devepop_mode_plots <- grid.arrange(MUTI_develop_plot, UN_develop_plot, ncol=2, n
 BV_UAI_plot_no_outlier <- readRDS(here("Results", "BroodValue_UAI_plot_filtered.rds"))
 clutch_UAI_plot <- readRDS(here("Results", "clutch_UAI_plot.rds"))
 develop_MUTI_plot <- readRDS(here("Results", "MUTI_developmental.rds"))
+develop_UN_plot <- readRDS(here("Results", "develop_UN_plot.rds"))
 
 
 #using patchwork package 
@@ -626,10 +673,15 @@ if(!require(patchwork)){
 library(patchwork)
 
 
-all_life_history_plots <- BV_UAI_plot_no_outlier + clutch_UAI_plot + develop_MUTI_plot
+all_life_history_plots <- BV_UAI_plot_no_outlier + clutch_UAI_plot + develop_MUTI_plot + develop_UN_plot
 
 print(all_life_history_plots)
 
+saveRDS(all_life_history_plots, here("Results", "life_history_figures.rds"))
+
+LH_plots <- readRDS(here("Results", "life_history_figures.rds"))
+
+print(LH_plots)
 
 ##################################################################
 ########################## NESTING TRAITS ########################## 
@@ -751,7 +803,7 @@ NestTraitDat4$NestSite_Low <- as.numeric(as.character(NestTraitDat4$NestSite_Low
 correct_low_UAI_plot <- ggplot() +
   geom_boxplot(data = not_low_data, aes(x = "Not Low", y = aveUAI), fill = "#FFD67B", alpha = 0.4) +
   geom_boxplot(data = low_data, aes(x = "Low", y = aveUAI), fill = "#E48816", alpha = 0.4) +
-  geom_point(data = NestTraitDat4, aes(x = ifelse(NestSite_Low == 0, "Not Low", "Low"), y = aveUAI), color = "#E48816", size = 2, shape = 21, fill = "#E48816", alpha = 0.6, position = position_jitter(width = 0.2)) +
+  geom_point(data = NestTraitDat4, aes(x = ifelse(NestSite_Low == 0, "Not Low", "Low"), y = aveUAI), color = "#E48816", size = 1, shape = 21, fill = "#E48816", alpha = 0.7, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
   ylab("UAI") +
@@ -861,13 +913,13 @@ NestTraitDat5$NestSite_Low <- as.numeric(as.character(NestTraitDat5$NestSite_Low
 # now, plot! olivedrab1, olivedrab, olivedrab4
 
 correct_low_MUTI_plot <- ggplot() +
-  geom_boxplot(data = category0_data, aes(x = "Not Low", y = MUTIscore), fill = "olivedrab", alpha = 0.4) +
-  geom_boxplot(data = category1_data, aes(x = "Low", y = MUTIscore), fill = "olivedrab1", alpha = 0.4) +
-  geom_point(data = NestTraitDat5, aes(x = ifelse(NestSite_Low == 0, "Not Low", "Low"), y = MUTIscore), color = "olivedrab4", size = 2, shape = 21, fill = "olivedrab4", alpha = 0.7, position = position_jitter(width = 0.2)) +
+  geom_boxplot(data = category0_data, aes(x = "Not Low", y = MUTIscore), fill = "olivedrab1", alpha = 0.4) +
+  geom_boxplot(data = category1_data, aes(x = "Low", y = MUTIscore), fill = "olivedrab", alpha = 0.4) +
+  geom_point(data = NestTraitDat5, aes(x = ifelse(NestSite_Low == 0, "Not Low", "Low"), y = MUTIscore), color = "olivedrab4", size = 1, shape = 21, fill = "olivedrab4", alpha = 0.8, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
   ylab("MUTI") +
-  scale_x_discrete(labels = c("Not Low", "Low")) + 
+  scale_x_discrete(limits = c("Not Low", "Low"), labels = c("Not Low", "Low")) + 
   theme(
     axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
     axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
@@ -988,7 +1040,7 @@ NestTraitDat7$NestSite_High <- as.numeric(as.character(NestTraitDat7$NestSite_Hi
 correct_high_UAI_plot <- ggplot() +
   geom_boxplot(data = not_high_data, aes(x = "Not High", y = aveUAI), fill = "#FFD67B", alpha = 0.4) +
   geom_boxplot(data = high_data, aes(x = "High", y = aveUAI), fill = "#E48816", alpha = 0.4) +
-  geom_point(data = NestTraitDat7, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = aveUAI), color = "#E48816", size = 2, shape = 21, fill = "#E48816", alpha = 0.6, position = position_jitter(width = 0.2)) +
+  geom_point(data = NestTraitDat7, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = aveUAI), color = "#E48816", size = 1, shape = 21, fill = "#E48816", alpha = 0.7, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
   ylab("Average UAI score") +
@@ -1065,7 +1117,7 @@ summary(MUTI_GLS_nest_high)
 confint(MUTI_GLS_nest_high)
 
 
-#let's plot the MUTI & Nest site High model that DOESN'T exclude ambiguous-nesting species for now. We can redo [Nest Site Low (ONLY)] plot later 
+#let's plot the MUTI & Nest site High model that DOESN'T exclude ambiguous-nesting species for now. We can redo [Nest Site High (ONLY)] plot later 
 
 ###############This is the correct code for boxplot 
 
@@ -1091,40 +1143,17 @@ mean(high_data$MUTIscore)
 # 0.170 
 
 
-# Plotting boxplots side by side
-
-NestTraitDat8$NestSite_High <- as.numeric(as.character(NestTraitDat8$NestSite_High))
-
-str(NestTraitDat8)
-#NestSite_high is numeric right now 
-
-
-
-correct_high_UAI_plot <- ggplot() +
-  geom_boxplot(data = not_high_data, aes(x = "Not High", y = aveUAI), fill = "#FFD67B", alpha = 0.4) +
-  geom_boxplot(data = high_data, aes(x = "High", y = aveUAI), fill = "#E48816", alpha = 0.4) +
-  geom_point(data = NestTraitDat7, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = aveUAI), color = "#E48816", size = 2, shape = 21, fill = "#E48816", alpha = 0.6, position = position_jitter(width = 0.2)) +
-  theme_classic() +
-  xlab("Nest Site") +
-  ylab("Average UAI score") +
-  scale_x_discrete(limits = c("Not High", "High"), labels = c("Not High", "High"))   + # Specify the order here
-  theme(
-    axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
-    axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
-    axis.text.x = element_text(size = 12),     # Adjust font size for x-axis tick labels
-    axis.text.y = element_text(size = 12)      # Adjust font size for y-axis tick labels
-  )
 
 # now, plot! olivedrab1, olivedrab, olivedrab4
 
 correct_high_MUTI_plot <- ggplot() +
   geom_boxplot(data = not_high_data, aes(x = "Not High", y = MUTIscore), fill = "olivedrab1", alpha = 0.4) +
   geom_boxplot(data = high_data, aes(x = "High", y = MUTIscore), fill = "olivedrab", alpha = 0.4) +
-  geom_point(data = NestTraitDat8, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = MUTIscore), color = "olivedrab4", size = 2, shape = 21, fill = "olivedrab4", alpha = 0.7, position = position_jitter(width = 0.2)) +
+  geom_point(data = NestTraitDat8, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = MUTIscore), color = "olivedrab4", size = 1, shape = 21, fill = "olivedrab4", alpha = 0.8, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
   ylab("MUTI score") +
-  scale_x_discrete(labels = c("Not High", "High"))  + 
+  scale_x_discrete(limits = c("Not High", "High"), labels = c("Not High", "High"))   +
   theme(axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
         axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
         axis.text.x = element_text(size = 12),     # Adjust font size for x-axis tick labels
@@ -1198,38 +1227,67 @@ summary(UN_M_nest_high)
 confint(UN_M_nest_high)
 
 
-
- 
-
-
-
-#let's plot the UN & Nest site High model that DOESN'T exclude ambiguous-nesting species for now. We can redo [Nest Site Low (ONLY)] plot later 
-
-
-#NestTraitDat9$NestSite_High <- ifelse(NestTraitDat9$NestSite_High == 1, "High", "Not High")
-#NestTraitDat9$Urban <- ifelse(NestTraitDat9$Urban == 1, "U", "N")
-
-
-# Convert NestSite_High to a factor with the desired order
-NestTraitDat9$NestSite_High <- factor(NestTraitDat9$NestSite_High, levels = c(0, 1), labels = c("Not High", "High"))
-
-str(NestTraitDat9)
 View(NestTraitDat9)
+UN_Nest_High <- NestTraitDat9 %>% select(Urban, NestSite_High)
+View(UN_Nest_High)
 
+
+#PLOT -- let's use the one with all species (so, not exlcuding ambiguous nesters (ONLY))
 
 #stacked bar chart ---> IT WORKS!! 
 
-UN_nest_high_stacked_barchart <- ggplot(NestTraitDat9, aes(x =NestSite_High, fill = Urban, group = Urban)) + 
-  geom_bar(position = "fill") + 
-  xlab("Nest Site High") + 
-  ylab("UN score") + 
-  theme_minimal()
-  
-print(UN_nest_high_stacked_barchart)
 
-#save and return to this tomorrow 
-saveRDS(UN_nest_high_stacked_barchart, here("Results", "UN_nest_high_stacked_barchart.rds"))
+#relabel 0 = not high, and 1 = high 
+UN_Nest_High$NestSite_High <- factor(UN_Nest_High$NestSite_High, levels = c(0, 1), labels = c("Not High", "High"))
 
+
+#first, calculate percentages 
+UN_Nest_High_Summary <- UN_Nest_High %>%
+  group_by(NestSite_High, Urban) %>%
+  summarise(count = n()) %>%
+  ungroup() %>%
+  group_by(NestSite_High) %>%
+  mutate(percentage = count / sum(count) * 100) %>%
+  mutate(Group_Urban = paste(NestSite_High, Urban, sep = " & "))  # Combine Group and Urban for legend
+
+
+View(UN_Nest_High_Summary)
+
+
+library(dplyr)
+
+Nest_High_UN_plot <- ggplot(UN_Nest_High_Summary, aes(x = NestSite_High, y = percentage, fill = Group_Urban)) + 
+  geom_bar(stat = "identity", position = "fill", color = "black") + 
+  scale_y_continuous(labels = scales::percent) +  # Show percentages on the y-axis
+  # Custom colors for each Group & Urban combination
+  scale_fill_manual(
+    values = c(
+      "Not High & 0" = "#B8D5E9",   # Color for "Precocial & Nonurban"
+      "Not High & 1" = "#6C9CCC",        # Color for "Precocial & Urban"
+      "High & 0" = "#B8D5E9",  # Color for "Altricial & Nonurban"
+      "High & 1" = "#6C9CCC"        # Color for "Altricial & Urban"
+    )
+  ) + 
+  labs(
+    x = "Nest Site", 
+    y = "UN", 
+    fill = ""  # Legend title
+  ) + 
+  theme_classic() + 
+  theme(
+    axis.title.x = element_text(size = 14, margin = margin(t = 8)), 
+    axis.title.y = element_text(size = 12), 
+    legend.position = "none"
+  ) + 
+  annotate(
+    "text", 
+    x = c(1, 1, 2, 2), 
+    y = c(0.12, 0.63, 0.21, 0.7), 
+    label = c("Urban", "Non-Urban", "Urban", "Non-Urban"))
+
+print(Nest_High_UN_plot)
+ 
+saveRDS(Nest_High_UN_plot, here("Results", "NestHigh_UN_plot.rds"))
 
 
 
@@ -1238,12 +1296,20 @@ saveRDS(UN_nest_high_stacked_barchart, here("Results", "UN_nest_high_stacked_bar
 
 UAI_high_plot <- readRDS(here("Results", "UAI_high_nest.rds"))
 MUTI_high_plot <- readRDS(here("Results", "MUTI_high_nest.rds"))
-UN_high_plot <- readRDS(here("Results", "UN_nest_high_stacked_barchart.rds"))
+UN_high_plot <- readRDS(here("Results", "NestHigh_UN_plot.rds"))
 
 low_nesting_plots <- grid.arrange(UAI_high_plot, MUTI_high_plot, UN_high_plot, ncol=3, nrow = 1)
 
 
 
+
+#nest safety and UN plot: 
+
+#need 
+
+
+####################################################################################
+#okay, now let's arrange all nesting traits! 
 
 
 

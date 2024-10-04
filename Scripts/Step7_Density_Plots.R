@@ -106,6 +106,9 @@ AllIndexes_AllBirds$Urban <- ifelse(AllIndexes_AllBirds$Urban == "U", 1, 0)
 colnames(AllIndexes_AllBirds)
 nrow(AllIndexes_AllBirds)#4433
 
+
+
+
 #######################################################################
 #####density plot for aveUAI 
 
@@ -126,6 +129,8 @@ AllBirds_UAI <- AllIndexes_AllBirds %>%
   filter(!is.na(aveUAI) & is.finite(aveUAI))
 nrow(AllBirds_UAI) #4347
 
+#average all-birds UAI 
+mean(AllBirds_UAI$aveUAI) #1.182
 
 AllBirds_UAI_2 <- AllBirds_UAI %>% 
   select(aveUAI, Group)
@@ -142,6 +147,9 @@ View(AllIndexesCoastal)
 CoastalBirds_UAI <- AllIndexesCoastal %>% 
   filter(!is.na(aveUAI) & is.finite(aveUAI))
 nrow(CoastalBirds_UAI) #798
+
+#average coastal-birds UAI 
+mean(CoastalBirds_UAI$aveUAI) #1.428
 
 CoastalBirds_UAI_2 <- CoastalBirds_UAI %>% 
   select(aveUAI, Group)
@@ -219,6 +227,9 @@ AllBirds_MUTI_2 <- AllBirds_MUTI %>%
 colnames(AllBirds_MUTI_2)
 nrow(AllBirds_MUTI_2) #431, looks good! 
 
+#average all-birds MUTI 
+mean(AllBirds_MUTI_2$MUTIscore) #-0.00511
+
 #new df with reduced columnds of AllIndexesCoastal
 
 CoastalBirds_MUTI <- AllIndexesCoastal %>% 
@@ -229,6 +240,9 @@ CoastalBirds_MUTI_2 <- CoastalBirds_MUTI %>%
   select(MUTIscore, Group)
 colnames(CoastalBirds_MUTI_2)
 nrow(CoastalBirds_MUTI_2) #130, looks good! 
+
+#average coastal-birds MUTI 
+mean(CoastalBirds_MUTI_2$MUTIscore) #-0.01237143
 
 ###time to bind rows for UAI 
 
@@ -312,6 +326,12 @@ colnames(CoastalBirds_UN_2)
 nrow(CoastalBirds_UN_2) #129, looks good! 
 
 View(CoastalBirds_UN_2)
+
+
+#how many birds are urban? 
+sum(CoastalBirds_UN_2$Urban == 1, na.rm = TRUE) #41 
+41/129 # = 0.318 --> 31.8% of coastal species urban 
+
 
 ###time to bind rows for UAI 
 

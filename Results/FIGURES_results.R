@@ -497,12 +497,13 @@ LifehistTraitDat11$developmental_mode <- as.numeric(as.character(LifehistTraitDa
 
 
 correct_develop_MUTI_plot <- ggplot() +
-  geom_boxplot(data = category0_data, aes(x = "Precocial", y = MUTIscore), fill = "olivedrab1", alpha = 0.7) +
-  geom_boxplot(data = category1_data, aes(x = "Altricial", y = MUTIscore), fill = "olivedrab", alpha = 0.7) +
-  geom_point(data = LifehistTraitDat11, aes(x = ifelse(developmental_mode == 0, "Precocial", "Altricial"), y = MUTIscore), color = "olivedrab4", size = 2, shape = 21, fill = "deepskyblue4", alpha = 0.6, position = position_jitter(width = 0.2)) +
+  geom_boxplot(data = category0_data, aes(x = "Precocial", y = MUTIscore), fill = "olivedrab1", alpha = 0.4) +
+  geom_boxplot(data = category1_data, aes(x = "Altricial", y = MUTIscore), fill = "olivedrab", alpha = 0.4) +
+  geom_point(data = LifehistTraitDat11, aes(x = ifelse(developmental_mode == 0, "Precocial", "Altricial"), y = MUTIscore), color = "olivedrab4", size = 2, shape = 21, fill = "olivedrab4", alpha = 0.6, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Developmental Mode") +
   ylab("MUTIscore") +
+  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
   scale_x_discrete(limits = c("Precocial", "Altricial"), labels = c("Precocial", "Altricial"))  # Specify the order here
 
 print(correct_develop_MUTI_plot)
@@ -609,7 +610,25 @@ UN_develop_plot <- readRDS(here("Results", "UN_develop_stacked_barchart.rds"))
 devepop_mode_plots <- grid.arrange(MUTI_develop_plot, UN_develop_plot, ncol=2, nrow = 1)
 
 
+##############################################################################
+#plot all the life history results together... 
 
+BV_UAI_plot_no_outlier <- readRDS(here("Results", "BroodValue_UAI_plot_filtered.rds"))
+clutch_UAI_plot <- readRDS(here("Results", "clutch_UAI_plot.rds"))
+develop_MUTI_plot <- readRDS(here("Results", "MUTI_developmental.rds"))
+
+
+#using patchwork package 
+if(!require(patchwork)){
+  install.packages("patchwork")
+  require(patchwork)
+}
+library(patchwork)
+
+
+all_life_history_plots <- BV_UAI_plot_no_outlier + clutch_UAI_plot + develop_MUTI_plot
+
+print(all_life_history_plots)
 
 
 ##################################################################

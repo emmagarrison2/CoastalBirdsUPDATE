@@ -1253,6 +1253,7 @@ UN_Nest_High_Summary <- UN_Nest_High %>%
 
 View(UN_Nest_High_Summary)
 
+# light - B8D5E9, dark - 6C9CCC
 
 library(dplyr)
 
@@ -1292,7 +1293,7 @@ saveRDS(Nest_High_UN_plot, here("Results", "NestHigh_UN_plot.rds"))
 
 
 ##############################################################################
-#arrange all nest site low plots in a grid
+#arrange all nest site high plots in a grid
 
 UAI_high_plot <- readRDS(here("Results", "UAI_high_nest.rds"))
 MUTI_high_plot <- readRDS(here("Results", "MUTI_high_nest.rds"))
@@ -1303,13 +1304,119 @@ low_nesting_plots <- grid.arrange(UAI_high_plot, MUTI_high_plot, UN_high_plot, n
 
 
 
-#nest safety and UN plot: 
 
-#need 
+######################## UN and Nest Safety ##########################
+
+
+# lets first simplify a NEW database by removing records where we don't have an UN / brood_value
+UNDataUT <- C_Nest_dat2 %>% filter(!is.na(Urban)) 
+NestData12 <- UNDataUT %>% filter(!is.na(nest.safety)) 
+length(NestData12$nest.safety)
+#129 species with Urban and nest.safety
+
+#there is no Log_mass column in this .rds ... let's put one in! 
+
+# add column for log transformed body mass
+NestData12 <- NestData12 %>%
+  mutate(Mass_log = log(Mass))
+
+colnames(NestData12)
+
+###### add and pair tree
+
+# add rownames to data
+row.names(NestData12) <- NestData12$Species_Jetz
+
+tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
+
+Nestphydat12 <- treedata(tree_out,NestData12, sort=T)
+
+Nestphy12 <- Nestphydat12$phy
+NestTraitDat12 <- as.data.frame(Nestphydat12$data)
+
+str(NestTraitDat12)
+length(NestTraitDat12$nest.safety)
+#129
+
+
+### convert traits of interest to numeric
+
+NestTraitDat12$Urban <- as.numeric(NestTraitDat12$Urban)
+NestTraitDat12$Mass_log <- as.numeric(NestTraitDat12$Mass_log)
+NestTraitDat12$nest.safety <- as.numeric(NestTraitDat12$nest.safety)
+
+
+
+#lets run the model using Phylolm!  
+
+#(have to use lambda, until we figure out a way to make GLS work with binomial linear regression)
+UN_M_nest_safety <- phylolm(Urban~ nest.safety + Mass_log, data=NestTraitDat12,
+                            phy=Nestphy12, model="lambda") 
+
+# time to check out the model 
+qqnorm(UN_M_nest_safety$residuals)
+qqline(UN_M_nest_safety$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
+#the two lines do not have overlap... maybe this is good? 
+hist(UN_M_nest_safety$residuals, breaks = 20) 
+
+#lets get those values for our results table 
+summary(UN_M_nest_safety)
+confint(UN_M_nest_safety)
+
+
+#time to plot!
+
+library(effects)
+# light - B8D5E9, dark - 6C9CCC
+Safety.UNdb <- predictorEffect("nest.safety" , UN_M_nest_safety)
+
+
+plot(Safety.UNdb, ask =FALSE, xlab = "Nest Safety", ylab = "UN", main ="", lines=list(multiline=TRUE, col=c("#B8D5E9")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
+
+SAFETY.UN.DF<-data.frame(Safety.UNdb)
+
+SAFETY_UN_plot<-ggplot(data=SAFETY.UN.DF,aes(x=nest.safety, y=fit)) +
+  geom_line(color="#6C9CCC",lwd=1.5) +
+  geom_ribbon(aes(ymin=lower, ymax=upper), fill="#B8D5E9",alpha=.7, lwd=.1)+xlim(-1000,1000) +
+  
+  geom_point(data=NestTraitDat12,aes(x=jitter(nest.safety, 1), y =Urban),color="#6C9CCC", bg="#6C9CCC",alpha=.7, size=1,pch=21) +
+  coord_cartesian(ylim = c(0, 1), xlim =c(0.9,4.1)) + theme_classic() +
+  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  xlab("Nest Safety") + 
+  ylab("UN") 
+
+SAFETY_UN_plot
+
+saveRDS(SAFETY_UN_plot, here("Results", "Nest_Safety_UN_plot.rds"))
+
+
+
 
 
 ####################################################################################
 #okay, now let's arrange all nesting traits! 
+
+
+UAI_high_plot <- readRDS(here("Results", "UAI_high_nest.rds"))
+MUTI_high_plot <- readRDS(here("Results", "MUTI_high_nest.rds"))
+UN_high_plot <- readRDS(here("Results", "NestHigh_UN_plot.rds"))
+
+
+UAI_low_plot <- readRDS(here("Results", "UAI_low_nest.rds"))
+MUTI_low_plot <- readRDS(here("Results", "MUTI_low_nest.rds"))
+
+UN_safety_plot <- readRDS(here("Results", "Nest_Safety_UN_plot.rds"))
+
+
+low_nesting_plots <- grid.arrange(UAI_low_plot, MUTI_low_plot, ncol=2, nrow = 1)
+
+
+
+all_nesting_plots <- grid.arrange(UAI_low_plot, MUTI_low_plot, UAI_high_plot, MUTI_high_plot, UN_high_plot, UN_safety_plot, ncol=3, nrow = 2)
+
+
+
+
 
 
 

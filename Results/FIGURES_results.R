@@ -1387,6 +1387,8 @@ SAFETY_UN_plot<-ggplot(data=SAFETY.UN.DF,aes(x=nest.safety, y=fit)) +
 
 SAFETY_UN_plot
 
+
+#try with this
 saveRDS(SAFETY_UN_plot, here("Results", "Nest_Safety_UN_plot.rds"))
 
 
@@ -1414,9 +1416,15 @@ low_nesting_plots <- grid.arrange(UAI_low_plot, MUTI_low_plot, ncol=2, nrow = 1)
 
 all_nesting_plots <- grid.arrange(UAI_low_plot, MUTI_low_plot, UAI_high_plot, MUTI_high_plot, UN_high_plot, UN_safety_plot, ncol=3, nrow = 2)
 
+#specialty plot 
 
+layout <- rbind(c(1, 2, NA),  # First row: UAI_low_plot, MUTI_low_plot
+                c(3, 4, 5),   # Second row: UAI_high_plot, MUTI_high_plot, UN_high_plot
+                c(6, NA, NA)) # Third row: UN_safety_plot
 
-
+all_nesting_plots <- grid.arrange(UAI_low_plot, MUTI_low_plot, UAI_high_plot, 
+                                  MUTI_high_plot, UN_high_plot, UN_safety_plot, 
+                                  layout_matrix = layout)
 
 
 

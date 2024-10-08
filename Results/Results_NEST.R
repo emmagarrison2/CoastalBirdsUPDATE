@@ -339,8 +339,8 @@ hist(resid(UAI_GLS_nest_low_only))
 
 
 summary(UAI_GLS_nest_low_only) 
-confint(UAI_GLS_nest_low_only)
-
+confint(UAI_GLS_nest_low_only, level = 0.95)
+confint(UAI_GLS_nest_low_only, level = 0.85)
 
 
 
@@ -401,7 +401,9 @@ hist(resid(MUTI_GLS_nest_low))
 
 
 summary(MUTI_GLS_nest_low) 
-confint(MUTI_GLS_nest_low)
+confint(MUTI_GLS_nest_low, level = 0.95)
+confint(MUTI_GLS_nest_low, level = 0.85)
+
 
 
 
@@ -498,8 +500,8 @@ hist(resid(MUTI_GLS_nest_low_only))
 
 
 summary(MUTI_GLS_nest_low_only) 
-confint(MUTI_GLS_nest_low_only)
-
+confint(MUTI_GLS_nest_low_only, level = 0.95)
+confint(MUTI_GLS_nest_low_only, level = 0.85)
 
 
 

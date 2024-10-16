@@ -33,18 +33,10 @@ head(Coastal)
 colnames(Coastal)
 nrow(Coastal) #807
 
-#Species_Jetz has a sci name for all 807 coastal species! 
-###use this column to do PD measurements 
-#but first, let's rename as "Species" 
-
+# Reformat Species_Jetz column so that it is in Aaaa_aaaa format
+# Put into a new column called Species
 Coastal <- Coastal %>%
-  rename(Species = Species_Jetz)
-colnames(Coastal)
-#nice 
-
-#now, reformat Species column so that it is in Aaaa_aaaa format! 
-Coastal <- Coastal %>%
-  mutate(Species = str_replace(Species, " ", "_"))
+  mutate(Species = str_replace(Species_Jetz, " ", "_"))
 head(Coastal)
 
 # get coastal UAI species
@@ -85,15 +77,12 @@ ForPD <- Coastal %>% dplyr::select(Species, aveUAI, Urban, MUTIscore) %>%
 
 View(ForPD)
 
-
-
-# prune the jetz phylogeny
+# prune the jetz phylogeny to get only coastal bird species
 coastal_jetz <- prune.sample(ForPD, jetztree)
 coastal_jetz #807 tips 
 
 # make sure the list of species in ForPD and the species in the pruned tree are in the same order
 ForPD <- ForPD[, coastal_jetz$tip.label]
-
 
 # get Faith's phylogenetic distance for each group of species (one for UAI, UTI, and UN)
 PD <- pd(ForPD, coastal_jetz) # pd function from picante package
@@ -103,7 +92,7 @@ PD
 
 #interesting that UN is less phylogenetically diverse than MUTI, although they have almost = # of sp 
 
-# trying out other phylogenetic species diversity metrics
+# Examine several other phylogenetic species diversity metrics
 if(!require(phyr)){
   install.packages("phyr")
   require(phyr)
@@ -135,8 +124,8 @@ citation("phyr")
 # Bound between zero and one
 # approaches zero as relatedness of the species increases 
 # therefore, higher values therefore reflect greater diversity
-psv(ForPD, coastal_jetz, compute.var=F)
-# we would report the PSVs value for each urban tolerance index
+PSV<-psv(ForPD, coastal_jetz, compute.var=F)
+PSV
 #UAI - 0.8044951 
 #UN - 0.7606829 
 #MUTI - 0.7970667 
@@ -144,7 +133,8 @@ psv(ForPD, coastal_jetz, compute.var=F)
 # PSR = phylogenetic species richness
 # Can take on any value, but is directly comparable to actual species richness
 # if PSR is much lower than the actual richness, it would indicate a community where species are closely related (i.e. congenerics)
-psr(ForPD, coastal_jetz, compute.var=F)
+PSR <- psr(ForPD, coastal_jetz, compute.var=F)
+PSR
 # PSR column gives the phylogenetic species richness and SR gives the actual species richness
 #UAI - 641.98712 
 #UN - 98.12809 
@@ -154,10 +144,6 @@ psr(ForPD, coastal_jetz, compute.var=F)
 
 # organize the data again to enable this
 colnames(Coastal)
-
-#make sure I know what family column to use 
-Coastal_fam_test <- Coastal %>% filter (!is.na(Family_Sci))
-nrow(Coastal_fam_test)
 
 families <- Coastal %>% dplyr::select(Species, Family_Sci, aveUAI, Urban, MUTIscore) %>%
   rename(UAI = aveUAI, UN = Urban, MUTI = MUTIscore) %>%
@@ -184,12 +170,97 @@ familiesMUTI <- families %>% filter(MUTI==1) %>%
 nrow(familiesMUTI) # gives number of families in MUTI = 33
 
 
-# combine the family counts with PD and Species Richness (SR)
+# combine the family counts with PD, PSV, PSR, and Species Richness (SR)
 PD$Family <- as.vector(c(nrow(familiesUAI), nrow(familiesUN), nrow(familiesMUTI)))
-PD # we will want the info in this data frame in a table in the manuscript
 
-#let's write this object (PD) as a csv, so that if things change in the future, we can 
-#simply re-run this Step5 script with updated starting point. 
-write.csv(PD, here("Notes", "PD_SR_Fam.csv"))
+phy_measures <- PD %>% rownames_to_column(., var="index") %>%
+  left_join(., PSV) %>% left_join(., PSR) %>%
+  select(Family, SR, PD, PSVs, PSR) %>%
+  mutate(across(c("PSVs", "PSR")), (round(., 3)))
+  
+phy_measures
 
-#done
+###############################################
+library(ggtree)
+library(ggtreeExtra)
+library(ggnewscale)
+library(colorspace)
+library(treeio)
+
+# coastal bird phylogeny created above
+coastal_jetz
+
+# import eBird taxonomy to add Order info for each species
+ebird_tax <- read.csv(here("Data","ebird_taxonomy_v2022.csv"), header=T) 
+colnames(ebird_tax)
+
+# add order to Coastal bird species list
+Coastal_order <- ebird_tax %>% 
+  rename(Species_eBird = SCI_NAME) %>% 
+  select(Species_eBird, ORDER1) %>%
+  left_join(Coastal, .)
+
+# are any species missing an order?
+Coastal_order %>% filter(is.na(ORDER1)) # 1 species
+# this species is in Passeriformes
+# manually make this edit
+Coastal_order$ORDER1[Coastal_order$Species_eBird == "Sericornis citreogularis"] <- "Passeriformes"
+Coastal_order %>% filter(is.na(ORDER1)) %>% nrow() # this should now be equal to zero
+
+# prep list of species and their orders to be joined to phylogeny
+orders <- Coastal_order %>% select(Species, ORDER1) %>%
+  rename(label=Species, order = ORDER1)
+length(unique(orders$order)) # 23 avian orders are represented
+
+# extract phylogeny and convert into tibble
+phy_tibble <- as_tibble(coastal_jetz)
+
+# add order information to the phylogeny
+phy_join <- left_join(phy_tibble, orders)
+
+# convert back into class phylo
+new_tree <- as.phylo(phy_join) 
+
+# create a list of order names that are associated with each tree tip label (species name) 
+order_info <- split(phy_join$label, phy_join$order)
+order_info
+
+# update the tree with the order as the grouping info using list created in previous step
+order_coastal_tree <- groupOTU(new_tree, order_info) 
+# this will allow us to color branches of tree based on Order
+
+# plot the tree in a circular layout with the branches colored by Order
+circ_order <- ggtree(order_coastal_tree , layout='circular', aes(color=group)) + 
+  guides(color="none") +
+  scale_color_discrete_sequential(palette = "Grays", nmax=35, order = 12:35) 
+# this will build a palette of 35 shades of gray and by selecting 12 through 35 we drop the lightest colors and keep 23 darker shades
+circ_order
+
+# if you didn't want the branches colored by Order
+circ_tree <- ggtree(order_coastal_tree , layout='circular', color="gray40") # circular phylogeny
+circ_tree
+
+# get species values for each urban tolerance index
+un_dat <- Coastal %>% column_to_rownames(., var="Species") %>% select(Urban)
+uai_dat <- Coastal %>% column_to_rownames(., var="Species") %>% select(aveUAI)
+muti_dat <- Coastal %>% column_to_rownames(., var="Species") %>% select(MUTIscore)
+
+# begin to build plot
+# start with UN
+UN <- gheatmap(circ_order, un_dat, offset=.8, width=.15, colnames =F) +
+  scale_fill_manual(values=c("#6C9CCC", "#417CBD"), name = "UN", na.translate = F) # use na.translate = F to not plot species with NAs
+UN  
+
+# add MUTI
+p1 <- UN + new_scale_fill()
+UN_MUTI <-gheatmap(p1, muti_dat, offset=25, width=.15, colnames = F) +
+  scale_fill_continuous_sequential(palette = "YlGn", name="MUTI", na.value="white") 
+UN_MUTI
+
+# add UAI
+p2 <- UN_MUTI + new_scale_fill()
+UN_MUTI_UAI <-gheatmap(p2, uai_dat, offset=50, width=.15, colnames = F) +
+  scale_fill_continuous_sequential(palette = "OrYel", name="UAI", na.value="white") 
+UN_MUTI_UAI
+
+

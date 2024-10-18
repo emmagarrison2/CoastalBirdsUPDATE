@@ -1,7 +1,14 @@
-######Results - Life History Data Traits 
+##########################################################
+######### Coastal Birds Urban Tolerance Project ##########
+##########################################################
+# Step 8 Phylogenetic Trait Models - LIFE HISTORY TRAITS
+# Authors: Sarah L. Jennings, Emma M. Garrison
+##########################################################
+# The objective of this script is to run phylogenetic models using life history traits
+# 4 life history traits: brood value, clutch size, longevity and developmental mode
 
-#load required packages 
 
+# load required packages 
 library(nlme)
 library(tidyverse)
 library(here)
@@ -14,6 +21,7 @@ library(geiger)
 library(ggeffects)
 library(easystats)
 library(phylolm)
+library(logistf)
 
 ###################### Prep
 

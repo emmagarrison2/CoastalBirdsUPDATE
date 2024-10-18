@@ -397,9 +397,9 @@ phyglm_UN_pf_scale <- phyloglm( Urban ~ scale(peak_freq_kHz) + scale(Mass_log),
 summary(phyglm_UN_pf_scale)
 
 # save model
-saveRDS(phyglm_UN_pf_scale, here("Outputs", "phyglm_UN_pf_scale.rds"))
+saveRDS(phyglm_UN_pf_scale, here("Models/UN", "phyglm_UN_pf_scale.rds"))
 # load model
-phyglm_UN_pf_scale <- readRDS(here("Outputs", "phyglm_UN_pf_scale.rds"))
+phyglm_UN_pf_scale <- readRDS(here("Models/UN", "phyglm_UN_pf_scale.rds"))
 
 # as alpha is at upper bound, also look at regular logistic model
 glm_UN_pf_scale <- logistf(Urban ~ scale(peak_freq_kHz) + scale(Mass_log), 

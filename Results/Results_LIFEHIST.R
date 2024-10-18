@@ -25,8 +25,7 @@ library(logistf)
 
 ###################### Prep
 
-
-#load in "Coastal_Species_LifeHistory.rds" - since this contains coastal species and all diet trait variables :) 
+# load "Coastal_Species_LifeHistory.rds"
 
 C_LifeHist_dat <- readRDS(here("Outputs", "Coastal_Species_LifeHistory.rds"))
 str(C_LifeHist_dat)
@@ -40,11 +39,9 @@ View(C_LifeHist_dat2)
 colnames(C_LifeHist_dat2)
 
 
+######################## UAI and Brood Value ##########################
 
-######################## UAI and % brood value ##########################
-
-
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both UAI and brood values
 UAIDataUT <- C_LifeHist_dat2 %>% filter(!is.na(aveUAI)) 
 LifehistData1 <- UAIDataUT %>% filter(!is.na(brood_value)) 
 length(LifehistData1$brood_value)
@@ -67,18 +64,15 @@ length(LifehistTraitDat1$brood_value)
 #480
 
 ### convert traits of interest to numeric
-
 LifehistTraitDat1$aveUAI <- as.numeric(LifehistTraitDat1$aveUAI)
 LifehistTraitDat1$Mass_log <- as.numeric(LifehistTraitDat1$Mass_log)
 LifehistTraitDat1$brood_value <- as.numeric(LifehistTraitDat1$brood_value)
 
-
-#lets run the model!
-
-
+# Run phylogenetic linear model
 UAI_GLS_bv <- gls(aveUAI~ brood_value + Mass_log, data = LifehistTraitDat1, 
                       correlation = corPagel(0.5, phy=Lifehistphy1,fixed=F, form = ~Species_Jetz), 
                       method = "ML") 
+
 #check out the model
 check_model(UAI_GLS_bv) ## low collinearity - which is good! - normality of residuals line does not fall on line, but is in a straight line 
 qqnorm(resid(UAI_GLS_bv)) 
@@ -90,9 +84,10 @@ summary(UAI_GLS_bv) # strong phylogenetic relationship between traits and respon
 confint(UAI_GLS_bv)
 
 
-################ so, brood value has this outlier... let's try again with UAI and Brood Value to see if this relationship is still significantly negative 
+# There is one species with an extreme brood value
+# Re-run model with UAI and Brood Value without this species to see if this relationship is still significantly negative 
 
-# Filter out brood_value datapoints that are less than -5
+# Filter out brood_value that are less than -5
 LifehistDataFiltered <- LifehistData1 %>% filter(brood_value >= -5)
 
 # Add rownames to filtered data
@@ -109,28 +104,28 @@ LifehistTraitDatFiltered$aveUAI <- as.numeric(LifehistTraitDatFiltered$aveUAI)
 LifehistTraitDatFiltered$Mass_log <- as.numeric(LifehistTraitDatFiltered$Mass_log)
 LifehistTraitDatFiltered$brood_value <- as.numeric(LifehistTraitDatFiltered$brood_value)
 
-# Run the GLS model on the filtered dataset
+# Run phylogenetic linear model with extreme brood value removed
 UAI_GLS_bv_filtered <- gls(aveUAI ~ brood_value + Mass_log, data = LifehistTraitDatFiltered, 
                            correlation = corPagel(0.5, phy=LifehistphyFiltered, fixed=F, form = ~Species_Jetz), 
                            method = "ML")
 
-# Check the model
+# model summary and confidence intervals
+summary(UAI_GLS_bv_filtered) # still significant (p = 0.0288)
+confint(UAI_GLS_bv_filtered) # still significant (C.I. = (-0.349, -0.0195)
+
+# model diagnostics
 check_model(UAI_GLS_bv_filtered)
 qqnorm(resid(UAI_GLS_bv_filtered)) 
 qqline(resid(UAI_GLS_bv_filtered))
 hist(resid(UAI_GLS_bv_filtered))
 
-# Model summary and confidence intervals
-summary(UAI_GLS_bv_filtered) # still significant (p = 0.0288)
-confint(UAI_GLS_bv_filtered) # still significant (C.I. = (-0.349, -0.0195)
 
 
 
+######################## MUTI and Brood Value ##########################
 
-######################## MUTI and % brood value ##########################
 
-
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both MUTI and brood values
 MUTIDataUT <- C_LifeHist_dat2 %>% filter(!is.na(MUTIscore)) 
 LifehistData2 <- MUTIDataUT %>% filter(!is.na(brood_value)) 
 length(LifehistData2$brood_value)
@@ -177,10 +172,10 @@ confint(MUTI_GLS_bv)
 
 
 
-######################## UN and % brood value ##########################
+######################## UN and Brood Value ##########################
 
 
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both UN and brood values
 UNDataUT <- C_LifeHist_dat2 %>% filter(!is.na(Urban)) 
 LifehistData3 <- UNDataUT %>% filter(!is.na(brood_value)) 
 length(LifehistData3$brood_value)
@@ -204,34 +199,20 @@ length(LifehistTraitDat3$brood_value)
 #102
 
 ### convert traits of interest to numeric
-
 LifehistTraitDat3$Urban <- as.numeric(LifehistTraitDat3$Urban)
 LifehistTraitDat3$Mass_log <- as.numeric(LifehistTraitDat3$Mass_log)
 LifehistTraitDat3$brood_value <- as.numeric(LifehistTraitDat3$brood_value)
 
 
-#lets run the model using Phylolm!  
-
-#(have to use lambda, until we figure out a way to make GLS work with binomial linear regression)
-UN_M_bv <- phylolm(Urban~ brood_value + Mass_log, data=LifehistTraitDat3,
-                   phy=Lifehistphy3, model="lambda") 
-
-# time to check out the model 
-qqnorm(UN_M_bv$residuals)
-qqline(UN_M_bv$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
-#the two lines do not have overlap... maybe this is good? 
-hist(UN_M_bv$residuals, breaks = 20) 
-
-#lets get those values for our results table 
-summary(UN_M_bv)
-confint(UN_M_bv)
 
 
+#############################################################################
+#############################################################################
 
-######################## UAI and % clutch size ##########################
+########################## UAI and Clutch Size ##############################
 
 
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both UAI and clutch size
 UAIDataUT <- C_LifeHist_dat2 %>% filter(!is.na(aveUAI)) 
 LifehistData4 <- UAIDataUT %>% filter(!is.na(clutch_size)) 
 length(LifehistData4$clutch_size)
@@ -279,11 +260,10 @@ summary(UAI_GLS_clutch) # strong phylogenetic relationship between traits and re
 confint(UAI_GLS_clutch)
 
 
+######################## MUTI and Clutch Size ##########################
 
-######################## MUTI and % clutch size ##########################
 
-
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both MUTI and clutch size
 MUTIDataUT <- C_LifeHist_dat2 %>% filter(!is.na(MUTIscore)) 
 LifehistData5 <- MUTIDataUT %>% filter(!is.na(clutch_size)) 
 length(LifehistData5$clutch_size)
@@ -332,10 +312,10 @@ confint(MUTI_GLS_clutch)
 
 
 
-######################## UN and % clutch size ##########################
+######################## UN and Clutch Size ##########################
 
 
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both UN and clutch size
 UNDataUT <- C_LifeHist_dat2 %>% filter(!is.na(Urban)) 
 LifehistData6 <- UNDataUT %>% filter(!is.na(clutch_size)) 
 length(LifehistData6$clutch_size)
@@ -366,28 +346,13 @@ LifehistTraitDat6$clutch_size <- as.numeric(LifehistTraitDat6$clutch_size)
 
 
 
-#lets run the model using Phylolm!  
+#############################################################################
+#############################################################################
 
-#(have to use lambda, until we figure out a way to make GLS work with binomial linear regression)
-UN_M_clutch <- phylolm(Urban~ clutch_size + Mass_log, data=LifehistTraitDat6,
-                   phy=Lifehistphy6, model="lambda") 
-
-# time to check out the model 
-qqnorm(UN_M_clutch$residuals)
-qqline(UN_M_clutch$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
-#the two lines do not have overlap... maybe this is good? 
-hist(UN_M_clutch$residuals, breaks = 20) 
-
-#lets get those values for our results table 
-summary(UN_M_clutch)
-confint(UN_M_clutch)
+######################## UAI and Longevity ##########################
 
 
-
-######################## UAI and % longevity ##########################
-
-
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both UAI and longevity
 UAIDataUT <- C_LifeHist_dat2 %>% filter(!is.na(aveUAI)) 
 LifehistData7 <- UAIDataUT %>% filter(!is.na(longevity)) 
 length(LifehistData7$longevity)
@@ -443,10 +408,10 @@ Confidence_Interval_85
 #crosses 0... let's not consider this model as "notable" in our results 
 
 
-######################## MUTI and % longevity ##########################
+######################## MUTI and Longevity ##########################
 
 
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both MUTI and longevity
 MUTIDataUT <- C_LifeHist_dat2 %>% filter(!is.na(MUTIscore)) 
 LifehistData8 <- MUTIDataUT %>% filter(!is.na(longevity)) 
 length(LifehistData8$longevity)
@@ -496,10 +461,10 @@ confint(MUTI_GLS_long)
 
 
 
-######################## UN and % longevity ##########################
+######################## UN and Longevity ##########################
 
 
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both UN and longevity
 UNDataUT <- C_LifeHist_dat2 %>% filter(!is.na(Urban)) 
 LifehistData9 <- UNDataUT %>% filter(!is.na(longevity)) 
 length(LifehistData9$longevity)
@@ -532,29 +497,16 @@ LifehistTraitDat9$longevity <- as.numeric(LifehistTraitDat9$longevity)
 
 
 
-#lets run the model using Phylolm!  
-
-#(have to use lambda, until we figure out a way to make GLS work with binomial linear regression)
-UN_M_long <- phylolm(Urban~ longevity + Mass_log, data=LifehistTraitDat9,
-                       phy=Lifehistphy9, model="lambda") 
-
-# time to check out the model 
-qqnorm(UN_M_long$residuals)
-qqline(UN_M_long$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
-#the two lines do not have overlap... maybe this is good? 
-hist(UN_M_long$residuals, breaks = 20) 
-
-#lets get those values for our results table 
-summary(UN_M_long)
-confint(UN_M_long)
 
 
+#############################################################################
+#############################################################################
 
 
-######################## UAI and % developmental mode ##########################
+######################## UAI and Developmental Mode ##########################
 
 
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both UAI and developmental mode
 UAIDataUT <- C_LifeHist_dat2 %>% filter(!is.na(aveUAI)) 
 LifehistData10 <- UAIDataUT %>% filter(!is.na(developmental_mode)) 
 length(LifehistData10$developmental_mode)
@@ -604,10 +556,10 @@ confint(UAI_GLS_develop)
 
 
 
-######################## MUTI and % developmental mode ##########################
+######################## MUTI and Developmental Mode ##########################
 
 
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both MUTI and developmental mode
 MUTIDataUT <- C_LifeHist_dat2 %>% filter(!is.na(MUTIscore)) 
 LifehistData11 <- MUTIDataUT %>% filter(!is.na(developmental_mode)) 
 length(LifehistData11$developmental_mode)
@@ -657,11 +609,10 @@ confint(MUTI_GLS_develop)
 
 
 
+######################## UN and Developmental Mode ##########################
 
-######################## UN and % developmental mode ##########################
 
-
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
+# create a new data frame that contains only species with both UN and developmental mode
 UNDataUT <- C_LifeHist_dat2 %>% filter(!is.na(Urban)) 
 LifehistData12 <- UNDataUT %>% filter(!is.na(developmental_mode)) 
 length(LifehistData12$developmental_mode)
@@ -691,29 +642,5 @@ LifehistTraitDat12$Mass_log <- as.numeric(LifehistTraitDat12$Mass_log)
 LifehistTraitDat12$developmental_mode <- as.numeric(LifehistTraitDat12$developmental_mode)
 
 
-
-
-#lets run the model using Phylolm!  
-
-#(have to use lambda, until we figure out a way to make GLS work with binomial linear regression)
-UN_M_develop <- phylolm(Urban~ developmental_mode + Mass_log, data=LifehistTraitDat12,
-                     phy=Lifehistphy12, model="lambda") 
-
-# time to check out the model 
-qqnorm(UN_M_develop$residuals)
-qqline(UN_M_develop$residuals) # what is happening? two separate lines bc of binomial... but is this the correct model check for binomial regression?
-#the two lines do not have overlap... maybe this is good? 
-hist(UN_M_develop$residuals, breaks = 20) 
-
-#lets get those values for our results table 
-summary(UN_M_develop)
-confint(UN_M_develop)
-
-
-#because 0.05 < p value < 0.20 , let's check the 85% CI to see if this relationship is still notable 
-Confidence_Interval_85 <- confint(UN_M_develop, level = 0.85)
-Confidence_Interval_85
-
-#does not cross 0 - let's mark this model down as "notable" ! 
 
 

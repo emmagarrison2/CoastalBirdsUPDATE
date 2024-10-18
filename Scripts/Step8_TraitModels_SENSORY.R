@@ -48,7 +48,8 @@ colnames(C_Sensory_dat2)
 # we use C.T ratio as a proxy for dim light vision 
 
 # create a new data frame by removing species with no UAI value or that are missing C.T ratio
-CT_UAI_Data <- C_Sensory_dat2 %>% filter(!is.na(aveUAI))  %>% filter(!is.na(C.T)) 
+CT_UAI_Data <- C_Sensory_dat2 %>% filter(!is.na(aveUAI))  %>% 
+  filter(!is.na(C.T)) %>% as.data.frame()
 length(CT_UAI_Data$C.T)
 #237 species with UAI and CT
 
@@ -120,7 +121,7 @@ saveRDS(UAI_GLS_C.T, here("Models/UAI", "UAI_GLS_C.T.rds"))
 
 # create a new data frame by removing species with no MUTI value or that are missing C.T ratio
 CT_MUTI_Data <- C_Sensory_dat2 %>% filter(!is.na(MUTIscore)) %>% 
-  filter(!is.na(C.T))
+  filter(!is.na(C.T)) %>% as.data.frame()
 length(CT_MUTI_Data$C.T)
 # 69 species with MUTI and CT
 
@@ -245,7 +246,7 @@ phyglm_UN_CT_scale <- readRDS(here("Models/UN", "phyglm_UN_CT_scale.rds"))
 
 # create a new data frame by removing species with no UAI value or that are missing peak frequency
 UAI_PeakFreq <- C_Sensory_dat2 %>% filter(!is.na(aveUAI)) %>% 
-  filter(!is.na(peak_freq)) 
+  filter(!is.na(peak_freq)) %>% as.data.frame()
 length(UAI_PeakFreq$peak_freq_kHz)
 #202 species with UAI and peak freq
 
@@ -291,7 +292,8 @@ saveRDS(UAI_GLS_pf, here("Models/UAI", "UAI_GLS_pf.rds"))
 ############################# MUTI and Peak Frequency ########################
 
 # create a new data frame by removing species with no MUTI value or that are missing peak frequency
-MUTI_PeakFreq <- C_Sensory_dat2 %>% filter(!is.na(MUTIscore)) %>% filter(!is.na(peak_freq)) 
+MUTI_PeakFreq <- C_Sensory_dat2 %>% filter(!is.na(MUTIscore)) %>% 
+  filter(!is.na(peak_freq)) %>% as.data.frame()
 length(MUTI_PeakFreq$peak_freq_kHz)
 # 68 species with MUTI and peak frequency
 

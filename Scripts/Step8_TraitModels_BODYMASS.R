@@ -41,39 +41,38 @@ colnames(C_mass_dat2)
 ######################## UAI and body mass ##########################
 
 # create a new data frame by removing species with no UAI value or that are missing body mass
-UAIDataUT <- C_mass_dat2 %>% filter(!is.na(aveUAI)) 
-MassData1 <- UAIDataUT %>% filter(!is.na(Mass_log)) 
-length(MassData1$Mass_log)
+UAI_Mass <- C_mass_dat2 %>% filter(!is.na(aveUAI)) %>% filter(!is.na(Mass_log)) %>%
+  as.data.frame()
+length(UAI_Mass$Mass_log)
 #798 species with UAI and Mass_log
 
-colnames(MassData1)
 
 ###### add and pair tree
 
 # add rownames to data
-row.names(MassData1) <- MassData1$Species_Jetz
+row.names(UAI_Mass) <- UAI_Mass$Species_Jetz
 
 # import tree
 tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
 
-Massphydat1 <- geiger::treedata(tree_out, MassData1, sort=T)
+UAI_Mass_phydat <- geiger::treedata(tree_out, UAI_Mass, sort=T)
 
-Massphy1 <- Massphydat1$phy
-MassTraitDat1 <- as.data.frame(Massphydat1$data)
+UAI_Mass_phy <- UAI_Mass_phydat$phy
+UAI_Mass_dat <- as.data.frame(UAI_Mass_phydat$data)
 
-str(MassTraitDat1)
-length(MassTraitDat1$Mass_log)
+str(UAI_Mass_dat)
+length(UAI_Mass_dat$Mass_log)
 #798
 
 
 ### convert traits of interest to numeric
-MassTraitDat1$aveUAI <- as.numeric(MassTraitDat1$aveUAI)
-MassTraitDat1$Mass_log <- as.numeric(MassTraitDat1$Mass_log)
+UAI_Mass_dat$aveUAI <- as.numeric(UAI_Mass_dat$aveUAI)
+UAI_Mass_dat$Mass_log <- as.numeric(UAI_Mass_dat$Mass_log)
 
 
 # Run phylogenetic linear model for UAI
-UAI_GLS_mass <- gls(aveUAI~ Mass_log, data = MassTraitDat1, 
-                         correlation = corPagel(0.5, phy=Massphy1,fixed=F, form = ~Species_Jetz), 
+UAI_GLS_mass <- gls(aveUAI~ Mass_log, data = UAI_Mass_dat, 
+                         correlation = corPagel(0.5, phy = UAI_Mass_phy, fixed=F, form = ~Species_Jetz), 
                          method = "ML") 
 
 # model summary
@@ -93,38 +92,36 @@ saveRDS(UAI_GLS_mass, here("Models/UAI", "UAI_GLS_mass.rds"))
 ######################## MUTI and body mass ##########################
 
 # create a new data frame by removing species with no MUTI value or that are missing body mass
-MUTIDataUT <- C_mass_dat2 %>% filter(!is.na(MUTIscore)) 
-MassData2 <- MUTIDataUT %>% filter(!is.na(Mass_log)) 
-length(MassData2$Mass_log)
+MUTI_Mass <- C_mass_dat2 %>% filter(!is.na(MUTIscore)) %>% 
+  filter(!is.na(Mass_log)) %>% as.data.frame()
+length(MUTI_Mass$Mass_log)
 #130 species with MUTI and Mass_log
-
-colnames(MassData2)
 
 ###### add and pair tree
 
 # add rownames to data
-row.names(MassData2) <- MassData2$Species_Jetz
+row.names(MUTI_Mass) <- MUTI_Mass$Species_Jetz
 
 # import tree
 tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
 
-Massphydat2 <- geiger::treedata(tree_out,MassData2, sort=T)
+MUTI_Mass_phydat <- geiger::treedata(tree_out, MUTI_Mass, sort=T)
 
-Massphy2 <- Massphydat2$phy
-MassTraitDat2 <- as.data.frame(Massphydat2$data)
+MUTI_Mass_phy <- MUTI_Mass_phydat$phy
+MUTI_Mass_dat <- as.data.frame(MUTI_Mass_phydat$data)
 
-str(MassTraitDat2)
-length(MassTraitDat2$Mass_log)
+str(MUTI_Mass_dat)
+length(MUTI_Mass_dat$Mass_log)
 #130
 
 ### convert traits of interest to numeric
-MassTraitDat2$MUTIscore <- as.numeric(MassTraitDat2$MUTIscore)
-MassTraitDat2$Mass_log <- as.numeric(MassTraitDat2$Mass_log)
+MUTI_Mass_dat$MUTIscore <- as.numeric(MUTI_Mass_dat$MUTIscore)
+MUTI_Mass_dat$Mass_log <- as.numeric(MUTI_Mass_dat$Mass_log)
 
 
 # Run phylogenetic linear model for MUTI
-MUTI_GLS_mass <- gls(MUTIscore~ Mass_log, data = MassTraitDat2, 
-                    correlation = corPagel(0.5, phy=Massphy2,fixed=F, form = ~Species_Jetz), 
+MUTI_GLS_mass <- gls(MUTIscore~ Mass_log, data = MUTI_Mass_dat, 
+                    correlation = corPagel(0.5, phy = MUTI_Mass_phy, fixed=F, form = ~Species_Jetz), 
                     method = "ML") 
 
 # model summary and results
@@ -145,41 +142,36 @@ saveRDS(MUTI_GLS_mass, here("Models/MUTI", "MUTI_GLS_mass.rds"))
 
 
 # create a new data frame by removing species with no UN value or that are missing body mass
-UNDataUT <- C_mass_dat2 %>% filter(!is.na(Urban)) 
-MassData3 <- UNDataUT %>% filter(!is.na(Mass_log)) 
-length(MassData3$Mass_log)
+UN_Mass <- C_mass_dat2 %>% filter(!is.na(Urban)) %>% filter(!is.na(Mass_log)) %>%
+  column_to_rownames(., var="Species_Jetz")
+length(UN_Mass$Mass_log)
 #129 species with UN and Mass_log
-
-colnames(MassData3)
 
 ###### add and pair tree
 
-# add rownames to data
-row.names(MassData3) <- MassData3$Species_Jetz
-
 tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
 
-Massphydat3 <- geiger::treedata(tree_out,MassData3, sort=T)
+UN_Mass_phydat <- geiger::treedata(tree_out, UN_Mass, sort=T)
 
-Massphy3 <- Massphydat3$phy
-MassTraitDat3 <- as.data.frame(Massphydat3$data)
+UN_Mass_phy <- UN_Mass_phydat$phy
+UN_Mass_dat <- as.data.frame(UN_Mass_phydat$data)
 
-str(MassTraitDat3)
-length(MassTraitDat3$Mass_log)
+str(UN_Mass_dat)
+length(UN_Mass_dat$Mass_log)
 #129
 
 
 ### convert traits of interest to numeric
-MassTraitDat3$Urban <- as.numeric(MassTraitDat3$Urban)
-MassTraitDat3$Mass_log <- as.numeric(MassTraitDat3$Mass_log)
+UN_Mass_dat$Urban <- as.numeric(UN_Mass_dat$Urban)
+UN_Mass_dat$Mass_log <- as.numeric(UN_Mass_dat$Mass_log)
 
 # Run the model using phyloglm(), which performs a logistic phylogenetic model to account for binary UN index
 # default method ="logistic_MPLE"
 # we will also scale and center the response variable to help with convergence
 set.seed(309)
 phyglm_UN_Mass_scale <- phyloglm( Urban ~ scale(Mass_log), 
-                                  data = MassTraitDat3, 
-                                  phy = Massphy3, boot=1000) 
+                                  data = UN_Mass_dat, 
+                                  phy = UN_Mass_phy, boot=1000) 
 
 summary(phyglm_UN_Mass_scale)
 # some of the bootstrapped models fail to converge
@@ -190,8 +182,8 @@ summary(phyglm_UN_Mass_scale)
 # 4 is the default setting for the upper bounds of log.alpha.bound
 for (i in seq(0, 4, by = 0.1)) {
   print(phyloglm(Urban ~ scale(Mass_log), 
-                 data = MassTraitDat3, 
-                 phy = Massphy3,
+                 data = UN_Mass_dat, 
+                 phy = UN_Mass_phy,
                  log.alpha.bound = i)$aic)
 }
 
@@ -214,8 +206,8 @@ exp(-4)/t # this is the lower bound = 0.0001877
 # this will constrains the model's search area for the optimal alpha value within a very small range of values (similar to fixing it)
 set.seed(848)
 phyglm_UN_Mass_fix <- phyloglm(Urban ~ scale(Mass_log), 
-                               data = MassTraitDat3, 
-                               phy = Massphy3, 
+                               data = UN_Mass_dat, 
+                               phy = UN_Mass_phy, 
                                start.alpha = 0.557,
                                log.alpha.bound = 4, 
                                boot=1000)
@@ -232,7 +224,7 @@ phyglm_UN_Mass_fix <- readRDS(here("Models/UN", "phyglm_UN_Mass_fix.rds"))
 # they specify 4 because when the model reaches the upper bounds of this limit,
 # the model estimates should be very similar to a logistic model using Firth's correction
 # therefore, this next step should produce results similar to phyglm_UN_Mass_fix
-glm_UN_Mass <- logistf(Urban ~ scale(Mass_log), data = MassTraitDat3)
+glm_UN_Mass <- logistf(Urban ~ scale(Mass_log), data = UN_Mass)
 summary(glm_UN_Mass)
 summary(phyglm_UN_Mass_fix) # compare estimates
 # very similar coefficients

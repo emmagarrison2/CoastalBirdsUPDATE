@@ -41,7 +41,8 @@ colnames(C_Social_dat2)
 ######################## UAI and Territoriality ##########################
 
 # create a new data frame that contains only species with both UAI and territoriality values 
-UAI_Terr <- C_Social_dat2 %>% filter(!is.na(aveUAI)) %>% filter(!is.na(territoriality))
+UAI_Terr <- C_Social_dat2 %>% filter(!is.na(aveUAI)) %>%
+  filter(!is.na(territoriality)) %>% as.data.frame()
 length(UAI_Terr$territoriality)
 # 766 species with UAI and territoriality
 
@@ -118,7 +119,8 @@ territoriality.plot
 # create a new data frame that contains only species with both MUTI and territoriality values
 MUTI_Terr <- C_Social_dat2 %>% filter(!is.na(MUTIscore)) %>% 
   filter(!is.na(territoriality)) %>% 
-  filter(territoriality != 2) # drop species with scores = 2 as there are very few
+  filter(territoriality != 2) %>% # drop species with scores = 2 as there are very few
+  as.data.frame()
 length(MUTI_Terr$territoriality)
 View(MUTI_Terr)
 #123 species with MUTI and territoriality
@@ -224,7 +226,8 @@ phyglm_UN_territorial_scale <- readRDS(here("Models/UN", "phyglm_UN_territorial_
 ######################## UAI and Cooperative Breeding #######################
 
 # create a new data frame that contains only species with both UAI and cooperative breeding values
-UAI_CoopB <- C_Social_dat2 %>% filter(!is.na(aveUAI)) %>% filter(!is.na(cooperative)) 
+UAI_CoopB <- C_Social_dat2 %>% filter(!is.na(aveUAI)) %>% 
+  filter(!is.na(cooperative)) %>% as.data.frame()
 length(UAI_CoopB$cooperative)
 #766 species with UAI and cooperative
 
@@ -274,7 +277,8 @@ saveRDS(UAI_GLS_cooperative, here("Models/UAI", "UAI_GLS_cooperative.rds"))
 ######################## MUTI and Cooperative Breeding ##########################
 
 # create a new data frame that contains only species with both MUTI and cooperative breeding values
-MUTI_CoopB <- C_Social_dat2 %>% filter(!is.na(MUTIscore)) %>% filter(!is.na(cooperative)) 
+MUTI_CoopB <- C_Social_dat2 %>% filter(!is.na(MUTIscore)) %>% 
+  filter(!is.na(cooperative)) %>% as.data.frame()
 length(MUTI_CoopB$cooperative)
 #127 species with MUTI and cooperative breeding
 

@@ -418,8 +418,6 @@ summary(glm_UN_clutch)
 (hl_clutch <- log(2)/alpha_clutch) # half life
 # small half life relative to t -> low phylogenetic signal
 
-
-
 #############################################################################
 #############################################################################
 
@@ -583,11 +581,12 @@ summary(phyglm_UN_long_fix) # this converges
 
 # save model
 saveRDS(phyglm_UN_long_fix, here("Models/UN", "phyglm_UN_long_fix.rds"))
+
 # load model
 phyglm_UN_long_fix <- readRDS(here("Models/UN", "phyglm_UN_long_fix.rds"))
 
 
-# because alpha at upper bounds, compare with non-phylogenetic logistic regression
+# Compare with non-phylogenetic logistic regression
 glm_UN_long <- logistf(Urban ~ scale(longevity) + scale(Mass_log), 
                        data = UN_Long)
 summary(glm_UN_long)

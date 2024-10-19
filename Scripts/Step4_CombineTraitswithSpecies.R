@@ -597,7 +597,7 @@ Coastal_Nest_Str_3 <- Coastal_Nest_OpEnc %>%
 Coastal_Nest_Str <- bind_rows(Coastal_Nest_Str_3, Coastal_Nest_Str_2)
 nrow(Coastal_Nest_Str) == nrow(Coastal_Bodymass)
 
-#now let's check how many species (across all indexes) have nest strat. data  
+# check how many species (across all indexes) have nest strategy data  
 nest_strat_count <- Coastal_Nest_Str %>% 
   filter(!is.na(NestStr))
 nrow(nest_strat_count)
@@ -638,7 +638,7 @@ View(Coastal_Nest_SiteBoth)
 
 # remove all unnecessary columns to keep data frame clean and organized
 Coastal_Nest_StrSite <- Coastal_Nest_Site %>% 
-  select(Species_Jetz:Mass, NestStr, NestSite_High, NestSite_Low)
+  select(Species_Jetz:Mass_log, NestStr, NestSite_High, NestSite_Low)
 
 colnames(Coastal_Nest_StrSite)
 
@@ -647,7 +647,6 @@ nest_site_count <- Coastal_Nest_StrSite %>%
   filter(!is.na(NestSite_Low))
 nrow(nest_site_count)
 # 805
-
 
 # how many species have nest site high data ?
 # for UAI? 
@@ -690,8 +689,7 @@ Coastal_Nest_Traits <- left_join(Coastal_Nest_StrSite, DELHEY_safety, by = "Spec
 # confirm all the species are still present
 nrow(Coastal_Nest_Traits) == nrow(Coastal_Bodymass)
 
-
-#now let's check how many species (across all indexes) have nest strat. data  
+# check how many species (across all indexes) have nest safety data  
 nest_safety_count <- Coastal_Nest_Traits %>% 
   filter(!is.na(nest.safety))
 nrow(nest_safety_count)

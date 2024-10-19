@@ -1,5 +1,13 @@
-#######Objective of this script: refine list of all bird species (with UAI, MUTI, and/or UN scores) to COASTAL BIRDS ONLY 
+##########################################################
+######### Coastal Birds Urban Tolerance Project ##########
+##########################################################
+# Step 3: Coastal Birds Selection
+# Authors: Sarah L. Jennings, Emma M. Garrison
+##########################################################
 
+### Objective: refine list of all bird species (with UAI, MUTI, and/or UN scores) to COASTAL BIRDS ONLY 
+
+# load packages
 library(ape)
 library(geiger)
 library(nlme)
@@ -11,13 +19,13 @@ library(dplyr)
 library(here)
 library(tidyverse)
 
-########Starting point - load in "UAI_MUTI_UN_final.rds" file 
+### Starting point - load in "UAI_MUTI_UN_final.rds" file 
 # it is all species with at least one of the three urban tolerance index scores 
 
 AllBirds <- readRDS(here("Outputs", "UAI_MUTI_UN_final.rds"))
 
 View(AllBirds)
-nrow(AllBirds) #4433, which is correct! 
+nrow(AllBirds) # 4433
 
 # extract a data frame that contains a list of family names
 unique_family_names <- AllBirds %>%
@@ -30,28 +38,27 @@ nrow(unique_family_names) # 205 families
 
 View(unique_family_names)
 
-# great - now lets download this df as a csv, and assess all Families using Birds of the World
+# download this data frame as a csv, and assess all Families using Birds of the World
 
 write.csv(unique_family_names, here("Notes", "families_all.csv"))
 
 ########################## Round 1 ###############################################
 
-### Using Birds of the World (Cornell Lab or Ornithology), we classified each family represented by AllBirds dataframe as either 
-#"Coastal" or "Not-Coastal", based on whether the family habitat page mentioned coastal areas. 
-#The column "Coastal" categorizes these families. 
-#"Yes" = Coastal family 
-#"No" = Non-coastal family 
+### Using Birds of the World (Cornell Lab or Ornithology), we classified each family represented by AllBirds dataframe as either: 
+# "Coastal" or "Not-Coastal", based on whether the family habitat page mentioned coastal areas. 
+# The column "Coastal" categorizes these families. 
+# "Yes" = Coastal family 
+# "No" = Non-coastal family 
 
-
-#We used Birds of the World (2022) to investigate each bird family represented by this dataset. If the family page mentioned use of
-#coastal habitats (such as shorelines, beaches, estuaries, mangroves, etc.) then the family (and all representative species) was marked
-#as "Yes" (coastal). If the Birds of the World family page did not mention use of coastal habitats or resources, then the all representative species of 
-#said family were marked as "No" (not-coastal).
+# If the BOW family page mentioned use of coastal habitats (such as shorelines, beaches, estuaries, mangroves, etc.),
+# then the family (and all representative species) was marked as "Yes" (coastal)
+# If the BOW family page did not mention use of coastal habitats or resources, then the all representative species 
+# within the family were marked as "No" (not-coastal).
 
 ####### For all species from a "Coastal" (Yes) family, mark them as a coastal species. 
-#For AllBirds --> column = Family_eBird
- 
-#For List_of_Families --> column = Family_Sci
+
+# For AllBirds --> column = Family_eBird
+# For List_of_Families --> column = Family_Sci
 
 #read in the csv that contains all families and their coastal status, as determined via investigation on Birds of the World (2022). 
 List_of_Families <- read.csv(here("Notes", "families_all_coastal.csv")) %>% select(-X)
@@ -77,26 +84,21 @@ nrow(Families_No)
 #205, this is correct 
 
 
-#reformat AllBirds Family_eBird column so that it is compatible to join with List_of_Families 
-
+# reformat AllBirds Family_eBird column so that it is compatible to join with List_of_Families 
 AllBirds$Family_Sci <- word(AllBirds$Family_eBird, 1)
 head(AllBirds)
 
-
-#join them together 
+# join them together 
 Coastal_Round_1 <- left_join(AllBirds, List_of_Families, by = "Family_Sci")
 View(Coastal_Round_1)
 nrow(Coastal_Round_1) #4433 - correct number of rows in AllBirds, which was the left part of left_join 
 
-#save rds of Coastal_Round_1, for quick recall 
-
+#save rds of Coastal_Round_1
 saveRDS(Coastal_Round_1, here("Outputs", "Coastal_Round_1.rds"))
 
 
 #################################### Round 2 ############################################
-####
-##
-#in this round, we will sort through the common names of species that were marked as "Yes" for Coastal 
+# In this round, we will sort through the common names of species that were marked as "Yes" for Coastal 
 
 Round_1_yes <- Coastal_Round_1 %>% 
   filter(Coastal == "Yes")
@@ -105,8 +107,7 @@ View(Round_1_yes)
 nrow(Round_1_yes)
 #823!  
 
-###
-# generate a list of descriptors in the common names of the 4433 species in AllBirds
+# we will generate a list of descriptive terms from the common names of the 4433 species in AllBirds
 # we will manually filter this list to identify words in the common names that relate to habitat and/or diet
 
 twowordnames <- AllBirds %>%
@@ -193,7 +194,6 @@ View(R1_noncoastal_edited)
 # combine with Coastal_Round_1 to make the updates
 # this takes a few steps
 
-###DO FILTER STEP NOW 
 
 R1_noncoastal_edited_no <- R1_noncoastal_edited %>% 
   filter(Coastal == "No")
@@ -203,11 +203,9 @@ nrow(R1_noncoastal_edited_no) #18 species identified as NO from round 1
 # remind ourselves how many species are in the data
 nrow(Coastal_Round_1) # 4433
 
-
-
 # get all the species that were not modified in any way in the past step (any species not in R1_noncoastal_edited)
 Coastal_Round_1_edit1 <- anti_join(Coastal_Round_1, R1_noncoastal_edited, by="CommonName_eBird")
-# note: you need to specify to use CommonName_eBird for this join for it to work correctly
+
 
 # does the number of rows in edit1 equal the number of rows in Round_1 minus the number of rows in noncoastal_edited?
 # this should be "TRUE"
@@ -229,28 +227,21 @@ nrow(Coastal_Round_2) == nrow(Coastal_Round_1)
 View(Coastal_Round_2)
 # looks good! 
 
-# let's double check how many species are marked as "Coastal" now! 
-
-Coastal_Round_2_LIST <- Coastal_Round_2 %>% 
-  filter(Coastal == "Yes")
-nrow(Coastal_Round_2_LIST) #823 - 18 = 805! correct 
+# double check how many species are marked as "Coastal" now! 
+Coastal_Round_2 %>% filter(Coastal == "Yes") %>% nrow()
+#823 - 18 = 805! correct 
 
 
 #################################### Round 3 ###################################
-####
-##
-#in this round, we will sort through the common names of species that were marked as "Yes" for Urban Tolerance 
-
+# In this round, we will sort through the common names of species that were marked as "No" for Coastal
 Round_1_no <- Coastal_Round_1 %>% 
   filter(Coastal == "No")
 
 View(Round_1_no)
 nrow(Round_1_no) # 3610 
 
-# # # # # # # # # # # # # # # # # # 
 
-# now, develop list of coastal descriptor terms to search the Common Names of species marked as not coastal
-
+# develop list of coastal descriptor terms to search the Common Names of species marked as not coastal
 coastal_terms <- descriptors_marked %>% 
   filter(coastal_Y.N.M %in% c("M", "Y")) %>% # keep all terms that are clearly coastal (Y) and possibly coastal (M)
   select(descriptors) # select the column of descriptive terms
@@ -282,24 +273,22 @@ write.csv(R1_coastal, here("Notes", "Round_1_Coastal.csv"))
 
 # # # # # # # # # # # # # # # # # # 
 
-
 # upload edited csv 
 R1_coastal_edited <- read.csv(here("Notes", "Round_1_Coastal_edited.csv")) %>% select(-X, -X.1)
 
-# View to visually check 
+# View to inspect 
 View(R1_coastal_edited)
 colnames(R1_coastal_edited)
 nrow(R1_coastal_edited) # 221
 
 
-#let's see how many Coastal = Yes species that we added during round 3. 
-
+# how many Coastal = Yes species were added? 
 R1_coastal_edited_yes <- R1_coastal_edited %>% 
   filter(Coastal == "Yes")
-nrow(R1_coastal_edited_yes) #99 species identified as COASTAL! 
+nrow(R1_coastal_edited_yes) #99 species identified as coastal! 
 
 
-# combine with Coastal_Round_2 to make the updates
+# combine with Coastal_Round_2 from the previous round to make the updates
 # this takes a few steps
 
 # remind ourselves how many species are in the data
@@ -307,7 +296,6 @@ nrow(Coastal_Round_2) # 4433
 
 # get all the species that were not modified in any way in the past step (any species not in R1_coastal_edited)
 Coastal_Round_2_edit1 <- anti_join(Coastal_Round_2, R1_coastal_edited, by="CommonName_eBird")
-# note: you need to specify to use CommonName_eBird for this join for it to work correctly
 
 # does the number of rows in edit1 equal the number of rows in Round_2 minus the number of rows in coastal_edited?
 # this should be "TRUE"
@@ -327,21 +315,14 @@ Coastal_Round_3 <- bind_rows(Coastal_Round_2_edit1, Coastal_Round_2_edit2)
 # make sure all the species are still present
 nrow(Coastal_Round_3) == nrow(Coastal_Round_2)
 
-# View Coastal_Round_2 for double-checking 
-View(Coastal_Round_3)
 
-#looks good! 
+# how many species are on our coastal birds list now?
+Coastal_Round_3 %>% filter(Coastal == "Yes") %>% nrow() 
+# 904 species identified as Coastal! 
 
-
-# Let's look at how many species are on our coastal birds list now! 
-
-Coastal_Round_3_LIST <- Coastal_Round_3 %>% 
-  filter(Coastal == "Yes")
-nrow(Coastal_Round_3_LIST) #904 species identified as COASTAL! 
-
-########################### Final Step (rounds 4 and 5) ###########################################################
-# one last pass to identify any additional coastal species or species that are not actually coastal 
-# we will use the diet info columns that came from Wilman et al. 2014 (Elton traits) 
+########################### Final Steps (rounds 4 and 5) ###########################################################
+# make another pass to identify any additional coastal species or species that are not actually coastal 
+# to do this, we will use the diet info columns that came from Wilman et al. 2014 (Elton traits) 
 
 head(AllBirds)
 # we need to search the original species list of 4433 species
@@ -349,7 +330,7 @@ head(AllBirds)
 # import elton traits (Wilman et al. 2014)
 elton <- read.csv(here("Data", "elton.csv"), header=T)
 head(elton)
-colnames(elton) # look at column names of join 8 to identify columns that could be useful
+colnames(elton) # look at column names to identify columns that could be useful
 
 # these trait columns seem useful:
 unique(elton$Diet.Vfish) # percentage of diet that is fish. Filter to retain any species with > 0
@@ -390,7 +371,7 @@ R3_No <- Coastal_Round_3 %>%
 R3_noncoastal <- inner_join(R3_No, coastaldiet)
 
 nrow(R3_noncoastal)
-#58 species --> these are species that have been marked as "No" over the past 3 rounds, but their diet traits suggest a coastal association. 
+#58 species --> these are species that have been marked as "No" over the past 3 rounds, but their diet traits suggest a possible coastal association. 
 
 # Export this list, look up all species and check whether they should be coastal
 write.csv(R3_noncoastal, here("Notes", "Round_3_noncoastal.csv"))
@@ -411,38 +392,28 @@ R3_coastal <- anti_join(R3_Yes, coastaldiet) %>%
 nrow(R3_coastal)
 #170
 # many of these appear to be coastal
-# we will export the list, double check their classification as coastal and reimport the list with any needed changes
+# we will export the list, double check their classification as coastal and re-import the list with any needed changes
 
-# Export
+# export to look up species in BOW
 write.csv(R3_coastal, here("Notes", "Round_3_coastal.csv"))
 
-
-#edit files Round_3_coastal.csv and Round_3_noncoastal.csv by checking all species on BOTW 
-
-
-
 # import edited coastal file
-
 R3_coastal_edited <- read.csv(here("Notes", "Round_3_coastal_edited2.csv"), header = T) %>% select(-X)
 View(R3_coastal_edited)
 
-#lets look at how many "Coastal" species that DIDNT have coastal diet traits aren't actually coastal..... 
+# How many species that were orginally classified as Coastal have diet traits that suggest they need to be re-classified? 
 R3_coastal_edited_no <- R3_coastal_edited %>% 
   filter(Coastal == "No")
 nrow(R3_coastal_edited_no) #94 species re-classified as non-coastal 
 
 
-
 # imported edited noncoastal file 
 R3_noncoastal_edited <- read.csv(here("Notes", "Round_3_noncoastal_edited2.csv"), header = T) %>% select(-X)
 
-#lets look at how many "Coastal" species that DIDNT have coastal diet traits aren't actually coastal..... 
+# How many species that were originally classified as non-coastal need to be reclassified after considering diet traits?
 R3_noncoastal_edited_yes <- R3_noncoastal_edited %>% 
   filter(Coastal == "Yes")
 nrow(R3_noncoastal_edited_yes) #17 species identified as COASTAL! 
-
-
-
 
 # combine them into one object that contains all possible changes
 R3_edits <- bind_rows(R3_coastal_edited, R3_noncoastal_edited)
@@ -480,22 +451,21 @@ View(Coastal_All)
 #how many coastal species do we have? 
 
 nrow(Coastal_All)
-#4433, just like it should be 
+#4433 
 colnames(Coastal_All)
-
 
 Coastal_Only <- Coastal_All %>% 
   filter(Coastal == "Yes")
 
 nrow(Coastal_Only)
-#827 birds
+#827 birds are classified as Coastal
 
 ###########################################################################
-# One last final check: we need all the species to have unique Jetz names as we need to join them to the phylogeny that uses this naming scheme for the models
-# Are the names unique for the Jetz taxonomies? NO!
+# One last final check: we need all the species to have unique BirdTree names as we need to join them to the phylogeny that uses this naming scheme for the models
+# Are the names unique for the BirdTree taxonomy? No
 length(unique(Coastal_Only$Species_Jetz))
 
-# look at the duplicates for Jetz names
+# look at the duplicates for BirdTree names
 # these need to be resolved because we can only have one entry per name in the models
 duplicates_Jetz <- Coastal_Only %>% count(Species_Jetz) %>%
   filter(n>1) %>%
@@ -530,7 +500,7 @@ UAIonly <- duplicates_Jetz %>% select(Species_Jetz) %>% distinct() %>%
   left_join(.,MUTI_dups) %>% left_join(., UN_dups) %>%
   filter(is.na(MUTI)) %>% filter(is.na(UN))
 
-# for these species, keep the entry where Jetz, BirdLife and eBird names are the same
+# for these species, keep the entry where BirdTree, BirdLife and eBird names are the same
 duplicates_Jetz_UAIonly <- UAIonly %>%
   select(-UN, -MUTI) %>%
   left_join(., duplicates_Jetz)
@@ -612,7 +582,7 @@ nrow(Coastal_Only_nondups)
 # put together allfixes and Coastal_Only_nodups to get final and clean Coastal birds list
 Coastal_Birds <- bind_rows(Coastal_Only_nondups, allfixes)
 
-nrow(Coastal_Birds)# should be equal to the number of unique Jetz species names (807)
+nrow(Coastal_Birds)# should be equal to the number of unique BirdTree species names (807)
 length(unique(Coastal_Birds$Species_Jetz)) # 807
 
 # View to confirm  

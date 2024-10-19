@@ -1,15 +1,14 @@
-######################### Coastal Birds Urban Tolerance Project ###########################
+##########################################################
+######### Coastal Birds Urban Tolerance Project ##########
+##########################################################
+# Step 1: UAI Names to Species
 ##### Author(s): SL Jennings 
-##### Date modified: July 12, 2024
-##### Objective: Align UAI Common Names with Scientific Names from eBird, Jetz and BirdLife 
+##########################################################
+### Objective: Align UAI Common Names with Scientific Names from eBird, Jetz and BirdLife 
 
 # Load packages
 library(here)
 library(tidyverse)
-if(!require(fuzzyjoin)){
-  install.packages("fuzzyjoin")
-  require(fuzzyjoin)
-}
 library(fuzzyjoin)
 library(stringi)
 

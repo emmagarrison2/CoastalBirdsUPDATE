@@ -282,46 +282,12 @@ MUTI_CoopB <- C_Social_dat2 %>% filter(!is.na(MUTIscore)) %>%
 length(MUTI_CoopB$cooperative)
 #127 species with MUTI and cooperative breeding
 
-###### add and pair tree
+MUTI_CoopB %>% filter(!is.na(cooperative)) %>% 
+  filter(!is.na(MUTIscore)) %>% 
+  group_by(cooperative) %>% count()
 
-# add rownames to data
-row.names(MUTI_CoopB) <- MUTI_CoopB$Species_Jetz
-
-tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
-
-MUTI_CoopB_phydat <- treedata(tree_out, MUTI_CoopB, sort=T)
-
-MUTI_CoopB_phy <- MUTI_CoopB_phydat$phy
-MUTI_CoopB_dat <- as.data.frame(MUTI_CoopB_phydat$data)
-
-str(MUTI_CoopB_dat)
-length(MUTI_CoopB_dat$cooperative)
-#127
-
-
-### convert traits of interest to numeric
-MUTI_CoopB_dat$MUTIscore <- as.numeric(MUTI_CoopB_dat$MUTIscore)
-MUTI_CoopB_dat$Mass_log <- as.numeric(MUTI_CoopB_dat$Mass_log)
-MUTI_CoopB_dat$cooperative <- as.numeric(MUTI_CoopB_dat$cooperative)
-
-
-# Run phylogenetic linear model
-MUTI_GLS_cooperative <- gls(MUTIscore~ cooperative + Mass_log, data = MUTI_CoopB_dat, 
-                           correlation = corPagel(0.5, phy = MUTI_CoopB_phy, fixed=F, form = ~Species_Jetz), 
-                           method = "ML") 
-
-# model summary and results
-summary(MUTI_GLS_cooperative) 
-confint(MUTI_GLS_cooperative)
-
-# model diagnostics
-check_model(MUTI_GLS_cooperative) 
-qqnorm(resid(MUTI_GLS_cooperative)) 
-qqline(resid(MUTI_GLS_cooperative)) 
-hist(resid(MUTI_GLS_cooperative))
- 
-# save model for easy retrieval 
-saveRDS(MUTI_GLS_cooperative, here("Models/MUTI", "MUTI_GLS_cooperative.rds"))
+# Not enough cooperative = 1 (only 6 species)
+# we will not run this model
 
 
 ######################## UN and Cooperative Breeding ##########################
@@ -333,7 +299,9 @@ UN_CoopB <- C_Social_dat2 %>% filter(!is.na(Urban)) %>%
 length(UN_CoopB$cooperative)
 #129 species with UN and cooperative breeding
 
-UN_CoopB %>% filter(cooperative==0) %>% nrow()
-UN_CoopB %>% filter(cooperative==1) %>% nrow()
+UN_CoopB %>% filter(!is.na(cooperative)) %>% 
+  filter(!is.na(Urban)) %>% 
+  group_by(cooperative) %>% count()
+
 # There are only 8 species with cooperative = 1, all others have cooperative = 0
 # We will not run a model here as this is highly unbalanced

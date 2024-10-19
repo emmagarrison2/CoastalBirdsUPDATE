@@ -1,8 +1,22 @@
-####################The objective of this script is to join all of our current indexes
-#(MUTI, UAI, and UN) --> after we successfully join and get all scientific names to line up, 
-#then we can run this file through our "retracing_coastal_species_sorting.r" script! 
+##########################################################
+######### Coastal Birds Urban Tolerance Project ##########
+##########################################################
+# Step 2: Join Species with Urban Tolerance Values
+# Authors: Sarah L. Jennings, Emma M. Garrison
+##########################################################
 
 
+# UAI Naming Scheme Methods --> seems to be a combo of eBird and other naming schemes
+
+# MUTI Naming Scheme Methods --> seems to use eBird scheme --> uses eBird 6 letter codes, and AOS species checklist for taxonomic information. 
+# There may be a few differences, but for the most part, eBird/Clements naming scheme and AOS agree. 
+
+# UN Naming Scheme Methods --> unstated naming scheme for bird species. 
+
+# Plan for this script is to join UAI and MUTI first, and then join UN 
+
+
+# load packages
 library(ape)
 library(geiger)
 library(nlme)
@@ -12,38 +26,18 @@ library(ggeffects)
 library(sjPlot)
 library(dplyr)
 library(here)
-
-if(!require(here)){
-  install.packages("here")
-  require(here)
-}
-
-
-here::here()
-
-#install.packages("gitcreds")
 library(gitcreds)
 
+# import UAI data
 UAI <- readRDS (here("Outputs", "UAI_eBirdJetzBirdLife_final.rds"))
 View(UAI)
 colnames(UAI)
 nrow(UAI)
 #4347
-min(UAI$aveUAI) #0
-max(UAI$aveUAI) #3.972
-
-#UAI Naming Scheme Methods --> weird combo of eBird and other naming schemes --> Sarah Investigated on UAINamestoSpecies.R
-
-#MUTI Naming Scheme Methods --> seems to use eBird scheme --> uses eBird 6 letter codes, and AOS species checklist for taxonomic information. 
-####There may be a few differences, but for the most part, eBird/Clements naming scheme and AOS agree. 
-
-#UN Naming Scheme Methods --> ?? unstated naming scheme for bird species. 
 
 
-#Plan --> try to join UAI and MUTI first... then try with UN (might be more difficult?)
 
-#Load in MUTI! 
-
+# Import MUTI data 
 MUTI <- read.csv (here("Data", "Fanelli_Urban_Tolerance.csv"), header = T)
 colnames(MUTI)
 View(MUTI)
@@ -55,17 +49,13 @@ colnames(MUTI.f)
 View(MUTI.f)
 nrow(MUTI.f)
 #432 rows in MUTI (species)
-min(MUTI.f$MUTIscore) #-2.0492
-max(MUTI.f$MUTIscore) #5.461
-
 
 
 #############################################################
-##########let's take a look at Jetz and see how many we get 
+# first join MUTI to UAI using BirdTree names
 
 MUTI_jetz <- MUTI.f %>% mutate(Species_Jetz = SciName_MUTI)
 colnames(MUTI_jetz)
-
 
 JetzMUTI_UAI <- inner_join(UAI, MUTI_jetz, by="Species_Jetz") 
 head(JetzMUTI_UAI)
@@ -73,11 +63,11 @@ nrow(JetzMUTI_UAI)
 #330.... 
 
 nrow(MUTI_jetz)- nrow(JetzMUTI_UAI) 
-#102 species off! prob not Jetz
+#102 species do not match
 
 
 #############################################################
-##########let's take a look at BirdLife and see how many we get 
+# try joining with BirdLife names
 
 MUTI_BL <- MUTI.f %>% mutate(Species_BirdLife = SciName_MUTI)
 colnames(MUTI_BL)
@@ -85,19 +75,17 @@ colnames(MUTI_BL)
 
 BirdLifeMUTI_UAI <- inner_join(UAI, MUTI_BL, by="Species_BirdLife") 
 nrow(BirdLifeMUTI_UAI)
-#404.... 
+#404
 
 nrow(MUTI_BL)- nrow(BirdLifeMUTI_UAI) 
-#28 species off! This is a possibility, but eBird may do better
+#28 species do not match. This is a possibility, but eBird may do better
 
 
 #############################################################
-##########let's take a look at eBird and see how many we get 
+# try joining MUTI to UAI with eBird names
 
 MUTI_eBird <- MUTI.f %>% mutate(Species_eBird = SciName_MUTI)
 colnames(MUTI_eBird)
-
-#test for how many species match UAI and MUTI via eBird/Clements naming scheme 
 
 eBirdMUTI_UAI <- inner_join(UAI, MUTI_eBird, by="Species_eBird") 
 nrow(eBirdMUTI_UAI)
@@ -105,9 +93,11 @@ nrow(eBirdMUTI_UAI)
 colnames(eBirdMUTI_UAI)
 
 nrow(MUTI_eBird)- nrow(eBirdMUTI_UAI) 
-#11 species off! this is the most cohesive naming scheme for MUTI and UAI!
+#11 species do not match
+# this is the most cohesive naming scheme for MUTI and UAI
 
-#let's left_join UAI and MUTI_eBird! this will add MUTI scores to all 421 species with UAI scientific name equivalent 
+# join UAI and MUTI_eBird
+# this will add MUTI scores to all 421 species with UAI scientific name equivalent 
 colnames(UAI)
 colnames(MUTI.f)
 UAI_and_MUTI <- MUTI_eBird %>% 
@@ -118,20 +108,19 @@ nrow(UAI_and_MUTI) # 4347
 View(UAI_and_MUTI)
 colnames(UAI_and_MUTI)
 
-# let's find out what 11 species are missing  and then manually join them! 
 
+# Find out which 11 species are missing  and then manually join them! 
 nomatch_eBird_MUTI <- anti_join (MUTI_eBird, eBirdMUTI_UAI, by = "Species_eBird") %>%
   select(-Species_eBird) # drop this column as these names do not match with eBird names
 nrow(nomatch_eBird_MUTI)
 View(nomatch_eBird_MUTI)
 
-#manual inspection 
-#8 of the 11 not in UAI 
-#3 of the 11 in UAI but not under eBird names, under Jetz names 
-###### what to do about these three species? They are Brandt's Cormorant, Double-crested cormorant, and Pelagic Cormorant, so they ARE Going to be coastal. It would be nice to keep them. 
+# do a manual inspection 
+# 8 of the 11 not in UAI 
+# 3 of the 11 in UAI but not under eBird names, and use BirdTree names 
+# the 3 species are Brandt's Cormorant, Double-crested cormorant, and Pelagic Cormorant
 
-# since they are Jetz Taxonomy names, we will perform a join between nomatch_eBird_MUTI and UAI using Species_Jetz 
-#clean up column names for 
+# since they are BirdTree Taxonomy names, we will perform a join between nomatch_eBird_MUTI and UAI using Species_Jetz 
 colnames(UAI_and_MUTI)
 colnames(nomatch_eBird_MUTI)
 
@@ -180,9 +169,9 @@ UAI_and_MUTI_namefix2 <- UAI_and_MUTI_neednames %>%
 # this got all but one species (Mexican duck, Anas diazi)
 # check if this is present anywhere in the names conversion data frame?
 colSums(namesconvert =='Anas diazi') # no
-# there is no point trying to use Jetz names to add this
-# a google search of this species describes it as a lake/river duck, so not coastal
-# proceeding without it
+# there is no point trying to use BirdTree names to add this
+# a Google search of this species describes it as a lake/river duck, so not coastal
+# we will proceed without it
 
 UAI_and_MUTI_namefix1b <- UAI_and_MUTI_namefix1 %>% filter(!is.na(Species_eBird)) 
 UAI_and_MUTI_namefix2b <- UAI_and_MUTI_namefix2 %>% filter(!is.na(Species_BirdLife)) 
@@ -217,7 +206,7 @@ colnames(UAI_and_MUTI_all)
 
 # how many rows/species have a MUTI score?
 UAI_and_MUTI_all %>% filter(!is.na(MUTIscore)) %>% nrow()
-# 431 which is 421 eBird species, the 3 Jetz cormorant species, and the 7 species from MUTI with no UAI match!
+# 431 which is 421 eBird species, the 3 BirdTree cormorant species, and the 7 species from MUTI with no UAI match!
 
 # how many rows/species have a UAI score?
 UAI_and_MUTI_all %>% filter(!is.na(aveUAI)) %>% nrow() 
@@ -231,18 +220,19 @@ View(UAI_and_MUTI_all)
 
 ##################################################################
 ##################################################################
-##################################################################
-##################################################################
-############# now it's time for UN Joining! ######################
 
+
+############# Join UN to MUTI/UAI list ######################
+
+# import data
 UN <- read.csv (here("Data", "HuAndCardosoData.csv"), header = T)
 head(UN)
 UN <- UN %>% select(Species, Urban) %>% rename(Species_UN = Species)
 colnames(UN)
 nrow(UN) # 528 rows -- we want to keep as many of these as possible! 
 
-###### Try joining with eBird ##################################
-# it is best to try and match with eBird as all the species names are unique
+###### First try joining with eBird ##################################
+# This is probably the best starting point as all the eBird species names are unique
 
 eBird_UN_MUTI_UAI <- UN %>% 
   mutate(Species_eBird = Species_UN) %>%
@@ -271,7 +261,7 @@ UN_nomatch <- eBird_UN_MUTI_UAI_match %>%
 nrow(UN_nomatch) # 191
 head(UN_nomatch)
 
-###### Try matching the 191 remaining species with Jetz ##############
+###### Try matching the 191 remaining species with BirdTree ##############
 
 Jetz_UN_MUTI_UAI <- UN_nomatch %>% 
   mutate(Species_Jetz = Species_UN) %>%
@@ -284,7 +274,7 @@ nrow(Jetz_UN_MUTI_UAI) # 116
 # are they all unique?
 length(unique(Jetz_UN_MUTI_UAI$Species_UN))
 # 116-111 = 5
-# not all are unique. This is because some UAI/MUTI species have the same scientific name using Jetz
+# not all are unique. This is because some UAI/MUTI species have the same scientific name using BirdTree
 # so certain species from UN are matching with more than one UAI/MUTI species
 
 # look at the duplicated species
@@ -304,13 +294,13 @@ nrow(UN_stillnomatch) # 80 species
 # tried to match using BirdLife but it did not help, so these steps were deleted
 # going to assume these species are not present in UAI or MUTI data sets
 
-# try adding BirdLife, eBird and Jetz names from names convert
+# try adding BirdLife, eBird and BirdTree names from names convert
 
 head(namesconvert)
 colnames(UN_stillnomatch)
 nrow(UN_stillnomatch)
 
-# try using Jetz names
+# try using BirdTree names
 UN_namefix <- UN_stillnomatch %>% 
   mutate(Species_Jetz = Species_UN) %>%
   left_join(., namesconvert, by = "Species_Jetz")
@@ -322,14 +312,14 @@ UN_namedupes <- UN_namefix %>% count(Species_UN) %>%
   left_join(., UN_namefix)
 View(UN_namesdupes)
 
-# keep entries where Jetz and BirdLife name are the same
+# keep entries where BirdTree and BirdLife names are the same
 UN_namefix2 <- UN_namedupes %>%
   distinct() %>%
   mutate(clean = if_else(Species_Jetz == Species_BirdLife, "keep", "drop")) %>%
   filter(clean == "keep") %>%
   select(-clean, - n) 
 
-# put together 75 species that were not duplicated, with the 5 resolved speices
+# put together 75 species that were not duplicated, with the 5 resolved species
 UN_namefix_final <- UN_namefix %>% count(Species_UN) %>%
   filter(n==1) %>%
   left_join(., UN_namefix) %>%
@@ -346,7 +336,7 @@ UN_namefix_final %>% filter(is.na(Species_Jetz)) %>% nrow()
 
 ##### Put matches together and build towards final data frame ######
 
-# combine Jetz and eBird matches into one using bind_rows
+# combine BirdTree and eBird matches into one using bind_rows
 # first confirm the colnames match and are in the same order
 colnames(eBird_UN_MUTI_UAI_match)
 colnames(Jetz_UN_MUTI_UAI)
@@ -374,7 +364,7 @@ nrow(UN_combine2) # 4354
 UAI_MUTI_UN_combined <- full_join(UN_combine2, UN_namefix_final)
 nrow(UAI_MUTI_UN_combined) # should equal 4434 (4354 + 80)
 
-# do all the remaining species have eBird, BirdLife and Jetz names?
+# do all the remaining species have eBird, BirdLife and BirdTree names?
 # if so, these lines of code should produce zeros
 UAI_MUTI_UN_combined %>% filter(is.na(Species_eBird)) %>% nrow()
 UAI_MUTI_UN_combined %>% filter(is.na(Species_BirdLife)) %>% nrow()

@@ -1855,7 +1855,7 @@ phyglm_UN_hue_scale <- readRDS(here("Outputs", "phyglm_UN_hue_scale.rds"))
 
 
 
-######################## UAI and sexual-selection Male ##########################
+######################## UN and sexual-selection Male ##########################
 
 # lets first simplify a NEW database by removing records where we don't have an UN / brood_value
 UNDataUT <- C_SSelect_dat2 %>% filter(!is.na(Urban)) 

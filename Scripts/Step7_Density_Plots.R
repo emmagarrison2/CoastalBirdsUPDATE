@@ -204,8 +204,7 @@ UAI_density <- ggplot() +
 
 print(UAI_density)
 
-saveRDS(UAI_density, here("Outputs", "UAI_Density_Comparison.rds"))
-
+saveRDS(UAI_density, here("Results", "UAI_Density_Comparison.rds"))
 
 
 
@@ -292,11 +291,11 @@ MUTI_density <- ggplot() +
 print(MUTI_density)
 
 
-saveRDS(MUTI_density, here("Outputs", "MUTI_Density_Comparison.rds"))
+saveRDS(MUTI_density, here("Results", "MUTI_Density_Comparison.rds"))
 
 
 
-###################################### ALTERNATIVE OPTION FOR UN ###################################### 
+###################################### UN DENSITY PLOT ###################################### 
 
 ########################## percentages, stacked barplot for UN 
 
@@ -385,6 +384,7 @@ UN_stacked_barplot <- ggplot(combined_UN_for_density_summary, aes(x = Group, y =
 
 print(UN_stacked_barplot)
 
+saveRDS(UN_stacked_barplot, here("Results", "UN_Density_Comparison.rds"))
 
 
 ######################################################################
@@ -419,5 +419,6 @@ all_density_3 <- UAI_density + MUTI_density + UN_stacked_barplot
 
 print(all_density_3)
 
-saveRDS (all_density_3, here("Outputs", "All_Density_Plots_edited.rds"))
+saveRDS (all_density_3, here("Results", "All_Density_Plots_edited.rds"))
+
 

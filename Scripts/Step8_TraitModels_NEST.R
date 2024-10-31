@@ -48,7 +48,7 @@ colnames(C_Nest_dat2)
 UAI_NestStr <- C_Nest_dat2 %>% filter(!is.na(aveUAI)) %>% 
   filter(!is.na(NestStr)) %>% as.data.frame()
 length(UAI_NestStr$NestStr)
-# 833 species with UAI and NestStr
+# 733 species with UAI and NestStr
 
 ###### add and pair tree
 
@@ -65,7 +65,7 @@ UAI_NestStr_dat <- as.data.frame(UAI_NestStr_phydat$data)
 str(UAI_NestStr_dat)
 length(UAI_NestStr_dat$NestStr)
 View(UAI_NestStr_dat)
-# 833
+# 733
 
 # convert traits of interest to numeric
 UAI_NestStr_dat$aveUAI <- as.numeric(UAI_NestStr_dat$aveUAI)
@@ -172,7 +172,7 @@ UN_NestStr %>% filter(!is.na(NestStr)) %>%
 UAI_NestLow <- C_Nest_dat2 %>% filter(!is.na(aveUAI))  %>% 
   filter(!is.na(NestSite_Low)) %>% as.data.frame()
 length(UAI_NestLow$NestSite_Low)
-#796 species with UAI and NestSite_Low
+#792 species with UAI and NestSite_Low
 
 ###### add and pair tree
 
@@ -188,7 +188,7 @@ UAI_NestLow_dat <- as.data.frame(UAI_NestLow_phydat$data)
 
 str(UAI_NestLow_dat)
 length(UAI_NestLow_dat$NestSite_Low)
-#796
+#792
 
 # convert traits of interest to numeric
 UAI_NestLow_dat$aveUAI <- as.numeric(UAI_NestLow_dat$aveUAI)
@@ -223,8 +223,8 @@ UAI_NestLow_only <- C_Nest_dat2 %>% filter(!is.na(aveUAI)) %>%
   filter(!is.na(NestSite_Low)) %>% 
   filter(!(NestSite_Low == 1 & NestSite_High == 1)) %>% as.data.frame()
 length(UAI_NestLow_only$NestSite_Low)
-# 575 species with UAI and ONLY NestSite_Low (not also high nesters)
-796-575 # = 221 --> there are 221 species that were both High and Low nesters and had UAI scores 
+# 571 species with UAI and ONLY NestSite_Low (not also high nesters)
+792-571 # = 221 --> there are 221 species that were both High and Low nesters and had UAI scores 
 
 ###### add and pair tree
 
@@ -239,8 +239,7 @@ UAI_NestLow_only_phy <- UAI_NestLow_only_phydat$phy
 UAI_NestLow_only_dat <- as.data.frame(UAI_NestLow_only_phydat$data)
 
 str(UAI_NestLow_only_dat)
-length(UAI_NestLow_only_dat$NestSite_Low)
-#575
+length(UAI_NestLow_only_dat$NestSite_Low) # 571
 
 # convert traits of interest to numeric
 UAI_NestLow_only_dat$aveUAI <- as.numeric(UAI_NestLow_only_dat$aveUAI)
@@ -598,58 +597,6 @@ hist(resid(UAI_GLS_nest_high))
 saveRDS(UAI_GLS_nest_high, here("Models/UAI", "UAI_GLS_nest_high.rds"))
 
 
-#########################################
-# Filter out all species that use both HIGH and LOW nest sites 
-# we are doing this to test whether the "non-ambiguous" nesting species the ones driving the significant relationship in the previous section
-
-# apply filter 
-UAI_NestHigh_only <- C_Nest_dat2 %>% filter(!is.na(aveUAI)) %>%
-  filter(!is.na(NestSite_High)) %>% 
-  filter(!(NestSite_Low == 1 & NestSite_High == 1)) %>% as.data.frame()
-length(UAI_NestHigh_only$NestSite_High)
-#575 species 
-796-575 # = 221 --> there are 221 species that were both High and Low nesters and had UAI scores 
-
-###### add and pair tree
-
-# add rownames to data
-row.names(UAI_NestHigh_only) <- UAI_NestHigh_only$Species_Jetz
-
-tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
-
-UAI_NestHigh_only_phydat <- treedata(tree_out, UAI_NestHigh_only, sort=T)
-
-UAI_NestHigh_only_phy <- UAI_NestHigh_only_phydat$phy
-UAI_NestHigh_only_dat <- as.data.frame(UAI_NestHigh_only_phydat$data)
-
-str(UAI_NestHigh_only_dat)
-length(UAI_NestHigh_only_dat$NestSite_High)
-#575
-
-### convert traits of interest to numeric
-UAI_NestHigh_only_dat$aveUAI <- as.numeric(UAI_NestHigh_only_dat$aveUAI)
-UAI_NestHigh_only_dat$Mass_log <- as.numeric(UAI_NestHigh_only_dat$Mass_log)
-UAI_NestHigh_only_dat$NestSite_High <- as.numeric(UAI_NestHigh_only_dat$NestSite_High)
-
-# run phylogenetic linear model
-UAI_GLS_nest_high_only <- gls(aveUAI~ NestSite_High + Mass_log, data = UAI_NestHigh_only_dat, 
-                              correlation = corPagel(0.5, phy = UAI_NestHigh_only_phy, fixed = F, form = ~Species_Jetz), 
-                              method = "ML") 
-
-# model summary and results
-summary(UAI_GLS_nest_high_only) 
-confint(UAI_GLS_nest_high_only)
-
-# model diagnostics
-check_model(UAI_GLS_nest_high_only) 
-qqnorm(resid(UAI_GLS_nest_high_only)) 
-qqline(resid(UAI_GLS_nest_high_only))
-hist(resid(UAI_GLS_nest_high_only))
-
-# save model
-saveRDS(UAI_GLS_nest_high_only, here("Models/UAI", "UAI_GLS_nest_high_only.rds"))
-
-
 ######################## MUTI and Nest Site HIGH ##########################
 # 0 = not high
 # 1 = HIGH
@@ -701,80 +648,6 @@ hist(resid(MUTI_GLS_nest_high))
 
 # save model
 saveRDS(MUTI_GLS_nest_high, here("Models/MUTI", "MUTI_GLS_nest_high.rds"))
-
-#########################################
-# Filter out all species that use both HIGH and LOW nest sites 
-# we are doing this to test whether the "non-ambiguous" nesting species the ones driving the significant relationship in the previous section
-
-# apply filter 
-MUTI_NestHigh_only <- C_Nest_dat2 %>% filter(!is.na(MUTIscore)) %>%
-  filter(!is.na(NestSite_High)) %>% 
-  filter(!(NestSite_Low == 1 & NestSite_High == 1)) %>% as.data.frame()
-length(MUTI_NestHigh_only$NestSite_High)
-# 91 species
-130-91 # = 39 --> there are 39 species that were both High and Low nesters and had MUTI scores 
-
-###### add and pair tree
-
-# add rownames to data
-row.names(MUTI_NestHigh_only) <- MUTI_NestHigh_only$Species_Jetz
-
-tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
-
-MUTI_NestHigh_only_phydat <- treedata(tree_out, MUTI_NestHigh_only, sort=T)
-
-MUTI_NestHigh_only_phy <- MUTI_NestHigh_only_phydat$phy
-MUTI_NestHigh_only_dat <- as.data.frame(MUTI_NestHigh_only_phydat$data)
-
-str(MUTI_NestHigh_only_dat)
-length(MUTI_NestHigh_only_dat$NestSite_High)
-# 91
-
-
-# convert traits of interest to numeric
-MUTI_NestHigh_only_dat$MUTIscore <- as.numeric(MUTI_NestHigh_only_dat$MUTIscore)
-MUTI_NestHigh_only_dat$Mass_log <- as.numeric(MUTI_NestHigh_only_dat$Mass_log)
-MUTI_NestHigh_only_dat$NestSite_High <- as.numeric(MUTI_NestHigh_only_dat$NestSite_High)
-
-# model is not working with corPagel starting point = 0.5 and fixed = F
-# we need to find a lambda value to fix in the model 
-
-# Create an empty vector to store AIC values
-AIC_values <- numeric()
-
-# Loop through different values of the parameter for corPagel
-for (i in seq(0, 1, by = 0.1)) {
-  # Fit the gls model with the current value of i
-  model <- gls(MUTIscore ~ NestSite_High + Mass_log, 
-               data = MUTI_NestHigh_only_dat, 
-               correlation = corPagel(i, phy = MUTI_NestHigh_only_phy, fixed = TRUE, form = ~Species_Jetz), 
-               method = "ML")
-  # Extract AIC value and store it in the vector
-  AIC_values <- c(AIC_values, AIC(model))
-}
-
-# Print AIC values
-print(AIC_values)
-# 0.3 = best AIC score 
-
-
-# run phylogenetic linear model
-MUTI_GLS_nest_high_only <- gls(MUTIscore~ NestSite_High + Mass_log, data = MUTI_NestHigh_only_dat, 
-                              correlation = corPagel(0.3, phy= MUTI_NestHigh_only_phy, fixed = T, form = ~Species_Jetz), 
-                              method = "ML") 
-
-# model summary and results
-summary(MUTI_GLS_nest_high_only) 
-confint(MUTI_GLS_nest_high_only)
-
-# model diagnostics
-check_model(MUTI_GLS_nest_high_only) 
-qqnorm(resid(MUTI_GLS_nest_high_only)) 
-qqline(resid(MUTI_GLS_nest_high_only))
-hist(resid(MUTI_GLS_nest_high_only))
-
-# save model
-saveRDS(MUTI_GLS_nest_high_only, here("Models/MUTI", "MUTI_GLS_nest_high_only.rds"))
 
 
 ######################## UN and Nest Site HIGH ##########################
@@ -862,67 +735,6 @@ summary(glm_UN_nest_high) # we reach same conclusions
 (alpha_Nhigh <- phyglm_UN_nest_high_fix$alpha) # alpha
 (hl_Nhigh <- log(2)/alpha_Nhigh) # half life
 #compared to t, this is a small half life
-
-
-#########################################
-# Filter out all species that use both HIGH and LOW nest sites 
-# we are doing this to test whether the "non-ambiguous" nesting species the ones driving the significant relationship in the previous section
-
-# apply filter 
-UN_NestHigh_only <- C_Nest_dat2 %>% filter(!is.na(Urban))  %>% 
-  filter(!is.na(NestSite_High)) %>% 
-  filter(!(NestSite_Low == 1 & NestSite_High == 1)) %>%
-  column_to_rownames(., var="Species_Jetz")
-length(UN_NestHigh_only$NestSite_High)
-# 104 species
-129-104 # = 25 --> there are 25 species that were both High and Low nesters and had UN scores 
-
-###### add and pair tree
-
-tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
-
-UN_NestHigh_only_phydat <- treedata(tree_out, UN_NestHigh_only, sort=T)
-
-UN_NestHigh_only_phy <- UN_NestHigh_only_phydat$phy
-UN_NestHigh_only_dat <- as.data.frame(UN_NestHigh_only_phydat$data)
-
-str(UN_NestHigh_only_dat)
-length(UN_NestHigh_only_dat$NestSite_High)
-# 104
-
-# convert traits of interest to numeric
-UN_NestHigh_only_dat$Urban <- as.numeric(UN_NestHigh_only_dat$Urban)
-UN_NestHigh_only_dat$Mass_log <- as.numeric(UN_NestHigh_only_dat$Mass_log)
-UN_NestHigh_only_dat$NestSite_High <- as.numeric(UN_NestHigh_only_dat$NestSite_High)
-
-
-# Run the model using phyloglm(), which performs a logistic phylogenetic model to account for binary UN index
-# default method ="logistic_MPLE"
-# we will also scale and center the response variable to help with convergence
-set.seed(107)
-phyglm_UN_nest_high_only_scale <- phyloglm( Urban ~ NestSite_High + scale(Mass_log), 
-                                            data = UN_NestHigh_only_dat, 
-                                            phy = UN_NestHigh_only_phy, 
-                                            boot = 1000) 
-# model converges
-# alpha at upper bounds
-summary(phyglm_UN_nest_high_only_scale)
-# nest site high is no longer important
-
-
-# save model
-saveRDS(phyglm_UN_nest_high_only_scale, here("Models/UN", "phyglm_UN_nest_high_only_scale.rds"))
-# load model
-phyglm_UN_nest_high_only_scale <- readRDS(here("Models/UN", "phyglm_UN_nest_high_only_scale.rds"))
-
-
-# get alpha, t, and half life for the model
-(phyglm_UN_nest_high_only_scale$mean.tip.height) # t
-(alpha_Nhighonly <- phyglm_UN_nest_high_only_scale$alpha) # alpha
-(hl_Nhighonly <- log(2)/alpha_Nhighonly) # half life
-# compared to t, this is a small half life -> low phylogenetic signal
-
-
 
 ##########################################################################
 ##########################################################################

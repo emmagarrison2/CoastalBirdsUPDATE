@@ -637,7 +637,11 @@ View(Coastal_Nest_SiteBoth)
 # Instead, we will use two models one to examine Low species and one to examine High species
 
 # remove all unnecessary columns to keep data frame clean and organized
+# we will also check for any species with NestSite_Low == 0 & NestSite_High == 0, which are species missing nest site information
+# these will get changed to NAs
 Coastal_Nest_StrSite <- Coastal_Nest_Site %>% 
+ mutate(NestSite_Low = ifelse(NestSite_Low == 0 & NestSite_High == 0, NA, NestSite_Low),
+        NestSite_High = ifelse(is.na(NestSite_Low) & NestSite_High == 0, NA, NestSite_High)) %>%
   select(Species_Jetz:Mass_log, NestStr, NestSite_High, NestSite_Low)
 
 colnames(Coastal_Nest_StrSite)
@@ -646,7 +650,7 @@ colnames(Coastal_Nest_StrSite)
 nest_site_count <- Coastal_Nest_StrSite %>% 
   filter(!is.na(NestSite_Low))
 nrow(nest_site_count)
-# 805
+# 801
 
 # how many species have nest site high data ?
 # for UAI? 

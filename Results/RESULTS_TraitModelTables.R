@@ -713,11 +713,6 @@ UAI_GLS_high <- readRDS(here("Models/UAI", "UAI_GLS_nest_high.rds"))
 MUTI_GLS_high <- readRDS(here("Models/MUTI", "MUTI_GLS_nest_high.rds"))
 phyglm_UN_high <- readRDS(here("Models/UN", "phyglm_UN_nest_high_fix.rds"))
 
-# Site: high only
-UAI_GLS_high_only <- readRDS(here("Models/UAI", "UAI_GLS_nest_high_only.rds"))
-MUTI_GLS_high_only <- readRDS(here("Models/MUTI", "MUTI_GLS_nest_high_only.rds"))
-phyglm_UN_high_only <- readRDS(here("Models/UN", "phyglm_UN_nest_high_only_scale.rds"))
-
 # Strategy (open/enclosed) - not run for UN
 UAI_GLS_neststr <- readRDS(here("Models/UAI", "UAI_GLS_neststr.rds"))
 MUTI_GLS_neststr <- readRDS(here("Models/MUTI", "MUTI_GLS_neststr.rds"))
@@ -834,41 +829,6 @@ UN_high_tidy <- as.data.frame(summary(phyglm_UN_high)$coefficients) %>%
          lambda = as.numeric(NA),
          alpha = phyglm_UN_high$alpha)
 
-# nest site high ONLY models
-UAI_high_only_tidy <- tidy(UAI_GLS_high_only, conf.int = T, conf.level = 0.95) %>%
-  mutate(index = "UAI",
-         model_type = "gls",
-         trait_group = "nest",
-         predictor_trait = "nest site high (only)",
-         sample_size = UAI_GLS_high_only$dims$N,
-         lambda = as.numeric(UAI_GLS_high_only$modelStruct$corStruct), 
-         alpha = as.numeric(NA)) %>%
-  select(-p.value)
-
-MUTI_high_only_tidy <-tidy(MUTI_GLS_high_only, conf.int = T, conf.level = 0.95) %>%
-  mutate(index = "MUTI",
-         model_type = "gls",
-         trait_group = "nest",
-         predictor_trait = "nest site high (only)",
-         sample_size = MUTI_GLS_high_only$dims$N,
-         lambda = 0.3, 
-         alpha = as.numeric(NA)) %>%
-  select(-p.value)
-
-UN_high_only_tidy <- as.data.frame(summary(phyglm_UN_high_only)$coefficients) %>% 
-  rownames_to_column(., var ="term") %>%
-  select(-p.value) %>%
-  rename(estimate = Estimate, std.error = StdErr, # rename columns to match UAI and MUTI outputs
-         statistic = z.value, conf.low = lowerbootCI, 
-         conf.high = upperbootCI) %>%
-  mutate(index = "UN",
-         model_type = "phyloglm",
-         trait_group = "nest",
-         predictor_trait = "nest site high (only)",
-         sample_size = phyglm_UN_high_only$n,
-         lambda = as.numeric(NA),
-         alpha = phyglm_UN_high_only$alpha)
-
 # nest safety models
 UAI_nest_safety_tidy <- tidy(UAI_GLS_nest_safety, conf.int = T, conf.level = 0.95) %>%
   mutate(index = "UAI",
@@ -930,7 +890,6 @@ MUTI_neststr_tidy <-tidy(MUTI_GLS_neststr, conf.int = T, conf.level = 0.95) %>%
 nest_tidy <- bind_rows(UAI_low_tidy, MUTI_low_tidy, UN_low_tidy,
                        UAI_low_only_tidy, MUTI_low_only_tidy, UN_low_only_tidy,
                        UAI_high_tidy, MUTI_high_tidy, UN_high_tidy,
-                       UAI_high_only_tidy, MUTI_high_only_tidy, UN_high_only_tidy,
                        UAI_nest_safety_tidy, MUTI_nest_safety_tidy, UN_nest_safety_tidy,
                        UAI_neststr_tidy, MUTI_neststr_tidy) %>%
   mutate_if(is.numeric, round, 3) %>% # round numeric columns to 3 decimal places

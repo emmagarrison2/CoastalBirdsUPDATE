@@ -628,7 +628,7 @@ Coastal_Nest_Site <-  Coastal_Nest_Str %>%
          LowAndHigh = ifelse( NestSite_Low == 1 & NestSite_High == 1, "both", "one"))
 
 # which species and how many were assigned to both Low and High groups?
-Coastal_Nest_SiteBoth <- Coastal_Nest_Site %>% filter(LowAndHigh == "both")
+Coastal_Nest_SiteBoth <- Coastal_Nest_Site %>% filter(NestSite_Low == 1 & NestSite_High == 1)
 nrow(Coastal_Nest_SiteBoth) # many! --> 222 
 View(Coastal_Nest_SiteBoth)
 # Many coastal species nest on the ground and on cliffs/banks.

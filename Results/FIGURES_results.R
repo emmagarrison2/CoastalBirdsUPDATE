@@ -153,13 +153,16 @@ BodyMass_UAI_plot<-ggplot(data=MASS.UAI.DF,aes(x=Mass_log, y=fit)) +
   
   geom_point(data=MassTraitDat1,aes(x=jitter(Mass_log, 1), y =aveUAI),color="#E48816", bg="#E48816",alpha=.6, size=1,pch=21) +
   coord_cartesian(ylim = c(-0, 4.2), xlim =c(0,10.5)) + theme_classic() +
-  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  theme(axis.text.x =  element_text(color="black", size = 10),
+        axis.text.y =  element_text(color="black", size = 10), 
+        axis.title.x = element_text(size =14), 
+        axis.title.y = element_text(size =14)) +
   xlab("log(Body Mass)") + 
-  ylab("Average UAI") 
+  ylab("UAI") 
 
 BodyMass_UAI_plot
 
-saveRDS(BodyMass_UAI_plot, here("Results", "BodyMass_UAI.rds"))
+saveRDS(BodyMass_UAI_plot, here("Results", "FIG_BodyMass_UAI.rds"))
 
 
 
@@ -253,13 +256,16 @@ BV_UAI_plot<-ggplot(data=BV.UAI.DF,aes(x=brood_value, y=fit)) +
   
   geom_point(data=LifehistTraitDat1,aes(x=jitter(brood_value, 1), y =aveUAI),color="#E48816", bg="#E48816",alpha=.6, size=2,pch=21) +
   coord_cartesian(ylim = c(-0, 3.5), xlim =c(-6,-1.7)) + theme_classic() +
-  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  theme(axis.text.x =  element_text(color="black", size = 10),
+        axis.text.y =  element_text(color="black", size = 10), 
+        axis.title.x = element_text(size =14), 
+        axis.title.y = element_text(size =14)) +
   xlab("Brood Value") + 
-  ylab("Average UAI") 
+  ylab("UAI") 
 
 BV_UAI_plot
 
-saveRDS(BV_UAI_plot, here("Results", "BroodValue_UAI_plot.rds"))
+saveRDS(BV_UAI_plot, here("Results", "FIG_BroodValue_UAI_outlier.rds"))
 
 
 #################  WITHOUT OUTLIER #################
@@ -310,20 +316,22 @@ plot(bv.filtered.UAIdb, ask =FALSE, xlab = "Brood Value", ylab = "UAI", main =""
 
 BV.filtered.UAI.DF<-data.frame(bv.filtered.UAIdb)
 
-BV_filtered_UAI_plot<-ggplot(data=BV.filtered.UAI.DF,aes(x=brood_value, y=fit)) +
+BV_no_outlier_UAI_plot<-ggplot(data=BV.filtered.UAI.DF,aes(x=brood_value, y=fit)) +
   geom_line(color="#FFD67B",lwd=1.5) +
   geom_ribbon(aes(ymin=lower, ymax=upper), fill="#FFD67B",alpha=.3, lwd=.1)+xlim(-1000,1000) +
   
   geom_point(data=LifehistTraitDatFiltered,aes(x=jitter(brood_value, 1), y =aveUAI),color="#E48816", bg="#E48816",alpha=.6, size=2,pch=21) +
   coord_cartesian(ylim = c(-0, 3.5), xlim =c(-4.3,-1.8)) + theme_classic() +
-  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  theme(axis.text.x =  element_text(color="black", size = 10),
+        axis.text.y =  element_text(color="black", size = 10), 
+        axis.title.x = element_text(size =14, margin = margin(t = 8)), 
+        axis.title.y = element_text(size =14)) +
   xlab("Brood Value") + 
-  ylab("Average UAI") 
+  ylab("UAI") 
 
-BV_filtered_UAI_plot
+BV_no_outlier_UAI_plot
 
-saveRDS(BV_filtered_UAI_plot, here("Results", "BroodValue_UAI_plot_filtered.rds"))
-
+saveRDS(BV_no_outlier_UAI_plot, here("Results", "FIG_BroodValue_UAI_no_outlier.rds"))
 
 
 
@@ -399,16 +407,17 @@ clutch_UAI_plot<-ggplot(data=clutch.UAI.DF,aes(x=clutch_size, y=fit)) +
   
   geom_point(data=LifehistTraitDat4,aes(x=jitter(clutch_size, 1), y =aveUAI),color="#E48816", bg="#E48816",alpha=.6, size=2,pch=21) +
   coord_cartesian(ylim = c(-0, 4.1), xlim =c(0,15.5)) + theme_classic() +
-  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  theme(axis.text.x =  element_text(color="black", size = 10),
+        axis.text.y =  element_text(color="black", size = 10), 
+        axis.title.x = element_text(size =14, margin = margin(t = 8)), 
+        axis.title.y = element_text(size =14)) +
   xlab("Clutch Size") + 
-  ylab("Average UAI") 
+  ylab("UAI") 
 
 clutch_UAI_plot
 
 
-saveRDS(clutch_UAI_plot, here("Results", "clutch_UAI_plot.rds"))
-
-
+saveRDS(clutch_UAI_plot, here("Results", "FIG_clutch_UAI.rds"))
 
 
 
@@ -502,13 +511,16 @@ correct_develop_MUTI_plot <- ggplot() +
   geom_point(data = LifehistTraitDat11, aes(x = ifelse(developmental_mode == 0, "Precocial", "Altricial"), y = MUTIscore), color = "olivedrab4", size = 2, shape = 21, fill = "olivedrab4", alpha = 0.6, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Developmental Mode") +
-  ylab("MUTIscore") +
-  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  ylab("MUTI") +
+  theme(axis.text.x =  element_text(color="black", size = 10),
+        axis.text.y =  element_text(color="black", size = 10), 
+        axis.title.x = element_text(size =14, margin = margin(t = 8)), 
+        axis.title.y = element_text(size =14)) +
   scale_x_discrete(limits = c("Precocial", "Altricial"), labels = c("Precocial", "Altricial"))  # Specify the order here
 
 print(correct_develop_MUTI_plot)
 
-saveRDS(correct_develop_MUTI_plot, here("Results", "MUTI_developmental.rds"))
+saveRDS(correct_develop_MUTI_plot, here("Results", "FIG_Develop_MUTI.rds"))
 
 
 
@@ -630,6 +642,8 @@ Develop_UN_plot <- ggplot(Develop_UN_summary, aes(x = developmental_mode, y = pe
   ) + 
   theme_classic() + 
   theme(
+    axis.text.x = element_text(color="black", size = 10),
+    axis.text.y = element_text(color="black", size = 10),
     axis.title.x = element_text(size = 14, margin = margin(t = 8)), 
     axis.title.y = element_text(size = 12), 
     legend.position = "none"
@@ -641,28 +655,21 @@ Develop_UN_plot <- ggplot(Develop_UN_summary, aes(x = developmental_mode, y = pe
     label = c("Urban", "Non-Urban", "Urban", "Non-Urban"))
 
 
+
 print(Develop_UN_plot)
 
-saveRDS(Develop_UN_plot, here("Results", "develop_UN_plot.rds"))
+saveRDS(Develop_UN_plot, here("Results", "FIG_Develop_UN.rds"))
 
 
-
-##############################################################################
-#arrange all developmental mode plots in a grid
-
-MUTI_develop_plot <- readRDS(here("Results", "MUTI_developmental.rds"))
-UN_develop_plot <- readRDS(here("Results", "UN_develop_stacked_barchart.rds"))
-
-devepop_mode_plots <- grid.arrange(MUTI_develop_plot, UN_develop_plot, ncol=2, nrow = 1)
 
 
 ##############################################################################
 #plot all the life history results together... 
 
-BV_UAI_plot_no_outlier <- readRDS(here("Results", "BroodValue_UAI_plot_filtered.rds"))
-clutch_UAI_plot <- readRDS(here("Results", "clutch_UAI_plot.rds"))
-develop_MUTI_plot <- readRDS(here("Results", "MUTI_developmental.rds"))
-develop_UN_plot <- readRDS(here("Results", "develop_UN_plot.rds"))
+BV_UAI_plot_no_outlier <- readRDS(here("Results", "FIG_BroodValue_UAI_no_outlier.rds"))
+clutch_UAI_plot <- readRDS(here("Results", "FIG_clutch_UAI.rds"))
+develop_MUTI_plot <- readRDS(here("Results", "FIG_Develop_MUTI.rds"))
+develop_UN_plot <- readRDS(here("Results", "FIG_Develop_UN.rds"))
 
 
 #using patchwork package 
@@ -673,15 +680,12 @@ if(!require(patchwork)){
 library(patchwork)
 
 
-all_life_history_plots <- BV_UAI_plot_no_outlier + clutch_UAI_plot + develop_MUTI_plot + develop_UN_plot
+all_life_history_plots <- BV_UAI_plot_no_outlier + clutch_UAI_plot + develop_MUTI_plot + develop_UN_plot + plot_annotation(tag_levels = 'A') & theme(plot.tag = element_text(size = 14))
 
 print(all_life_history_plots)
 
-saveRDS(all_life_history_plots, here("Results", "life_history_figures.rds"))
+saveRDS(all_life_history_plots, here("Results", "FIG_all_life_history.rds"))
 
-LH_plots <- readRDS(here("Results", "life_history_figures.rds"))
-
-print(LH_plots)
 
 ##################################################################
 ########################## NESTING TRAITS ########################## 
@@ -809,17 +813,15 @@ correct_low_UAI_plot <- ggplot() +
   ylab("UAI") +
   scale_x_discrete(limits = c("Not Low", "Low"), labels = c("Not Low", "Low"))  + # Specify the order here 
   theme(
-  axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
-  axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
-  axis.text.x = element_text(size = 12),     # Adjust font size for x-axis tick labels
-  axis.text.y = element_text(size = 12)      # Adjust font size for y-axis tick labels
+  axis.title.x = element_text(color="black", size = 14),    # Adjust font size for x-axis label
+  axis.title.y = element_text(color="black", size = 14),    # Adjust font size for y-axis label
+  axis.text.x = element_text(size = 10, margin = margin(t = 8)),     # Adjust font size for x-axis tick labels
+  axis.text.y = element_text(size = 10)      # Adjust font size for y-axis tick labels
 )
 
 print(correct_low_UAI_plot)
 
-saveRDS(correct_low_UAI_plot, here("Results", "UAI_low_nest.rds"))
-
-
+saveRDS(correct_low_UAI_plot, here("Results", "FIG_low_nest_UAI.rds"))
 
 
 
@@ -921,15 +923,15 @@ correct_low_MUTI_plot <- ggplot() +
   ylab("MUTI") +
   scale_x_discrete(limits = c("Not Low", "Low"), labels = c("Not Low", "Low")) + 
   theme(
-    axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
-    axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
-    axis.text.x = element_text(size = 12),     # Adjust font size for x-axis tick labels
-    axis.text.y = element_text(size = 12)      # Adjust font size for y-axis tick labels
+    axis.title.x = element_text(color="black", size = 14),    # Adjust font size for x-axis label
+    axis.title.y = element_text(color="black", size = 14),    # Adjust font size for y-axis label
+    axis.text.x = element_text(size = 10, margin = margin(t = 8)),     # Adjust font size for x-axis tick labels
+    axis.text.y = element_text(size = 10)      # Adjust font size for y-axis tick labels
   )
 
 print(correct_low_MUTI_plot)
 
-saveRDS(correct_low_MUTI_plot, here("Results", "MUTI_low_nest.rds"))
+saveRDS(correct_low_MUTI_plot, here("Results", "FIG_low_nest_MUTI.rds"))
 
 
 
@@ -939,8 +941,8 @@ saveRDS(correct_low_MUTI_plot, here("Results", "MUTI_low_nest.rds"))
 ##############################################################################
 #arrange all nest site low plots in a grid
 
-UAI_low_plot <- readRDS(here("Results", "UAI_low_nest.rds"))
-MUTI_low_plot <- readRDS(here("Results", "MUTI_low_nest.rds"))
+UAI_low_plot <- readRDS(here("Results", "FIG_low_nest_UAI.rds"))
+MUTI_low_plot <- readRDS(here("Results", "FIG_low_nest_MUTI.rds"))
 
 low_nesting_plots <- grid.arrange(UAI_low_plot, MUTI_low_plot, ncol=2, nrow = 1)
 
@@ -1043,18 +1045,18 @@ correct_high_UAI_plot <- ggplot() +
   geom_point(data = NestTraitDat7, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = aveUAI), color = "#E48816", size = 1, shape = 21, fill = "#E48816", alpha = 0.7, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
-  ylab("Average UAI score") +
+  ylab("UAI") +
   scale_x_discrete(limits = c("Not High", "High"), labels = c("Not High", "High"))   + # Specify the order here
   theme(
     axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
     axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
-    axis.text.x = element_text(size = 12),     # Adjust font size for x-axis tick labels
-    axis.text.y = element_text(size = 12)      # Adjust font size for y-axis tick labels
+    axis.text.x = element_text(size = 10, margin = margin(t = 8)),     # Adjust font size for x-axis tick labels
+    axis.text.y = element_text(size = 10)      # Adjust font size for y-axis tick labels
   )
 
 print(correct_high_UAI_plot)
 
-saveRDS(correct_high_UAI_plot, here("Results", "UAI_high_nest.rds"))
+saveRDS(correct_high_UAI_plot, here("Results", "FIG_high_nest_UAI.rds"))
 
 
 
@@ -1152,17 +1154,17 @@ correct_high_MUTI_plot <- ggplot() +
   geom_point(data = NestTraitDat8, aes(x = ifelse(NestSite_High == 0, "Not High", "High"), y = MUTIscore), color = "olivedrab4", size = 1, shape = 21, fill = "olivedrab4", alpha = 0.8, position = position_jitter(width = 0.2)) +
   theme_classic() +
   xlab("Nest Site") +
-  ylab("MUTI score") +
+  ylab("MUTI") +
   scale_x_discrete(limits = c("Not High", "High"), labels = c("Not High", "High"))   +
   theme(axis.title.x = element_text(size = 14),    # Adjust font size for x-axis label
         axis.title.y = element_text(size = 14),    # Adjust font size for y-axis label
-        axis.text.x = element_text(size = 12),     # Adjust font size for x-axis tick labels
-        axis.text.y = element_text(size = 12))
+        axis.text.x = element_text(size = 10, margin = margin(t = 8)),     # Adjust font size for x-axis tick labels
+        axis.text.y = element_text(size = 10))
     
 print(correct_high_MUTI_plot)
 
 
-saveRDS(correct_high_MUTI_plot, here("Results", "MUTI_high_nest.rds"))
+saveRDS(correct_high_MUTI_plot, here("Results", "FIG_high_nest_MUTI.rds"))
 
 
 
@@ -1278,6 +1280,8 @@ Nest_High_UN_plot <- ggplot(UN_Nest_High_Summary, aes(x = NestSite_High, y = per
   theme(
     axis.title.x = element_text(size = 14, margin = margin(t = 8)), 
     axis.title.y = element_text(size = 12), 
+    axis.text.x = element_text(size = 10), 
+    axis.text.y = element_text(size = 10), 
     legend.position = "none"
   ) + 
   annotate(
@@ -1288,23 +1292,36 @@ Nest_High_UN_plot <- ggplot(UN_Nest_High_Summary, aes(x = NestSite_High, y = per
 
 print(Nest_High_UN_plot)
  
-saveRDS(Nest_High_UN_plot, here("Results", "NestHigh_UN_plot.rds"))
+saveRDS(Nest_High_UN_plot, here("Results", "FIG_high_nest_UN.rds"))
 
 
 
 ##############################################################################
 #arrange all nest site high plots in a grid
 
-UAI_high_plot <- readRDS(here("Results", "UAI_high_nest.rds"))
-MUTI_high_plot <- readRDS(here("Results", "MUTI_high_nest.rds"))
-UN_high_plot <- readRDS(here("Results", "NestHigh_UN_plot.rds"))
+UAI_high_plot <- readRDS(here("Results", "FIG_high_nest_UAI.rds"))
+MUTI_high_plot <- readRDS(here("Results", "FIG_high_nest_MUTI.rds"))
+UN_high_plot <- readRDS(here("Results", "FIG_high_nest_UN.rds"))
 
 low_nesting_plots <- grid.arrange(UAI_high_plot, MUTI_high_plot, UN_high_plot, ncol=3, nrow = 1)
 
+#USE THE FOLLOWING in RESULTS SECTION 
+
+#using patchwork package 
+if(!require(patchwork)){
+  install.packages("patchwork")
+  require(patchwork)
+}
+library(patchwork)
 
 
+FIG_All_nest_high_plots <- UAI_high_plot + MUTI_high_plot + UN_high_plot + plot_annotation(tag_levels = 'A') & theme(plot.tag = element_text(size = 14))
 
+ print(FIG_All_nest_high_plots)
 
+ saveRDS(FIG_All_nest_high_plots, here("Results", "FIG_all_nest_high"))
+
+ 
 ######################## UN and Nest Safety ##########################
 
 
@@ -1381,15 +1398,19 @@ SAFETY_UN_plot<-ggplot(data=SAFETY.UN.DF,aes(x=nest.safety, y=fit)) +
   
   geom_point(data=NestTraitDat12,aes(x=jitter(nest.safety, 1), y =Urban),color="#6C9CCC", bg="#6C9CCC",alpha=.7, size=1,pch=21) +
   coord_cartesian(ylim = c(0, 1), xlim =c(0.9,4.1)) + theme_classic() +
-  theme(axis.text.x =  element_text(color="black", size = 13),axis.text.y =  element_text(color="black", size = 13), axis.title.x = element_text(size =14), axis.title.y = element_text(size =14)) +
+  theme(axis.text.x =  element_text(color="black", size = 10),
+        axis.text.y =  element_text(color="black", size = 10), 
+        axis.title.x = element_text(size =14, margin = margin(t = 8)), 
+        axis.title.y = element_text(size =14)) +
   xlab("Nest Safety") + 
   ylab("UN") 
 
 SAFETY_UN_plot
 
 
-#try with this
-saveRDS(SAFETY_UN_plot, here("Results", "Nest_Safety_UN_plot.rds"))
+#save, even though this must be fixed to plot NEW phyloglm accurately 
+
+saveRDS(SAFETY_UN_plot, here("Results", "need_fix_FIG_nest_safety_UN.rds"))
 
 
 
@@ -1399,15 +1420,16 @@ saveRDS(SAFETY_UN_plot, here("Results", "Nest_Safety_UN_plot.rds"))
 #okay, now let's arrange all nesting traits! 
 
 
-UAI_high_plot <- readRDS(here("Results", "UAI_high_nest.rds"))
-MUTI_high_plot <- readRDS(here("Results", "MUTI_high_nest.rds"))
-UN_high_plot <- readRDS(here("Results", "NestHigh_UN_plot.rds"))
+UAI_high_plot <- readRDS(here("Results", "FIG_high_nest_UAI.rds"))
+MUTI_high_plot <- readRDS(here("Results", "FIG_high_nest_MUTI.rds"))
+UN_high_plot <- readRDS(here("Results", "FIG_high_nest_UN.rds"))
 
 
-UAI_low_plot <- readRDS(here("Results", "UAI_low_nest.rds"))
-MUTI_low_plot <- readRDS(here("Results", "MUTI_low_nest.rds"))
+UAI_low_plot <- readRDS(here("Results", "FIG_low_nest_UAI.rds"))
+MUTI_low_plot <- readRDS(here("Results", "FIG_low_nest_MUTI.rds"))
 
-UN_safety_plot <- readRDS(here("Results", "Nest_Safety_UN_plot.rds"))
+
+UN_safety_plot <- readRDS(here("Results", "need_fix_FIG_nest_safety_UN.rds"))
 
 
 low_nesting_plots <- grid.arrange(UAI_low_plot, MUTI_low_plot, ncol=2, nrow = 1)
@@ -1425,6 +1447,10 @@ layout <- rbind(c(1, 2, NA),  # First row: UAI_low_plot, MUTI_low_plot
 all_nesting_plots <- grid.arrange(UAI_low_plot, MUTI_low_plot, UAI_high_plot, 
                                   MUTI_high_plot, UN_high_plot, UN_safety_plot, 
                                   layout_matrix = layout)
+
+
+
+
 
 
 

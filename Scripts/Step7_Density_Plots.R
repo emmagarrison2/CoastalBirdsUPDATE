@@ -415,7 +415,7 @@ saveRDS(UN_stacked_barplot, here("Results", "UN_Density_Comparison.rds"))
 #let's try using the patchwork package... since grid.arrange may mess up the 
 #formatting (UN doesn't have legend)
 
-all_density_3 <- UAI_density + MUTI_density + UN_stacked_barplot
+all_density_3 <- UAI_density + MUTI_density + UN_stacked_barplot + plot_annotation(tag_levels = 'A') & theme(plot.tag = element_text(size = 14))
 
 print(all_density_3)
 

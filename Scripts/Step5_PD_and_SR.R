@@ -7,17 +7,14 @@ library(here)
 library(tidyverse)
 library(ape)
 library(geiger)
-if(!require(picante)){
-  install.packages("picante")
-  require(picante)
-}
 library(picante)
 library(phytools)
-
-citation("picante")
-packageVersion("picante")
-
-
+library(phyr) 
+library(ggtree)
+library(ggtreeExtra)
+library(ggnewscale)
+library(colorspace)
+library(treeio)
 
 ######################## Phylogenetic distance ########################
 # in this section, we will use the pd function to get Phylogenetic distance (PD) and
@@ -93,12 +90,6 @@ PD
 #interesting that UN is less phylogenetically diverse than MUTI, although they have almost = # of sp 
 
 # Examine several other phylogenetic species diversity metrics
-if(!require(phyr)){
-  install.packages("phyr")
-  require(phyr)
-}
-library(phyr) 
-citation("phyr")
 
 # measures described in Helmus et al. 2007 Am Nat
 # link to paper: https://www.journals.uchicago.edu/doi/10.1086/511334
@@ -124,7 +115,7 @@ citation("phyr")
 # Bound between zero and one
 # approaches zero as relatedness of the species increases 
 # therefore, higher values therefore reflect greater diversity
-PSV<-psv(ForPD, coastal_jetz, compute.var=F)
+PSV <- psv(ForPD, coastal_jetz, compute.var=F)
 PSV
 #UAI - 0.8044951 
 #UN - 0.7606829 
@@ -180,12 +171,9 @@ phy_measures <- PD %>% rownames_to_column(., var="index") %>%
   
 phy_measures
 
+
 ###############################################
-library(ggtree)
-library(ggtreeExtra)
-library(ggnewscale)
-library(colorspace)
-library(treeio)
+###### Make phylogenetic tree figure #########
 
 # coastal bird phylogeny created above
 coastal_jetz
@@ -212,11 +200,25 @@ orders <- Coastal_order %>% select(Species, ORDER1) %>%
   rename(label=Species, order = ORDER1)
 length(unique(orders$order)) # 23 avian orders are represented
 
+# how many species per Order?
+spp_order <- orders %>% group_by(order) %>% count()
+print(spp_order, n=Inf)
+
+# what percentage are Passeriformes?
+orders %>% filter(order=="Passeriformes") %>% nrow()
+98/807 # % 12% are passerines
+# this means that 88% of the coastal species list are non-passerines
+
 # extract phylogeny and convert into tibble
 phy_tibble <- as_tibble(coastal_jetz)
 
 # add order information to the phylogeny
 phy_join <- left_join(phy_tibble, orders)
+
+# find nodes for each Order
+ordernode <- phy_join %>% group_by(order) %>% summarize(min=min(node), max=max(node)) %>% left_join(spp_order)
+ordernode
+
 
 # convert back into class phylo
 new_tree <- as.phylo(phy_join) 
@@ -230,11 +232,32 @@ order_coastal_tree <- groupOTU(new_tree, order_info)
 # this will allow us to color branches of tree based on Order
 
 # plot the tree in a circular layout with the branches colored by Order
+hcl_palettes(palette="Light Grays", n = 23, plot = TRUE)
+
+
+# figuring out where some of the most species-rich orders are located on the tree
+# using a node in the middle of the range of nodes for each order as location for label -> there is probably a more sophisticated way to do this
+# look at object ordernode to see nodes for each Order
+ggtree(order_coastal_tree , layout='circular', aes(color=group)) + 
+  scale_color_discrete_sequential(palette = "Mako", alpha=0.7) +
+  guides(color="none") +
+  geom_cladelab(node = 765, label = "Gruiformes", fontsize = 3, vjust =-1) + # 60 species
+  geom_cladelab(node = 275, label = "Charadriiformes",   fontsize = 3) + # 228 species
+  geom_cladelab(node = 62, label = "Anseriformes", fontsize = 3) + # 126 species
+  geom_cladelab(node = 660, label = "Pelecaniformes", fontsize = 3, hjust=1, vjust=-1) + # 77 species
+  geom_cladelab(node = 415, label = "Passeriformes", fontsize = 3, vjust = 1, hjust =1) + # 98 species
+  geom_cladelab(node = 515, label = "Accipitriformes", fontsize = 3, hjust=1, vjust=2) + # 50 species
+  geom_cladelab(node = 720, label = "Suliformes", fontsize = 3, hjust=0.8, vjust=-2) + # 38 species
+  geom_cladelab(node = 480, label = "Coraciiformes", fontsize = 3, hjust=1) # 29 species
+
+
+
 circ_order <- ggtree(order_coastal_tree , layout='circular', aes(color=group)) + 
   guides(color="none") +
-  scale_color_discrete_sequential(palette = "Grays", nmax=35, order = 12:35) 
-# this will build a palette of 35 shades of gray and by selecting 12 through 35 we drop the lightest colors and keep 23 darker shades
+  scale_color_discrete_sequential(palette = "Grays", nmax=30, order = 7:30) 
+# this will build a palette of 35 shades of gray and by selecting 7 through 30 we drop the lightest colors and keep 23 darker shades
 circ_order
+
 
 # if you didn't want the branches colored by Order
 circ_tree <- ggtree(order_coastal_tree , layout='circular', color="gray40") # circular phylogeny
@@ -247,20 +270,52 @@ muti_dat <- Coastal %>% column_to_rownames(., var="Species") %>% select(MUTIscor
 
 # begin to build plot
 # start with UN
-UN <- gheatmap(circ_order, un_dat, offset=.8, width=.15, colnames =F) +
-  scale_fill_manual(values=c("#6C9CCC", "#417CBD"), name = "UN", na.translate = F) # use na.translate = F to not plot species with NAs
+hcl_palettes(palette="Oslo", n = 7, plot = TRUE)
+sequential_hcl(7, "Oslo") # get hex codes
+# try "#C2CEE8" with "#3C79C0" and "#86A2D3" with "#275182"
+# these may be too cool-toned (purple)
+hcl_palettes(palette="Blues", n = 9, plot = TRUE)
+sequential_hcl(9, "Blues")
+
+# using two shades from palette above that are high contrast
+UN <- gheatmap(circ_order, un_dat, offset=-1, width=.1, colnames =F) +
+  scale_fill_manual(values=c("#7FABD3", "#273871"), name = "UN", na.translate = F) # use na.translate = F to not plot species with NAs
 UN  
 
+
 # add MUTI
+# try the following palettes: Green-Yellow (not good), YlGn (okay), ag_GrnYl (good!), Greens 3 (okay)
 p1 <- UN + new_scale_fill()
-UN_MUTI <-gheatmap(p1, muti_dat, offset=25, width=.15, colnames = F) +
-  scale_fill_continuous_sequential(palette = "YlGn", name="MUTI", na.value="white") 
+UN_MUTI <-gheatmap(p1, muti_dat, offset=12, width=.1, colnames = F) +
+  scale_fill_continuous_sequential(palette = "ag_GrnYl", name="MUTI", na.value="white") 
 UN_MUTI
 
+
+hcl_palettes(palette="ag_GrnYl", n = 9, plot = TRUE)
+sequential_hcl(9, "ag_GrnYl")
+
 # add UAI
+# could try the following palettes: Oranges (good), OrRd (too red), YlOrBr (ugly), YlOrRd (too much red), Peach (nope), Heat (too many colors) and/or OrYel (ok)
 p2 <- UN_MUTI + new_scale_fill()
-UN_MUTI_UAI <-gheatmap(p2, uai_dat, offset=50, width=.15, colnames = F) +
-  scale_fill_continuous_sequential(palette = "OrYel", name="UAI", na.value="white") 
+UN_MUTI_UAI <-gheatmap(p2, uai_dat, offset=25, width=.1, colnames = F) +
+  scale_fill_continuous_sequential(palette = "Oranges", name="UAI", na.value="white") 
 UN_MUTI_UAI
 
 
+hcl_palettes(palette="Oranges", n = 9, plot = TRUE)
+sequential_hcl(9, "Oranges")
+
+
+imgdir <- list.files(path = "~/Desktop/Coastal Birds Update/BirdImages", patter)
+
+dat <- phy_join %>% mutate(image = sample("~/Desktop/Coastal Birds Update/BirdImages/eider.png"))
+dat
+
+library(ggimage)
+
+UN_MUTI_UAI + annotate(x=1, y=1, label="Bird")
+  
+  geom_image(x=0.5, y=2, image = paste0("~/Desktop/Coastal Birds Update/BirdImages/eider.png"), size=0.1)
+  
+  
+  geom_image(data= dat, aes(image = image, size=0.2))

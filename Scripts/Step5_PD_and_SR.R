@@ -219,7 +219,6 @@ phy_join <- left_join(phy_tibble, orders)
 ordernode <- phy_join %>% group_by(order) %>% summarize(min=min(node), max=max(node)) %>% left_join(spp_order)
 ordernode
 
-
 # convert back into class phylo
 new_tree <- as.phylo(phy_join) 
 
@@ -231,15 +230,38 @@ order_info
 order_coastal_tree <- groupOTU(new_tree, order_info) 
 # this will allow us to color branches of tree based on Order
 
-# plot the tree in a circular layout with the branches colored by Order
-hcl_palettes(palette="Light Grays", n = 23, plot = TRUE)
+# create a custom color palette for the tree
+# specifically, I want each Order to alternate colors (between two shades of gray) as you move around the tree
+# to do this, I had to figure out the organization of the avian Orders around the circular tree, so they are listed in order below
+# 
+scale_color_custom <- function(...){
+  ggplot2:::manual_scale(
+    'color', 
+    values = setNames(rep(c("gray25", "gray50"), 12), # two shades of gray repeated 12 times each for 23 Orders
+                      c("Charadriiformes","Passeriformes", "Psittaciformes",
+                        "Falconiformes", "Accipitriformes","Cathartiformes",
+                        "Coraciiformes", "Strigiformes", "Pelecaniformes", 
+                        "Suliformes","Ciconiiformes", "Procellariiformes",
+                        "Sphenisciformes","Gaviiformes","Gruiformes", 
+                        "Cuculiformes","Podicipediformes", "Phoenicopteriformes", 
+                        "Columbiformes","Phaethontiformes", "Caprimulgiformes", 
+                        "Anseriformes", "Galliformes")), 
+    ...
+  )
+}
 
+
+
+circ_order <- ggtree(order_coastal_tree, layout='circular', aes(color=group)) + 
+  guides(color="none") +
+  scale_color_custom()
+circ_order
 
 # figuring out where some of the most species-rich orders are located on the tree
 # using a node in the middle of the range of nodes for each order as location for label -> there is probably a more sophisticated way to do this
 # look at object ordernode to see nodes for each Order
 ggtree(order_coastal_tree , layout='circular', aes(color=group)) + 
-  scale_color_discrete_sequential(palette = "Mako", alpha=0.7) +
+  scale_color_custom() +
   guides(color="none") +
   geom_cladelab(node = 765, label = "Gruiformes", fontsize = 3, vjust =-1) + # 60 species
   geom_cladelab(node = 275, label = "Charadriiformes",   fontsize = 3) + # 228 species
@@ -249,20 +271,7 @@ ggtree(order_coastal_tree , layout='circular', aes(color=group)) +
   geom_cladelab(node = 515, label = "Accipitriformes", fontsize = 3, hjust=1, vjust=2) + # 50 species
   geom_cladelab(node = 720, label = "Suliformes", fontsize = 3, hjust=0.8, vjust=-2) + # 38 species
   geom_cladelab(node = 480, label = "Coraciiformes", fontsize = 3, hjust=1) # 29 species
-
-
-
-circ_order <- ggtree(order_coastal_tree , layout='circular', aes(color=group)) + 
-  guides(color="none") +
-  scale_color_discrete_sequential(palette = "Grays", nmax=30, order = 7:30) 
-# this will build a palette of 35 shades of gray and by selecting 7 through 30 we drop the lightest colors and keep 23 darker shades
-circ_order
-
-
-# if you didn't want the branches colored by Order
-circ_tree <- ggtree(order_coastal_tree , layout='circular', color="gray40") # circular phylogeny
-circ_tree
-
+ 
 # get species values for each urban tolerance index
 un_dat <- Coastal %>% column_to_rownames(., var="Species") %>% select(Urban)
 uai_dat <- Coastal %>% column_to_rownames(., var="Species") %>% select(aveUAI)
@@ -270,16 +279,12 @@ muti_dat <- Coastal %>% column_to_rownames(., var="Species") %>% select(MUTIscor
 
 # begin to build plot
 # start with UN
-hcl_palettes(palette="Oslo", n = 7, plot = TRUE)
-sequential_hcl(7, "Oslo") # get hex codes
-# try "#C2CEE8" with "#3C79C0" and "#86A2D3" with "#275182"
-# these may be too cool-toned (purple)
 hcl_palettes(palette="Blues", n = 9, plot = TRUE)
 sequential_hcl(9, "Blues")
 
 # using two shades from palette above that are high contrast
 UN <- gheatmap(circ_order, un_dat, offset=-1, width=.1, colnames =F) +
-  scale_fill_manual(values=c("#7FABD3", "#273871"), name = "UN", na.translate = F) # use na.translate = F to not plot species with NAs
+  scale_fill_manual(values=c("#7FABD3", "#273871"), name = "UN", na.translate = F, labels=c("Non-Urban", "Urban")) # use na.translate = F to not plot species with NAs
 UN  
 
 
@@ -290,10 +295,6 @@ UN_MUTI <-gheatmap(p1, muti_dat, offset=12, width=.1, colnames = F) +
   scale_fill_continuous_sequential(palette = "ag_GrnYl", name="MUTI", na.value="white") 
 UN_MUTI
 
-
-hcl_palettes(palette="ag_GrnYl", n = 9, plot = TRUE)
-sequential_hcl(9, "ag_GrnYl")
-
 # add UAI
 # could try the following palettes: Oranges (good), OrRd (too red), YlOrBr (ugly), YlOrRd (too much red), Peach (nope), Heat (too many colors) and/or OrYel (ok)
 p2 <- UN_MUTI + new_scale_fill()
@@ -301,21 +302,6 @@ UN_MUTI_UAI <-gheatmap(p2, uai_dat, offset=25, width=.1, colnames = F) +
   scale_fill_continuous_sequential(palette = "Oranges", name="UAI", na.value="white") 
 UN_MUTI_UAI
 
-
-hcl_palettes(palette="Oranges", n = 9, plot = TRUE)
-sequential_hcl(9, "Oranges")
+ggsave(here("Results", "UN_MUTI_UAI.png"), width=27, height = 16, units="cm", dpi=300)
 
 
-imgdir <- list.files(path = "~/Desktop/Coastal Birds Update/BirdImages", patter)
-
-dat <- phy_join %>% mutate(image = sample("~/Desktop/Coastal Birds Update/BirdImages/eider.png"))
-dat
-
-library(ggimage)
-
-UN_MUTI_UAI + annotate(x=1, y=1, label="Bird")
-  
-  geom_image(x=0.5, y=2, image = paste0("~/Desktop/Coastal Birds Update/BirdImages/eider.png"), size=0.1)
-  
-  
-  geom_image(data= dat, aes(image = image, size=0.2))

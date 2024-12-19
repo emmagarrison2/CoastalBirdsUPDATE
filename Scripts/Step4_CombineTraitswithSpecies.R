@@ -447,7 +447,7 @@ broodvalue_count <- Coastal_BroodValue %>%
 nrow(broodvalue_count)
 # 484
 
-# how many species have clutch size values?
+# how many species have brood values?
 # for UAI?
 Coastal_BroodValue %>% filter(!is.na(brood_value)) %>% filter(!is.na(aveUAI)) %>% nrow()
 # for MUTI?

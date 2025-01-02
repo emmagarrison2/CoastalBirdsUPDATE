@@ -66,108 +66,6 @@ if(!require(stringr)){
 library(stringr)
 
 
-########################## BODY MASS ########################## 
-
-
-
-###################### Prep
-
-#load in "Coastal_Species_w_Mass.rds" - since this contains coastal species and all diet trait variables :) 
-
-C_mass_dat <- readRDS(here("Outputs", "Coastal_Species_w_Mass.rds"))
-str(C_mass_dat)
-
-C_mass_dat2 <- C_mass_dat %>%
-  mutate(Species_Jetz  = str_replace(Species_Jetz, " ", "_"))
-str(C_mass_dat2)
-
-C_mass_dat2$Urban <- ifelse(C_mass_dat2$Urban == "U", 1, 0)
-View(C_mass_dat2)
-colnames(C_mass_dat2)
-
-
-
-######################## UAI and body mass ##########################
-
-# lets first simplify a NEW database by removing records where we don't have an UAI / brood_value
-UAIDataUT <- C_mass_dat2 %>% filter(!is.na(aveUAI)) 
-MassData1 <- UAIDataUT %>% filter(!is.na(Mass_log)) 
-length(MassData1$Mass_log)
-#798 species with UAI and Mass_log
-
-colnames(MassData1)
-
-###### add and pair tree
-
-# add rownames to data
-row.names(MassData1) <- MassData1$Species_Jetz
-
-tree_out<- read.tree(here("Data", "Jetz_ConsensusPhy.tre"))
-
-Massphydat1 <- treedata(tree_out,MassData1, sort=T)
-
-Massphy1 <- Massphydat1$phy
-MassTraitDat1 <- as.data.frame(Massphydat1$data)
-
-str(MassTraitDat1)
-length(MassTraitDat1$Mass_log)
-#798
-
-
-### convert traits of interest to numeric
-
-MassTraitDat1$aveUAI <- as.numeric(MassTraitDat1$aveUAI)
-MassTraitDat1$Mass_log <- as.numeric(MassTraitDat1$Mass_log)
-
-
-#lets run the model!
-
-
-UAI_GLS_mass <- gls(aveUAI~ Mass_log, data = MassTraitDat1, 
-                    correlation = corPagel(0.5, phy=Massphy1,fixed=F, form = ~Species_Jetz), 
-                    method = "ML") 
-#check out the model
-check_model(UAI_GLS_mass) 
-qqnorm(resid(UAI_GLS_mass)) 
-qqline(resid(UAI_GLS_mass)) 
-hist(resid(UAI_GLS_mass)) 
-
-
-summary(UAI_GLS_mass) 
-confint(UAI_GLS_mass)
-
-############
-#plot it 
-
-library(effects)
-Mass.UAIdb <- predictorEffect("Mass_log" , UAI_GLS_mass)
-
-
-plot(Mass.UAIdb, ask =FALSE, xlab = "Body Mass", ylab = "UAI", main ="", lines=list(multiline=TRUE, col=c("#FFD67B")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
-
-MASS.UAI.DF<-data.frame(Mass.UAIdb)
-
-BodyMass_UAI_plot<-ggplot(data=MASS.UAI.DF,aes(x=Mass_log, y=fit)) +
-  geom_line(color="#FFD67B",lwd=1.5) +
-  geom_ribbon(aes(ymin=lower, ymax=upper), fill="#FFD67B",alpha=.3, lwd=.1)+xlim(-1000,1000) +
-  
-  geom_point(data=MassTraitDat1,aes(x=jitter(Mass_log, 1), y =aveUAI),color="#E48816", bg="#E48816",alpha=.6, size=1,pch=21) +
-  coord_cartesian(ylim = c(-0, 4.2), xlim =c(0,10.5)) + theme_classic() +
-  theme(axis.text.x =  element_text(color="black", size = 10),
-        axis.text.y =  element_text(color="black", size = 10), 
-        axis.title.x = element_text(size =14), 
-        axis.title.y = element_text(size =14)) +
-  xlab("log(Body Mass)") + 
-  ylab("UAI") 
-
-BodyMass_UAI_plot
-
-saveRDS(BodyMass_UAI_plot, here("Results", "FIG_BodyMass_UAI.rds"))
-
-
-
-
-
 ##################################################################
 ########################## LIFE HISTORY ########################## 
 
@@ -258,84 +156,19 @@ BV_UAI_plot<-ggplot(data=BV.UAI.DF,aes(x=brood_value, y=fit)) +
   coord_cartesian(ylim = c(-0, 3.5), xlim =c(-6,-1.7)) + theme_classic() +
   theme(axis.text.x =  element_text(color="black", size = 10),
         axis.text.y =  element_text(color="black", size = 10), 
-        axis.title.x = element_text(size =14), 
-        axis.title.y = element_text(size =14)) +
+        axis.title.x = element_text(size =14, margin = margin(t=8)), 
+        axis.title.y = element_text(size =14), 
+        legend.position = "none") +
   xlab("Brood Value") + 
   ylab("UAI") 
+
+#numero 1
 
 BV_UAI_plot
 
 saveRDS(BV_UAI_plot, here("Results", "FIG_BroodValue_UAI_outlier.rds"))
 
 #include FIG_BroodValue_UAI_outlier.rds in the patchwork plot 
-
-#################  WITHOUT OUTLIER #################
-
-################ so, brood value has this outlier... let's try again with UAI and Brood Value to see if this relationship is still significantly negative 
-
-LifehistDataFiltered <- LifehistData1 %>% filter(brood_value >= -5)
-
-# Add rownames to filtered data
-row.names(LifehistDataFiltered) <- LifehistDataFiltered$Species_Jetz
-
-# Pair with the tree
-LifehistphydatFiltered <- treedata(tree_out, LifehistDataFiltered, sort=T)
-
-LifehistphyFiltered <- LifehistphydatFiltered$phy
-LifehistTraitDatFiltered <- as.data.frame(LifehistphydatFiltered$data)
-
-# Convert traits of interest to numeric
-LifehistTraitDatFiltered$aveUAI <- as.numeric(LifehistTraitDatFiltered$aveUAI)
-LifehistTraitDatFiltered$Mass_log <- as.numeric(LifehistTraitDatFiltered$Mass_log)
-LifehistTraitDatFiltered$brood_value <- as.numeric(LifehistTraitDatFiltered$brood_value)
-
-# Run the GLS model on the filtered dataset
-UAI_GLS_bv_filtered <- gls(aveUAI ~ brood_value + Mass_log, data = LifehistTraitDatFiltered, 
-                           correlation = corPagel(0.5, phy=LifehistphyFiltered, fixed=F, form = ~Species_Jetz), 
-                           method = "ML")
-
-# Check the model
-check_model(UAI_GLS_bv_filtered)
-qqnorm(resid(UAI_GLS_bv_filtered)) 
-qqline(resid(UAI_GLS_bv_filtered))
-hist(resid(UAI_GLS_bv_filtered))
-
-# Model summary and confidence intervals
-summary(UAI_GLS_bv_filtered) # still significant (p = 0.0288)
-confint(UAI_GLS_bv_filtered) # still significant (C.I. = (-0.349, -0.0195)
-
-############
-
-
-#plot it 
-
-library(effects)
-bv.filtered.UAIdb <- predictorEffect("brood_value" , UAI_GLS_bv_filtered)
-
-
-plot(bv.filtered.UAIdb, ask =FALSE, xlab = "Brood Value", ylab = "UAI", main ="", lines=list(multiline=TRUE, col=c("#FFD67B")), confint=list(style="auto"), auto.key=FALSE, ylim=c(-20,10))
-
-BV.filtered.UAI.DF<-data.frame(bv.filtered.UAIdb)
-
-BV_no_outlier_UAI_plot<-ggplot(data=BV.filtered.UAI.DF,aes(x=brood_value, y=fit)) +
-  geom_line(color="#FFCDA1",lwd=1.5) +
-  geom_ribbon(aes(ymin=lower, ymax=upper), fill="#FFCDA1",alpha=.3, lwd=.1)+xlim(-1000,1000) +
-  
-  geom_point(data=LifehistTraitDatFiltered,aes(x=jitter(brood_value, 1), y =aveUAI),color="#ED6F00", bg="#ED6F00",alpha=.5, size=2,pch=21) +
-  coord_cartesian(ylim = c(-0, 3.5), xlim =c(-4.3,-1.8)) + theme_classic() +
-  theme(axis.text.x =  element_text(color="black", size = 10),
-        axis.text.y =  element_text(color="black", size = 10), 
-        axis.title.x = element_text(size =14, margin = margin(t = 8)), 
-        axis.title.y = element_text(size =14)) +
-  xlab("Brood Value") + 
-  ylab("UAI") 
-
-BV_no_outlier_UAI_plot
-
-saveRDS(BV_no_outlier_UAI_plot, here("Results", "FIG_BroodValue_UAI_no_outlier.rds"))
-
-
-
 
 
 ######################## UAI and % clutch size ##########################
@@ -411,12 +244,14 @@ clutch_UAI_plot<-ggplot(data=clutch.UAI.DF,aes(x=clutch_size, y=fit)) +
   theme(axis.text.x =  element_text(color="black", size = 10),
         axis.text.y =  element_text(color="black", size = 10), 
         axis.title.x = element_text(size =14, margin = margin(t = 8)), 
-        axis.title.y = element_text(size =14)) +
+        axis.title.y = element_text(size =14), 
+        legend.position = "none") +
   xlab("Clutch Size") + 
   ylab("UAI") 
 
 clutch_UAI_plot
 
+ #numero 2 
 
 saveRDS(clutch_UAI_plot, here("Results", "FIG_clutch_UAI.rds"))
 
@@ -516,13 +351,15 @@ correct_develop_MUTI_plot <- ggplot() +
   theme(axis.text.x =  element_text(color="black", size = 10),
         axis.text.y =  element_text(color="black", size = 10), 
         axis.title.x = element_text(size =14, margin = margin(t = 8)), 
-        axis.title.y = element_text(size =14)) +
+        axis.title.y = element_text(size =14), 
+        legend.position = "none") +
   scale_x_discrete(limits = c("Precocial", "Altricial"), labels = c("Precocial", "Altricial"))  # Specify the order here
 
 print(correct_develop_MUTI_plot)
 
 saveRDS(correct_develop_MUTI_plot, here("Results", "FIG_Develop_MUTI.rds"))
 
+#numero 3 
 
 
 
@@ -646,7 +483,7 @@ Develop_UN_plot <- ggplot(Develop_UN_summary, aes(x = developmental_mode, y = pe
     axis.text.x = element_text(color="black", size = 10),
     axis.text.y = element_text(color="black", size = 10),
     axis.title.x = element_text(size = 14, margin = margin(t = 8)), 
-    axis.title.y = element_text(size = 12), 
+    axis.title.y = element_text(size = 14), 
     legend.position = "none"
   ) + 
   annotate(
@@ -661,13 +498,14 @@ print(Develop_UN_plot)
 
 saveRDS(Develop_UN_plot, here("Results", "FIG_Develop_UN.rds"))
 
+#numero 4
 
 
 
 ##############################################################################
 #plot all the life history results together... 
 
-#pineapple
+
 
 BV_UAI_plot_w_brushturkey <- readRDS(here("Results", "FIG_BroodValue_UAI_outlier.rds"))
 clutch_UAI_plot <- readRDS(here("Results", "FIG_clutch_UAI.rds"))

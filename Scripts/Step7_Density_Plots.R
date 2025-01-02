@@ -184,7 +184,7 @@ UAI_density <- ggplot() +
     show.legend = F
   ) +  
   scale_fill_manual(
-    values = c("All" = "#FFD67B", "Coastal" = "#E48816")
+    values = c("All" = "#FFCDA1", "Coastal" = "#ED6F00")
   ) +
   labs(
     x = "UAI", 
@@ -270,7 +270,7 @@ MUTI_density <- ggplot() +
     show.legend = F
   ) +  
   scale_fill_manual(
-    values = c("All" = "olivedrab1", "Coastal" = "olivedrab")
+    values = c("All" = "#B5DD60", "Coastal" = "#17A77E")
   ) +
   labs(
     x = "MUTI", 
@@ -359,10 +359,10 @@ UN_stacked_barplot <- ggplot(combined_UN_for_density_summary, aes(x = Group, y =
   # Custom colors for each Group & Urban combination
   scale_fill_manual(
     values = c(
-      "All & 0" = "#B8D5E9",   # Color for "All & Nonurban"
-      "All & 1" = "#93BADB",        # Color for "All & Urban"
-      "Coastal & 0" = "#6C9CCC",  # Color for "Coastal & Nonurban"
-      "Coastal & 1" = "#417CBD"        # Color for "Coastal & Urban"
+      "All & 0" = "#DEEEF7",   # Color for "All & Nonurban"
+      "All & 1" = "#A1C4E0",        # Color for "All & Urban"
+      "Coastal & 0" = "#7FABD3",  # Color for "Coastal & Nonurban"
+      "Coastal & 1" = "#5C90C6"        # Color for "Coastal & Urban"
     )
   ) + 
   labs(
@@ -380,7 +380,8 @@ UN_stacked_barplot <- ggplot(combined_UN_for_density_summary, aes(x = Group, y =
     "text", 
     x = c(1, 1, 2, 2), 
     y = c(0.2, 0.7, 0.16, 0.65), 
-    label = c("Urban", "Non-Urban", "Urban", "Non-Urban"))
+    label = c("Urban", "Non-Urban", "Urban", "Non-Urban"),
+    size = 4)
 
 print(UN_stacked_barplot)
 
